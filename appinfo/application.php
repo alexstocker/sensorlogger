@@ -21,7 +21,10 @@ class Application extends App {
 					$c->query('AppName'),
 					$c->query('Request'),
 					$c->query('UserId'),
-					$c->query('ServerContainer')->getDb()
+					$c->query('ServerContainer')->getDb(),
+					$c->query('OCP\IURLGenerator'),
+					$c->query('OCP\IConfig'),
+					$c->query('Session')
 			);
 		});
 
@@ -30,7 +33,10 @@ class Application extends App {
 					$c->query('AppName'),
 					$c->query('Request'),
 					$c->query('UserId'),
-					$c->query('ServerContainer')->getDb()
+					$c->query('ServerContainer')->getDb(),
+					$c->query('OCP\IURLGenerator'),
+					$c->query('OCP\IConfig'),
+					$c->query('Session')
 			);
 		});
 
@@ -49,7 +55,10 @@ class Application extends App {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('ServerContainer')->getDb(),
-				$c->query('ServerContainer')->getUserManager()
+				$c->query('ServerContainer')->getUserManager(),
+				$c->query('OCP\IURLGenerator'),
+				$c->query('OCP\IConfig'),
+				$c->query('Session')
 			);
 		});
 
@@ -58,7 +67,10 @@ class Application extends App {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query('ServerContainer')->getDb(),
-				$c->query('ServerContainer')->getUserManager()
+				$c->query('ServerContainer')->getUserManager(),
+				$c->query('OCP\IURLGenerator'),
+				$c->query('OCP\IConfig'),
+				$c->query('Session')
 			);
 		});
 	}

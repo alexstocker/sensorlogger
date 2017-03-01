@@ -40,6 +40,12 @@
                 <default>0</default>
             </field>
             <field>
+                <name>data</name>
+                <type>text</type>
+                <notnull>false</notnull>
+                <length>255</length>
+            </field>
+            <field>
                 <name>created_at</name>
                 <type>timestamp</type>
                 <default></default>

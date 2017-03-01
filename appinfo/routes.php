@@ -25,6 +25,7 @@ $application->registerRoutes($this, array(
 	'routes' => array(
 		array('name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#showList', 'url' => 'showList', 'verb' => 'POST'),
+		array('name' => 'sensorlogger#showDeviceData', 'url' => 'showDeviceData/{id}', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#showDashboard', 'url' => 'showDashboard', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deviceList', 'url' => 'deviceList', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deviceTypeList', 'url' => 'deviceTypeList', 'verb' => 'POST'),

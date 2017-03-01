@@ -62,7 +62,9 @@ class ApiSensorLoggerController extends ApiController {
 		if($registered || !isset($array['deviceId'])) {
 			$deviceId = $array['deviceId'] ?: null;
 
-			$sql = 'INSERT INTO `*PREFIX*sensorlogger_logs` (temperature,humidity,created_at,user_id,device_uuid) VALUES(?,?,?,?,?)';
+			$dataJson = json_encode($array);
+
+			$sql = 'INSERT INTO `*PREFIX*sensorlogger_logs` (temperature,humidity,created_at,user_id,device_uuid,`data`) VALUES(?,?,?,?,?,?)';
 			$stmt = $this->db->prepare($sql);
 			$stmt->bindParam(1, $array['temperature']);
 			$stmt->bindParam(2, $array['humidity']);
@@ -70,6 +72,7 @@ class ApiSensorLoggerController extends ApiController {
 			$stmt->bindParam(3, $array['date']);
 			$stmt->bindParam(4, $this->userId);
 			$stmt->bindParam(5, $deviceId);
+			$stmt->bindParam(6, $dataJson);
 			$stmt->execute();
 		}
 		return true;

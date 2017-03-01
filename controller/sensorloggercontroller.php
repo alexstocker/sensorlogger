@@ -3,6 +3,7 @@
 namespace OCA\SensorLogger\Controller;
 
 use OC\Core\Command\Background\Ajax;
+use OCA\Tasks\Controller\CollectionsController;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -12,7 +13,11 @@ use OCP\IDBConnection;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
-
+/**
+ * Class SensorLoggerController
+ *
+ * @package OCA\SensorLogger\Controller
+ */
 class SensorLoggerController extends Controller {
 
 	private $userId;
@@ -20,11 +25,11 @@ class SensorLoggerController extends Controller {
 	/** @var IDBConnection */
 	protected $connection;
 
+	/** @var IConfig  */
 	protected $config;
 
+	/** @var IURLGenerator  */
 	private $urlGenerator;
-
-	//protected $sensorLog;
 
 	public function __construct($AppName,
 								IRequest $request,
@@ -45,17 +50,10 @@ class SensorLoggerController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function index() {
-		if(!$this->getUserValue('apiKey',$this->userId)) {
-			$this->setUserValue('apiKey',$this->userId,$this->generateApiKey());
-			$this->setUserValue('sharedSecret',$this->userId,$this->generateSharedSecret());
-		}
-
 		$templateName = 'main';  // will use templates/main.php
 		$logs = $this->getLastLog();
 		$parameters = array(
-				'config' => array(
-					'apiKey' => $this->getUserValue('apiKey',$this->userId),
-					'sharedSecret' => $this->getUserValue('sharedSecret', $this->userId)),
+				'config' => array(),
 				'part' => 'dashboard',
 				'logs' => $logs
 			);
@@ -64,6 +62,7 @@ class SensorLoggerController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @return TemplateResponse
 	 */
 	function showList() {
 		$templateName = 'part.list';  // will use templates/main.php
@@ -73,7 +72,29 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
+	 * @param $id
+	 * @return TemplateResponse
+	 */
+	public function showDeviceData($id) {
+		$templateName = 'part.list';  // will use templates/main.php
+		$logs = $this->getDeviceData($id);
+		$parameters = array('part' => 'list','logs' => $logs);
+		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
+	}
+
+	/**
+	 * @param $id
+	 * @return array
+	 */
+	protected function getDeviceData($id) {
+		$device = $this->getDevice($id);
+		$logs = $this->getLogsByUuId($device['uuid']);
+		return $logs;
+	}
+
+	/**
 	 * @NoAdminRequired
+	 * @return TemplateResponse
 	 */
 	public function showDashboard() {
 		$templateName = 'part.dashboard';  // will use templates/main.php
@@ -96,11 +117,17 @@ class SensorLoggerController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @param $id
+	 * @return string
 	 */
 	public function chartData($id) {
 		return $this->getChartData($id);
 	}
 
+	/**
+	 * @param $id
+	 * @return string
+	 */
 	protected function getChartData($id) {
 		$device = $this->getDevice($id);
 		
@@ -121,6 +148,7 @@ class SensorLoggerController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @return TemplateResponse
 	 */
 	public function deviceTypeList() {
 		$templateName = 'part.listDeviceTypes';  // will use templates/main.php
@@ -131,6 +159,7 @@ class SensorLoggerController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @return TemplateResponse
 	 */
 	public function deviceGroupList() {
 		$templateName = 'part.listDeviceGroups';  // will use templates/main.php
@@ -141,6 +170,7 @@ class SensorLoggerController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @return TemplateResponse
 	 */
 	public function dataTypeList() {
 		$templateName = 'part.listDataTypes';  // will use templates/main.php
@@ -149,6 +179,10 @@ class SensorLoggerController extends Controller {
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
 
+	/**
+	 * @param $id
+	 * @return mixed
+	 */
 	protected function getDevice($id) {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -160,6 +194,9 @@ class SensorLoggerController extends Controller {
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getDevices() {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -173,6 +210,9 @@ class SensorLoggerController extends Controller {
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getDeviceTypes() {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -186,6 +226,9 @@ class SensorLoggerController extends Controller {
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getDataTypes() {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -199,6 +242,9 @@ class SensorLoggerController extends Controller {
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getDeviceGroups() {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -212,6 +258,9 @@ class SensorLoggerController extends Controller {
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getLogs() {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -220,11 +269,16 @@ class SensorLoggerController extends Controller {
 		$query->setMaxResults(100);
 		$result = $query->execute();
 
+
 		$data = $result->fetchAll();
 
 		return $data;
 	}
-	
+
+	/**
+	 * @param $uuId
+	 * @return array
+	 */
 	protected function getLogsByUuId($uuId) {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -239,6 +293,9 @@ class SensorLoggerController extends Controller {
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function getLastLog() {
 		$query = $this->connection->getQueryBuilder();
 		$query->select('*')
@@ -252,20 +309,21 @@ class SensorLoggerController extends Controller {
 		return $data;
 	}
 
+	/**
+	 * @param $key
+	 * @param $userId
+	 * @return string
+	 */
 	public function getUserValue($key, $userId) {
 		return $this->config->getUserValue($userId, $this->appName, $key);
 	}
+
+	/**
+	 * @param $key
+	 * @param $userId
+	 * @param $value
+	 */
 	public function setUserValue($key, $userId, $value) {
 		$this->config->setUserValue($userId, $this->appName, $key, $value);
 	}
-
-	protected function generateApiKey($strong = true) {
-		return bin2hex(openssl_random_pseudo_bytes(64,$strong));
-	}
-
-	protected function generateSharedSecret($strong = true) {
-		return bin2hex(openssl_random_pseudo_bytes(32,$strong));
-	}
-
-
 }

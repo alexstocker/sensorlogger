@@ -96,12 +96,19 @@
 		});
 
 		$('body').on('click','.deviceChart',function (e) {
-			console.log(this);
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/deviceChart/'+id);
 			$.get(url).success(function (response) {
 				$('#app-content-wrapper').empty().append(response);
 				loadChart();
+			});
+		});
+
+		$('body').on('click','.deviceListData',function (e) {
+			var id = $(this).data('id');
+			var url = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+id);
+			$.post(url).success(function (response) {
+				$('#app-content-wrapper').empty().append(response);
 			});
 		});
 		
