@@ -2,7 +2,6 @@
 script('sensorlogger', array('script','jquery.jqplot.min','plugins/jqplot.dateAxisRenderer.min','plugins/jqplot.canvasTextRenderer.min','plugins/jqplot.canvasAxisTickRenderer.min'));
 style('sensorlogger', 'style');
 ?>
-
 <div id="app">
 	<div id="app-navigation">
 		<?php print_unescaped($this->inc('part.navigation')); ?>

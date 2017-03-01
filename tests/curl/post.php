@@ -1,14 +1,14 @@
 <?php
 $url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/createlog/';
 
-$array = array("deviceId" => "9999-1111-2222-333",
+$array = array("deviceId" => "f7645058-fe8c-11e6-bc64-92361f002671",
 				"temperature" => "18.08",
 				"humidity" => 23.89,
 				"date" => date('Y-m-d H:i:s'));
 $data_json = json_encode($array);
 
 $username = 'admin';
-$token = 'BNZSS-JZDCS-BHJJD-OPCDU';
+$token = 'RQBDK-NOSIQ-XENJE-XAKRJ';
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);

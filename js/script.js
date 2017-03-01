@@ -126,7 +126,6 @@
 				line1.push([item.created_at, parseFloat(item.temperature)])
 				line2.push([item.created_at, parseFloat(item.humidity)])
 			});
-			console.log(line1);
 			var plot1 = $.jqplot("chart",[line1,line2],{
 				//title: 'GRAPT TITLE',
 				axes: {

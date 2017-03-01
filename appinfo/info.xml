@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <info>
-    <id>SensorLogger</id>
-    <name>SensorLogger</name>
+    <id>sensorlogger</id>
+    <name>Sensorlogger</name>
     <description>SensorLogger for ownCloud</description>
     <licence>AGPL</licence>
     <author>Alexander Stocker</author>

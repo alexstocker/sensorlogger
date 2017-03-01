@@ -1,5 +1,3 @@
-<div id="app-content">
-	<div id="app-content-wrapper">
 <table id="sensorLogsTable" style="width: 100%;">
 	<thead>
 	<th id="id">#</th>
@@ -21,5 +19,3 @@
 	</tbody>
 	<tfoot></tfoot>
 </table>
-		</div>
-	</div>

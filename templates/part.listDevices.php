@@ -1,5 +1,3 @@
-<div id="app-content">
-	<div id="app-content-wrapper">
 <table id="sensorDevicesTable" style="width: 100%;">
 	<thead>
 	<th id="id">#</th>
@@ -17,11 +15,9 @@
 		<td><?php p($device['name']); ?></td>
 		<td><?php p($device['type']); ?></td>
 		<td></td>
-		<td><button class="deviceChart" data-id="<?php p($device['id']); ?>">Chart</button><a href="deviceChart/<?php p($device['id']); ?>">Chart</a> / <a href="#">Data</a></td>
+		<td><button class="deviceChart" data-id="<?php p($device['id']); ?>">Chart</button><button class="deviceListData" data-id="<?php p($device['id']); ?>">Data</button></td>
 	</tr>
 <?php } ?>
 	</tbody>
 	<tfoot></tfoot>
 </table>
-</div>
-</div>
