@@ -2,13 +2,18 @@
 
 namespace OCA\SensorLogger\Controller;
 
-use OC\Core\Command\Background\Ajax;
-use OCA\Tasks\Controller\CollectionsController;
+use OC\Security\CSP\ContentSecurityPolicy;
+use OCA\SensorLogger\DataTypes;
+use OCA\SensorLogger\DeviceTypes;
+use OCA\SensorLogger\SensorDevices;
+use OCA\SensorLogger\SensorGroups;
+use OCA\SensorLogger\SensorLogs;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\Encryption\IEncryptionModule;
 use OCP\IConfig;
+use OCP\IDb;
 use OCP\IDBConnection;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -25,24 +30,39 @@ class SensorLoggerController extends Controller {
 	/** @var IDBConnection */
 	protected $connection;
 
-	/** @var IConfig  */
-	protected $config;
-
-	/** @var IURLGenerator  */
-	private $urlGenerator;
-
 	public function __construct($AppName,
 								IRequest $request,
 								IDBConnection $connection,
-								IConfig $config,
-								IURLGenerator $urlGenerator,
-								$UserId){
+								IDb $db,
+								$UserId) {
 		parent::__construct($AppName, $request);
-		$this->userId = $UserId;
 		$this->connection = $connection;
-		$this->config = $config;
-		$this->urlGenerator = $urlGenerator;
+		$this->userId = $UserId;
 	}
+
+
+/*
+ 	private $db;
+	protected $l10n;
+	protected $config;
+	private $urlGenerator;
+		public function __construct($AppName,
+									IRequest $request,
+									IDBConnection $connection,
+									IDb $db,
+									IConfig $config,
+									IURLGenerator $urlGenerator,
+									IL10N $l10n,
+									$UserId){
+			parent::__construct($AppName, $request);
+			$this->userId = $UserId;
+			$this->connection = $connection;
+			$this->config = $config;
+			$this->urlGenerator = $urlGenerator;
+			$this->db = $db;
+			$this->l10n = $l10n;
+		}
+*/
 
 	/**
 	 * @NoAdminRequired
@@ -50,14 +70,22 @@ class SensorLoggerController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function index() {
-		$templateName = 'main';  // will use templates/main.php
-		$logs = $this->getLastLog();
+		$templateName = 'main';
+		$logs = SensorLogs::getLastLog($this->userId, $this->connection);
+		
 		$parameters = array(
 				'config' => array(),
 				'part' => 'dashboard',
 				'logs' => $logs
 			);
-		return new TemplateResponse($this->appName, $templateName, $parameters);
+		
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters);
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
 	}
 
 	/**
@@ -66,13 +94,13 @@ class SensorLoggerController extends Controller {
 	 */
 	function showList() {
 		$templateName = 'part.list';  // will use templates/main.php
-		$logs = $this->getLogs();
+		$logs = SensorLogs::getLogs($this->userId,$this->connection);
 		$parameters = array('part' => 'list','logs' => $logs);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
 
 	/**
-	 * @param $id
+	 * @param int $id
 	 * @return TemplateResponse
 	 */
 	public function showDeviceData($id) {
@@ -83,41 +111,32 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
-	 * @param $id
-	 * @return array
-	 */
-	protected function getDeviceData($id) {
-		$device = $this->getDevice($id);
-		$logs = $this->getLogsByUuId($device['uuid']);
-		return $logs;
-	}
-
-	/**
 	 * @NoAdminRequired
 	 * @return TemplateResponse
 	 */
 	public function showDashboard() {
-		$templateName = 'part.dashboard';  // will use templates/main.php
-		$logs = $this->getLastLog();
+		$templateName = 'part.dashboard';
+		$logs = SensorLogs::getLastLog($this->userId, $this->connection);
 		$parameters = array('part' => 'dashboard','logs' => $logs);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
 
 	/**
+	 * @param int $id
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
 	public function deviceChart($id){
-		$templateName = 'part.chart';  // will use templates/main.php
-		$device = $this->getDevice($id);
+		$templateName = 'part.chart';
+		$device = SensorDevices::getDevice($this->userId,$id,$this->connection);
 		$parameters = array('part' => 'chart','device' => $device);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
 
 	/**
 	 * @NoAdminRequired
-	 * @param $id
+	 * @param int $id
 	 * @return string
 	 */
 	public function chartData($id) {
@@ -125,23 +144,11 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
-	 * @param $id
-	 * @return string
-	 */
-	protected function getChartData($id) {
-		$device = $this->getDevice($id);
-		
-		$logs = $this->getLogsByUuId($device['uuid']);
-
-		return json_encode($logs);
-	}
-
-	/**
 	 * @NoAdminRequired
 	 */
 	public function deviceList() {
-		$templateName = 'part.listDevices';  // will use templates/main.php
-		$devices = $this->getDevices();
+		$templateName = 'part.listDevices';
+		$devices = SensorDevices::getDevices($this->userId,$this->connection);
 		$parameters = array('part' => 'list','devices' => $devices);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
@@ -151,8 +158,8 @@ class SensorLoggerController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function deviceTypeList() {
-		$templateName = 'part.listDeviceTypes';  // will use templates/main.php
-		$deviceTypes = $this->getDeviceTypes();
+		$templateName = 'part.listDeviceTypes';
+		$deviceTypes = DeviceTypes::getDeviceTypes($this->userId,$this->connection);
 		$parameters = array('part' => 'listDeviceTypes','deviceTypes' => $deviceTypes);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
@@ -162,8 +169,8 @@ class SensorLoggerController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function deviceGroupList() {
-		$templateName = 'part.listDeviceGroups';  // will use templates/main.php
-		$deviceGroups = $this->getDeviceGroups();
+		$templateName = 'part.listDeviceGroups';
+		$deviceGroups = SensorGroups::getDeviceGroups($this->userId,$this->connection);
 		$parameters = array('part' => 'listDeviceGroups','deviceGroups' => $deviceGroups);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
@@ -173,140 +180,10 @@ class SensorLoggerController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function dataTypeList() {
-		$templateName = 'part.listDataTypes';  // will use templates/main.php
-		$dataTypes = $this->getDataTypes();
+		$templateName = 'part.listDataTypes';
+		$dataTypes = DataTypes::getDataTypes($this->userId,$this->connection);
 		$parameters = array('part' => 'listDataTypes','dataTypes' => $dataTypes);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
-	}
-
-	/**
-	 * @param $id
-	 * @return mixed
-	 */
-	protected function getDevice($id) {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_devices')
-			->where('id = "'.$id.'" ');
-		$result = $query->execute();
-
-		$data = $result->fetch();
-		return $data;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getDevices() {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_devices')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(100);
-		$result = $query->execute();
-
-		$data = $result->fetchAll();
-
-		return $data;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getDeviceTypes() {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_device_types')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(100);
-		$result = $query->execute();
-
-		$data = $result->fetchAll();
-
-		return $data;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getDataTypes() {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_data_types')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(100);
-		$result = $query->execute();
-
-		$data = $result->fetchAll();
-
-		return $data;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getDeviceGroups() {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_device_groups')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(100);
-		$result = $query->execute();
-
-		$data = $result->fetchAll();
-
-		return $data;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getLogs() {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_logs')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(100);
-		$result = $query->execute();
-
-
-		$data = $result->fetchAll();
-
-		return $data;
-	}
-
-	/**
-	 * @param $uuId
-	 * @return array
-	 */
-	protected function getLogsByUuId($uuId) {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_logs')
-			->where('device_uuid = "'.$uuId.'"')
-			->orderBy('created_at', 'DESC');
-		$query->setMaxResults(1000);
-		$result = $query->execute();
-
-		$data = $result->fetchAll();
-
-		return $data;
-	}
-
-	/**
-	 * @return array
-	 */
-	protected function getLastLog() {
-		$query = $this->connection->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_logs')
-			->orderBy('created_at', 'DESC');
-		$query->setMaxResults(1);
-		$result = $query->execute();
-
-		$data = $result->fetchAll();
-
-		return $data;
 	}
 
 	/**
@@ -325,5 +202,33 @@ class SensorLoggerController extends Controller {
 	 */
 	public function setUserValue($key, $userId, $value) {
 		$this->config->setUserValue($userId, $this->appName, $key, $value);
+	}
+
+	public function returnJSON($array) {
+		try {
+			return new DataResponse($array);
+		} catch (\Exception $ex) {
+			return new DataResponse(array('msg' => 'not found!'), Http::STATUS_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * @param int $id
+	 * @return string
+	 */
+	protected function getChartData($id) {
+		$device = SensorDevices::getDevice($this->userId,$id,$this->connection);
+		$logs = SensorLogs::getLogsByUuId($this->userId,$device['uuid'],$this->connection);
+		return $this->returnJSON($logs);
+	}
+
+	/**
+	 * @param int $id
+	 * @return array
+	 */
+	protected function getDeviceData($id) {
+		$device = SensorDevices::getDevice($this->userId,$id,$this->connection);
+		$logs = SensorLogs::getLogsByUuId($this->userId,$device['uuid'],$this->connection);
+		return $logs;
 	}
 }

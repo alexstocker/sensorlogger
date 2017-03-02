@@ -121,7 +121,7 @@
 			//console.log(data);
 			var line1 = [];
 			var line2 = [];
-			var content = $.parseJSON(data);
+			var content = data;
 			$.each(content, function (index, item) {
 				line1.push([item.created_at, parseFloat(item.temperature)])
 				line2.push([item.created_at, parseFloat(item.humidity)])
