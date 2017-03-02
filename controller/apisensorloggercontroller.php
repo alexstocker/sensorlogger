@@ -20,13 +20,13 @@ class ApiSensorLoggerController extends ApiController {
 
 	protected $config;
 
-	public function __construct($appName,
+	public function __construct($AppName,
 								IRequest $request,
 								IDBConnection $db,
 								IConfig $config,
 								$UserId) {
 		parent::__construct(
-			$appName,
+			$AppName,
 			$request,
 			'PUT, POST, GET, DELETE, PATCH',
 			'Authorization, Content-Type, Accept',

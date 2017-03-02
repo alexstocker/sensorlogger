@@ -1,5 +1,12 @@
 <?php
-script('sensorlogger', array('script','jquery.jqplot.min','plugins/jqplot.dateAxisRenderer.min','plugins/jqplot.canvasTextRenderer.min','plugins/jqplot.canvasAxisTickRenderer.min'));
+script('sensorlogger', array(
+	'script',
+	'jquery.jqplot.min',
+	'plugins/jqplot.dateAxisRenderer.min',
+	'plugins/jqplot.canvasTextRenderer.min',
+	'plugins/jqplot.canvasAxisTickRenderer.min',
+	'plugins/jqplot.highlighter.min'
+));
 style('sensorlogger', 'style');
 ?>
 <div id="app">

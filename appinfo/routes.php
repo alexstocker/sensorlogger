@@ -1,18 +1,6 @@
 <?php
-/**
- * ownCloud - sensorlogger
- *
- * This file is licensed under the Affero General Public License version 3 or
- * later. See the COPYING file.
- *
- * @author ELExG <elexgspot@gmail.com>
- * @copyright ELExG 2017
- */
 
-namespace OCA\SensorLogger\AppInfo;
-
-$application = new Application();
-$application->registerRoutes($this, array(
+return array(
 	'routes' => array(
 		array('name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#showList', 'url' => 'showList', 'verb' => 'POST'),
@@ -43,4 +31,4 @@ $application->registerRoutes($this, array(
 			//'requirements' => array('path' => '.+'),
 		),
 	)
-));
+);

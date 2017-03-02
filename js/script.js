@@ -133,15 +133,32 @@
 						//label:"x axis",
 						renderer:$.jqplot.DateAxisRenderer,
 						tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-						tickOptions:{formatString:'%Y-%m-%d %n %H:%M:%S', angle: -45}
+						tickOptions:{formatString:'%H:%M:%S', angle: -45}
+					},
+					yaxis:{
+						tickOptions:{
+							formatString:'%.2f'
+						}
 					}
+				},
+				highlighter: {
+					show: true,
+					sizeAdjust: 7.5
 				},
 				series: [
 					{
-						markerOptions: {size: 7, style: "x"}
+						yaxis: 'yaxis',
+						tickInterval: 0.5,
+						showMarker:false
+						//markerOptions: {size: 2, style: "x"}
 					},{
-						markerOptions: {style:"circle"}
-					}
+						yaxis: 'y2axis',
+						showMarker:false,
+						tickInterval: 1,
+						//markerOptions: {style:"circle"}
+					},
+					{yaxis: 'yaxis'},
+					{yaxis: 'y2axis'}
 				]
 			});
 		});
