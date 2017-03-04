@@ -80,7 +80,6 @@ class ApiSensorLoggerController extends ApiController {
 	 * @CORS
 	 */
 	public function registerDevice() {
-		//$this->checkRequestParams($this->request->getParams());
 		if(!$this->checkRegisteredDevice($this->request->getParams()) &&
 			$this->checkRegisteredDevice($this->request->getParams()) !== null) {
 
@@ -88,8 +87,6 @@ class ApiSensorLoggerController extends ApiController {
 			if(is_int($lastInsertId)) {
 				$this->checkRequestParams($lastInsertId,$this->request->getParams());
 			}
-			//return $lastInsertId;
-			//return $this->insertDevice($this->request->getParams());
 		} else {
 			return true;
 		}

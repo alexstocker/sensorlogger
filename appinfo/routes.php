@@ -5,6 +5,7 @@ return array(
 		array('name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#showList', 'url' => 'showList', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#showDeviceData', 'url' => 'showDeviceData/{id}', 'verb' => 'POST'),
+		array('name' => 'sensorlogger#showDeviceDetails', 'url' => 'showDeviceDetails/{id}', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#showDashboard', 'url' => 'showDashboard', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deviceList', 'url' => 'deviceList', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deviceTypeList', 'url' => 'deviceTypeList', 'verb' => 'POST'),
@@ -26,7 +27,7 @@ return array(
 		),
 		array(
 			'name' => 'apisensorlogger#registerDevice',
-			'url' => '/api/v1/registerDevice/',
+			'url' => '/api/v1/registerdevice/',
 			'verb' => 'POST',
 			//'requirements' => array('path' => '.+'),
 		),

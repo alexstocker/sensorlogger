@@ -1,3 +1,58 @@
-#hello {
-	color: red;
+#app-sidebar div.content-wrapper .title {
+	background-color: #f5f5f5;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.24);
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 24px;
+	min-height: 24px;
+	padding: 16px 55px 13px;
+	text-shadow: 0 1px 0 white;
+	word-wrap: break-word;
+}
+
+#app-sidebar div.content-wrapper .body {
+	bottom: 65px;
+	left: 0;
+	overflow: auto;
+	right: 0;
+	top: 55px;
+}
+
+#app-sidebar div.content-wrapper div.footer {
+	border-top: 1px solid #D3D3D3;
+	bottom: 0;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+	height: 65px;
+	left: 0;
+	position: absolute;
+	right: 0;
+}
+
+#app-sidebar div.content-wrapper .body .bodyDetails {
+	border-bottom: 1px dotted;
+	height: 46px;
+	padding: 9px 20px 9px 55px;
+	position: relative;
+	text-shadow: 0 1px 0 white;
+	border-top: none;
+	margin-bottom: 0px;
+}
+
+#content .icon {
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+#app-sidebar div.content-wrapper div.footer .icon {
+	position: absolute;
+	bottom: 7px;
+	left: 8px;
+}
+
+#app-sidebar div.content-wrapper div.footer .icon-close .icon {
+	left: auto;
+	right: 8px;
 }

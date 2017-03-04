@@ -111,6 +111,43 @@
 				$('#app-content-wrapper').empty().append(response);
 			});
 		});
+
+		$('body').on('click','.icon-close',function(e) {
+			var sidebar = $('#app-sidebar');
+			sidebar.hide();
+		});
+
+		$('body').on('click','.deviceEdit',function(e) {
+			var sidebar = $('#app-sidebar');
+			var id = $(this).data('id');
+			var url = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+id);
+			$.post(url).success(function (response) {
+				console.log(response);
+				sidebar.find('.title').empty();
+				sidebar.find('.title').append(response.name);
+
+				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
+				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+				sidebar.find('.bodyDetails').remove();
+
+				var group = bodyDetailsContainer.clone().append('Group: '+response.group);
+				var groupParent = bodyDetailsContainer.clone().append('Parent group: '+response.groupParent);
+				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.uuid);
+				var type = bodyDetailsContainer.clone().append('Type: '+response.type);
+
+				sidebar.find('.body').append(group);
+				sidebar.find('.body').append(groupParent);
+				sidebar.find('.body').append(uuid);
+				sidebar.find('.body').append(type);
+				//sidebar.find('.body').append(bodyDetailsContainer.append(groupParent));
+				//$('#app-content-wrapper').empty().append(response);
+				//var sidebar = '<diapp-sidebar'
+				//if(!sidebar.is(':visible')) {
+					sidebar.toggle();
+				//}
+
+			});
+		});
 		
 	});
 

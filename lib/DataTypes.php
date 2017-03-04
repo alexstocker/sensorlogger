@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: elex
- * Date: 02.03.17
- * Time: 20:34
- */
 
 namespace OCA\SensorLogger;
 

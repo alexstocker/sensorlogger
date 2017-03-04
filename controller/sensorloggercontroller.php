@@ -38,31 +38,8 @@ class SensorLoggerController extends Controller {
 		parent::__construct($AppName, $request);
 		$this->connection = $connection;
 		$this->userId = $UserId;
+		$this->db = $db;
 	}
-
-
-/*
- 	private $db;
-	protected $l10n;
-	protected $config;
-	private $urlGenerator;
-		public function __construct($AppName,
-									IRequest $request,
-									IDBConnection $connection,
-									IDb $db,
-									IConfig $config,
-									IURLGenerator $urlGenerator,
-									IL10N $l10n,
-									$UserId){
-			parent::__construct($AppName, $request);
-			$this->userId = $UserId;
-			$this->connection = $connection;
-			$this->config = $config;
-			$this->urlGenerator = $urlGenerator;
-			$this->db = $db;
-			$this->l10n = $l10n;
-		}
-*/
 
 	/**
 	 * @NoAdminRequired
@@ -108,6 +85,15 @@ class SensorLoggerController extends Controller {
 		$logs = $this->getDeviceData($id);
 		$parameters = array('part' => 'list','logs' => $logs);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
+	}
+
+	/**
+	 * @param int $id
+	 * @return DataResponse
+	 */
+	public function showDeviceDetails($id) {
+		$deviceDetails = SensorDevices::getDeviceDetails($this->userId,$id,$this->connection);
+		return $this->returnJSON($deviceDetails);
 	}
 
 	/**
@@ -204,6 +190,10 @@ class SensorLoggerController extends Controller {
 		$this->config->setUserValue($userId, $this->appName, $key, $value);
 	}
 
+	/**
+	 * @param array $array
+	 * @return DataResponse
+	 */
 	public function returnJSON($array) {
 		try {
 			return new DataResponse($array);

@@ -1,0 +1,25 @@
+{
+  "_route":"sensorlogger.apisensorlogger.registerDevice",
+  "deviceId":"231d2508-786d-400d-bc35-0273a38f664d",
+  "deviceName":"Multi data sensor",
+  "deviceType": "Indoor",
+  "deviceGroup": "Wohnzimmer",
+  "deviceParentGroup": "Wohnung Wien",
+  "deviceDataTypes": [
+    {
+      "type": "temperature",
+      "description": "Temperature",
+      "unit": "°C"
+    },
+    {
+      "type": "humidity",
+      "description": "Humidity",
+      "unit": "% r.F."
+    },
+    {
+      "type": "co2",
+      "description": "Carbon dioxide",
+      "unit": "ppm"
+    }
+  ]
+}
