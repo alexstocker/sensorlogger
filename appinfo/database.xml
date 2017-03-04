@@ -66,6 +66,13 @@
                 <length>20</length>
             </field>
             <field>
+                <name>user_id</name>
+                <type>text</type>
+                <default></default>
+                <notnull>false</notnull>
+                <length>64</length>
+            </field>
+            <field>
                 <name>device_typ_name</name>
                 <type>text</type>
                 <default></default>
@@ -136,26 +143,45 @@
                 <length>255</length>
             </field>
             <field>
-                <name>type</name>
-                <type>text</type>
+                <name>type_id</name>
+                <type>integer</type>
                 <default></default>
                 <notnull>true</notnull>
-                <length>255</length>
+                <length>20</length>
             </field>
             <field>
-                <name>group</name>
-                <type>text</type>
+                <name>group_id</name>
+                <type>integer</type>
                 <default></default>
                 <notnull>true</notnull>
-                <length>255</length>
+                <length>20</length>
             </field>
             <field>
-                <name>group_parent</name>
-                <type>text</type>
+                <name>group_parent_id</name>
+                <type>integer</type>
                 <default></default>
                 <notnull>true</notnull>
-                <length>255</length>
+                <length>20</length>
             </field>
+
+            <index>
+                <name>type_id_idx</name>
+                <field>
+                    <name>type_id</name>
+                </field>
+            </index>
+            <index>
+                <name>group_id_idx</name>
+                <field>
+                    <name>group_id</name>
+                </field>
+            </index>
+            <index>
+                <name>group_parent_id_idx</name>
+                <field>
+                    <name>group_parent_id</name>
+                </field>
+            </index>
         </declaration>
     </table>
 

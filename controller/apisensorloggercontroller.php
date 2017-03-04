@@ -168,7 +168,7 @@ class ApiSensorLoggerController extends ApiController {
 			$deviceTypeId = $this->insertDeviceType($params);
 			if(is_int($deviceTypeId)) {
 				try {
-					SensorDevices::updateDevice($deviceId,'type',(string)$deviceTypeId,$this->db);
+					SensorDevices::updateDevice($deviceId,'type_id',(string)$deviceTypeId,$this->db);
 				} catch (\Exception $e) {}
 			}
 		}
@@ -176,7 +176,7 @@ class ApiSensorLoggerController extends ApiController {
 			$deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
 			if(is_int($deviceGroupId)) {
 				try {
-				SensorDevices::updateDevice($deviceId,'group',$deviceGroupId,$this->db);
+				SensorDevices::updateDevice($deviceId,'group_id',$deviceGroupId,$this->db);
 				} catch (\Exception $e) {}
 			}
 		}
@@ -184,7 +184,7 @@ class ApiSensorLoggerController extends ApiController {
 			$deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
 			if(is_int($deviceGroupParentId)) {
 				try {
-					SensorDevices::updateDevice($deviceId, 'group_parent', $deviceGroupParentId, $this->db);
+					SensorDevices::updateDevice($deviceId, 'group_parent_id', $deviceGroupParentId, $this->db);
 				} catch (\Exception $e) {
 				}
 			}
@@ -242,7 +242,7 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return int|string
 	 */
 	protected function insertDevice($array) {
-		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type`,`user_id`) VALUES(?,?,?,?)';
+		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
 		$stmt = $this->db->prepare($sql);
 
 		if(isset($array['deviceId'])) {

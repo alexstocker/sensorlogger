@@ -89,7 +89,7 @@ class SensorDevices extends Mapper {
 	}
 
 	public static function insertDevice($userId, $array, IDBConnection $db) {
-		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type`,`user_id`) VALUES(?,?,?,?)';
+		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
 		$stmt = $db->prepare($sql);
 
 		if(isset($array['deviceId'])) {

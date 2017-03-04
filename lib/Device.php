@@ -8,9 +8,9 @@ class Device extends Entity implements \JsonSerializable {
 	protected $uuid;
 	protected $userId;
 	protected $name;
-	protected $type;
-	protected $group;
-	protected $groupParent;
+	protected $typeId;
+	protected $groupId;
+	protected $groupParentId;
 	protected $typeName;
 	protected $groupName;
 	protected $groupParentName;
@@ -20,8 +20,8 @@ class Device extends Entity implements \JsonSerializable {
 	 * Many Devices have Many Groups.
 	 * @ManyToMany(targetEntity="Group")
 	 * @JoinTable(name="sensorlogger_device_groups",
-	 *      joinColumns={@JoinColumn(name="group", referencedColumnName="id")},
-	 *      inverseJoinColumns={@JoinColumn(name="id", referencedColumnName="group", unique=false)}
+	 *      joinColumns={@JoinColumn(name="group_id", referencedColumnName="id")},
+	 *      inverseJoinColumns={@JoinColumn(name="id", referencedColumnName="group_id", unique=false)}
 	 *      )
 	 */
 	//protected $group;
@@ -29,11 +29,11 @@ class Device extends Entity implements \JsonSerializable {
 	public function __construct()
 	{
 		$this->addType('uuid', 'string');
-		$this->addType('userId', 'integer');
+		$this->addType('userId', 'string');
 		$this->addType('name', 'string');
-		$this->addType('type', 'integer');
-		$this->addType('group', 'integer');
-		$this->addType('groupParent', 'integer');
+		$this->addType('typeId', 'integer');
+		$this->addType('groupId', 'integer');
+		$this->addType('groupParentId', 'integer');
 		$this->addType('typeName', 'string');
 		$this->addType('groupName', 'string');
 		$this->addType('groupParentName', 'string');
@@ -45,9 +45,9 @@ class Device extends Entity implements \JsonSerializable {
 			'id' => $this->id,
 			'uuid' => $this->uuid,
 			'name' => $this->name,
-			'type' => $this->type,
-			'group' => $this->group,
-			'groupParent' => $this->groupParent,
+			'type' => $this->typeId,
+			'group' => $this->groupId,
+			'groupParent' => $this->groupParentId,
 			'typeName' => $this->typeName,
 			'groupName' => $this->groupName,
 			'groupParentName' => $this->groupParentName
