@@ -8,3 +8,6 @@
 
 ![SensorLogger Devices]
 (http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_devices.png)
+
+![SensorLogger Device details]
+(http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails.png)
