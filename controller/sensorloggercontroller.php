@@ -2,6 +2,7 @@
 
 namespace OCA\SensorLogger\Controller;
 
+use OC\AppFramework\Http\Request;
 use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\DeviceTypes;
@@ -48,12 +49,12 @@ class SensorLoggerController extends Controller {
 	 */
 	public function index() {
 		$templateName = 'main';
-		$logs = SensorLogs::getLastLog($this->userId, $this->connection);
+		$log = SensorLogs::getLastLog($this->userId, $this->connection);
 		
 		$parameters = array(
 				'config' => array(),
 				'part' => 'dashboard',
-				'logs' => $logs
+				'log' => $log
 			);
 		
 		$policy = new ContentSecurityPolicy();
@@ -96,14 +97,20 @@ class SensorLoggerController extends Controller {
 		return $this->returnJSON($deviceDetails);
 	}
 
+	public function updateDevice($id) {
+		$field = $this->request->getParam('name');
+		$value = $this->request->getParam('value');
+		SensorDevices::updateDevice($id,$field,$value,$this->connection);
+	}
+
 	/**
 	 * @NoAdminRequired
 	 * @return TemplateResponse
 	 */
 	public function showDashboard() {
 		$templateName = 'part.dashboard';
-		$logs = SensorLogs::getLastLog($this->userId, $this->connection);
-		$parameters = array('part' => 'dashboard','logs' => $logs);
+		$log = SensorLogs::getLastLog($this->userId, $this->connection);
+		$parameters = array('part' => 'dashboard','log' => $log);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
 
@@ -191,7 +198,7 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
-	 * @param array $array
+	 * @param $array
 	 * @return DataResponse
 	 */
 	public function returnJSON($array) {

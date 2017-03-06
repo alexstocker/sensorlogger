@@ -31,18 +31,31 @@ class SensorDevices extends Mapper {
 	/**
 	 * @param $userId
 	 * @param IDBConnection $db
-	 * @return array
+	 * @return Device[]
 	 */
 	public static function getDevices($userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
-			->from('sensorlogger_devices')
-			->where('user_id = "'.$userId.'"')
-			->orderBy('id', 'DESC');
+			->selectAlias('sd.user_id','user_id')
+			->selectAlias('sd.id','id')
+			->selectAlias('sdg0.device_group_name','device_group_name')
+			->selectAlias('sdg1.device_group_name','device_group_parent_name')
+			->from('sensorlogger_devices','sd')
+			->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
+			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
+			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
+			->where('sd.user_id = "'.$userId.'"')
+			->orderBy('sd.id', 'DESC');
 		$query->setMaxResults(100);
 		$result = $query->execute();
 
-		$data = $result->fetchAll();
+		$rows = $result->fetchAll();
+
+		$data = [];
+		foreach($rows as $row) {
+			$data[] = Device::fromRow($row);
+		}
+
 		return $data;
 	}
 
@@ -64,13 +77,18 @@ class SensorDevices extends Mapper {
 
 		return $data;
 	}
-	
+
 	public static function getDeviceDetails($userId, $id, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
-			->from('sensorlogger_devices')
-			->where('id = "'.$id.'" ')
-			->andWhere('user_id = "'.$userId.'"');
+			->selectAlias('sdg0.device_group_name','device_group_name')
+			->selectAlias('sdg1.device_group_name','device_group_parent_name')
+			->from('sensorlogger_devices','sd')
+			->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
+			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
+			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
+			->where('sd.id = "'.$id.'" ')
+			->andWhere('sd.user_id = "'.$userId.'"');
 		$result = $query->execute();
 		$data = $result->fetch();
 		$device = Device::fromRow($data);
@@ -82,7 +100,6 @@ class SensorDevices extends Mapper {
 		$query->update('sensorlogger_devices')
 			->set($field,$query->expr()->literal($value))
 			->where('id = "'.$id.'" ');
-
 		if($query->execute()) {
 			return true;
 		}

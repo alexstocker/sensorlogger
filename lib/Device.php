@@ -11,35 +11,22 @@ class Device extends Entity implements \JsonSerializable {
 	protected $typeId;
 	protected $groupId;
 	protected $groupParentId;
-	protected $typeName;
-	protected $groupName;
-	protected $groupParentName;
+	protected $deviceTypeName;
+	protected $deviceGroupName;
+	protected $deviceGroupParentName;
 
-
-	/**
-	 * Many Devices have Many Groups.
-	 * @ManyToMany(targetEntity="Group")
-	 * @JoinTable(name="sensorlogger_device_groups",
-	 *      joinColumns={@JoinColumn(name="group_id", referencedColumnName="id")},
-	 *      inverseJoinColumns={@JoinColumn(name="id", referencedColumnName="group_id", unique=false)}
-	 *      )
-	 */
-	//protected $group;
-
-	public function __construct()
-	{
+	public function __construct() {
 		$this->addType('uuid', 'string');
 		$this->addType('userId', 'string');
 		$this->addType('name', 'string');
 		$this->addType('typeId', 'integer');
 		$this->addType('groupId', 'integer');
 		$this->addType('groupParentId', 'integer');
-		$this->addType('typeName', 'string');
-		$this->addType('groupName', 'string');
-		$this->addType('groupParentName', 'string');
-		//$this->group = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->addType('deviceTypeName', 'string');
+		$this->addType('deviceGroupName', 'string');
+		$this->addType('deviceGroupParentName', 'string');
 	}
-
+	
 	public function jsonSerialize() {
 		return [
 			'id' => $this->id,
@@ -48,19 +35,9 @@ class Device extends Entity implements \JsonSerializable {
 			'type' => $this->typeId,
 			'group' => $this->groupId,
 			'groupParent' => $this->groupParentId,
-			'typeName' => $this->typeName,
-			'groupName' => $this->groupName,
-			'groupParentName' => $this->groupParentName
+			'deviceTypeName' => $this->deviceTypeName,
+			'deviceGroupName' => $this->deviceGroupName,
+			'deviceGroupParentName' => $this->deviceGroupParentName
 		];
 	}
-}
-
-/** @Entity */
-class SomeEntity extends Entity {
-
-}
-
-/** @Entity */
-class SomeOtherEntity {
-
 }

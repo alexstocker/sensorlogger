@@ -1,13 +1,17 @@
 <?php
 script('sensorlogger', array(
 	'script',
+	'jquery.poshytip.min',
+	'jquery-editable-poshytip.min',
 	'jquery.jqplot.min',
 	'plugins/jqplot.dateAxisRenderer.min',
 	'plugins/jqplot.canvasTextRenderer.min',
 	'plugins/jqplot.canvasAxisTickRenderer.min',
 	'plugins/jqplot.highlighter.min'
 ));
+
 style('sensorlogger', 'style');
+style('sensorlogger', 'jquery-editable');
 ?>
 <div id="app">
 	<div id="app-navigation">
@@ -20,12 +24,13 @@ style('sensorlogger', 'style');
 			<?php print_unescaped($this->inc('part.dashboard')); ?>
 		</div>
 	</div>
-	<div id="app-sidebar" ng-class="" style="display: none;">
+	<div id="app-sidebar" data-type="" data-id="" ng-class="" style="display: none;">
 		<div class="content-wrapper">
 			<div ng-controller="DetailsController" ng-click="" class="handler ng-scope">
 				<div ng-show="" ng-class="" class="disabled">
 					<div class="title" ng-class="{'editing':route.parameter=='name'}">
-					</div>
+						<span class="handler editable"></span>
+						</div>
 					<div class="body" watch-top="" ng-style="{top:divTop}" style="top: 30px;">
 						<div class="tpl_bodyDetails"></div>
 					</div>

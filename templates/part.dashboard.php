@@ -1,5 +1,5 @@
-<?php foreach($_['logs'] as $log){ ?>
-<h1><?php p($log['temperature']); ?>°C</h1>
-<h4><?php p($log['humidity']); ?>% r.F.</h4>
-<h6><?php p($log['created_at']); ?> UTC</h6>
-<?php } ?>
+<div class="section">
+	<h2><?php p($_['log']['temperature']); ?>°C</h2>
+	<h3><?php p($_['log']['humidity']); ?>% r.F.</h3>
+	<h3><?php p($_['log']['created_at']); ?> UTC</h3>
+</div>

@@ -117,38 +117,110 @@
 			sidebar.hide();
 		});
 
+		var editDetailOld = function(elem) {
+			var editable = $(elem).find('.editable');
+			var elemData= editable.data();
+			$(editable).each( function () {
+				$(this).editable('click',function(e) {
+					console.log(e.value);
+					if(e.value.length != 0) {
+						var url = OC.generateUrl('/apps/sensorlogger/updateDevice/'+elemData.id);
+						$.post(url, {'field':elemData.field,'value':e.value} );
+					}
+				});
+			});
+		};
+
+		var editDetail = function(elem) {
+			console.log(elem);
+
+		};
+
 		$('body').on('click','.deviceEdit',function(e) {
 			var sidebar = $('#app-sidebar');
+
+			var target = $(e.target);
+			if(e.target.nodeName != 'TD') {
+				return;
+			}
+
+			if(sidebar.is(':visible')) {
+				sidebar.hide();
+				return;
+			}
+
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+id);
 			$.post(url).success(function (response) {
-				console.log(response);
+
+				$.fn.editable.defaults.mode = 'inline';
+
 				sidebar.find('.title').empty();
-				sidebar.find('.title').append(response.name);
+				//sidebar.find('.title span.handler').append(response.name);
+				//sidebar.find('.title span.handler').attr('data-field','name').attr('data-id',id);
+
+				var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+id);
+
+				var title = $('<a/>',{
+					'id':'name',
+					'href': '#',
+					'data-type': 'text',
+					'data-field': 'name',
+					'data-pk': id,
+					'data-url': updateUrl,
+					'data-title': 'response.name',
+					'text': response.name
+				}).editable();
+
+				sidebar.find('.title').append(title);
+
+				//$('#'+response.name).editable();
 
 				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
 				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 				sidebar.find('.bodyDetails').remove();
 
-				var group = bodyDetailsContainer.clone().append('Group: '+response.group);
-				var groupParent = bodyDetailsContainer.clone().append('Parent group: '+response.groupParent);
 				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.uuid);
-				var type = bodyDetailsContainer.clone().append('Type: '+response.type);
+				var group = bodyDetailsContainer.clone().append('Group: '+response.deviceGroupName);
+				var groupParent = bodyDetailsContainer.clone().append('Parent group: '+response.deviceGroupParentName);
+				var type = bodyDetailsContainer.clone().append('Type: '+response.deviceTypeName);
 
+				sidebar.find('.body').append(uuid);
 				sidebar.find('.body').append(group);
 				sidebar.find('.body').append(groupParent);
-				sidebar.find('.body').append(uuid);
 				sidebar.find('.body').append(type);
-				//sidebar.find('.body').append(bodyDetailsContainer.append(groupParent));
-				//$('#app-content-wrapper').empty().append(response);
-				//var sidebar = '<diapp-sidebar'
-				//if(!sidebar.is(':visible')) {
-					sidebar.toggle();
-				//}
 
+				editDetail(sidebar);
+				sidebar.show();
 			});
 		});
-		
+
+	});
+
+	$(document).ready(function() {
+		//toggle `popup` / `inline` mode
+		$.fn.editable.defaults.mode = 'inline';
+
+		//make username editable
+		$('#username').editable();
+
+		//make status editable
+		$('#status').editable({
+			type: 'select',
+			title: 'Select status',
+			placement: 'right',
+			value: 2,
+			source: [
+				{value: 1, text: 'status 1'},
+				{value: 2, text: 'status 2'},
+				{value: 3, text: 'status 3'}
+			]
+			/*
+			 //uncomment these lines to send data on server
+			 ,pk: 1
+			 ,url: '/post'
+			 */
+		});
 	});
 
 	var loadChart = function() {

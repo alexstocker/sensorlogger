@@ -18,7 +18,7 @@ class DeviceTypes {
 	 */
 	public static function getDeviceTypes($userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->select(array('id','device_typ_name'))
+		$query->select(array('id','device_type_name'))
 			->from('sensorlogger_device_types')
 			->where('user_id = "'.$userId.'"')
 			->orderBy('id', 'DESC');

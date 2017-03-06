@@ -56,3 +56,22 @@
 	left: auto;
 	right: 8px;
 }
+
+table th, table td {
+	border-bottom: 1px solid #eee;
+	text-align: left;
+	font-weight: normal;
+}
+
+.th-header {
+	display: block;
+	padding: 15px;
+	height: 50px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	vertical-align: middle;
+}
+
+.td-data {
+	padding: 15px;
+}

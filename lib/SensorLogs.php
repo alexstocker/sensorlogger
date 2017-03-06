@@ -30,7 +30,7 @@ class SensorLogs {
 		$query->setMaxResults(1);
 		$result = $query->execute();
 
-		$data = $result->fetchAll();
+		$data = $result->fetch();
 
 		return $data;
 	}

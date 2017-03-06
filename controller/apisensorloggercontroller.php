@@ -98,7 +98,7 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return int
 	 */
 	protected function insertDeviceType($array) {
-		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_types` (`user_id`,`device_typ_name`) VALUES(?,?)';
+		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_types` (`user_id`,`device_type_name`) VALUES(?,?)';
 		$stmt = $this->db->prepare($sql);
 		$stmt->bindParam(1, $this->userId);
 		$stmt->bindParam(2, $array['deviceType']);
