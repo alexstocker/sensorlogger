@@ -29,4 +29,15 @@ class DeviceTypes {
 
 		return $data;
 	}
+
+	public static function insertDeviceType($userId, $deviceTypeName, IDBConnection $db) {
+		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_types` (`user_id`,`device_type_name`) VALUES(?,?)';
+		$stmt = $db->prepare($sql);
+		$stmt->bindParam(1, $userId);
+		$stmt->bindParam(2, $deviceTypeName);
+		if($stmt->execute()){
+			return (int)$db->lastInsertId();
+		}
+		return false;
+	}
 }

@@ -132,7 +132,7 @@
 		};
 
 		var editDetail = function(elem) {
-			console.log(elem);
+			//console.log(elem);
 
 		};
 
@@ -160,6 +160,8 @@
 				//sidebar.find('.title span.handler').attr('data-field','name').attr('data-id',id);
 
 				var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+id);
+				var createDeviceTypeUrl = OC.generateUrl('/apps/sensorlogger/createDeviceType');
+				var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
 
 				var title = $('<a/>',{
 					'id':'name',
@@ -179,7 +181,9 @@
 				for (group in response.groups) {
 					groupSource.push({
 						value : response.groups[group].id,
-						text: response.groups[group].device_group_name}
+						text: response.groups[group].device_group_name,
+						id : response.types[group].id
+					}
 					);
 				}
 
@@ -187,8 +191,10 @@
 
 				for (type in response.types) {
 					typeSource.push({
-						value : response.types[type].id,
-						text: response.types[type].device_type_name}
+						value: response.types[type].id,
+						text: response.types[type].device_type_name,
+						id : response.types[type].id
+					}
 					);
 
 				}
@@ -196,43 +202,89 @@
 				var groupSelect = $('<a/>',{
 					'id':'group_id',
 					'href': '#',
-					'data-type': 'select',
+					'data-type': 'select2',
 					'data-field': 'group',
 					'data-pk': id,
 					'data-url': updateUrl,
 					'data-title': response.deviceGroupName
 				}).editable({
 					value: response.deviceDetails.group,
-					source: groupSource
+					source: groupSource,
+					select2: {
+						multiple: false,
+						data: groupSource,
+						dropdownAutoWidth: true,
+						initSelection: function(element, callback) {
+							callback({ 'id': response.deviceDetails.group, 'text': response.deviceDetails.deviceGroupName })
+						},
+						createSearchChoice: function(term, data) {
+							if ($(data).filter(
+									function() {
+										return this.text.localeCompare(term)===0;
+									}).length===0) {
+								return {id:'create_'+term, text:term};
+							}
+						}
+					}
 				});
 
 				var groupParentSelect = $('<a/>',{
 					'id':'group_parent_id',
 					'href': '#',
-					'data-type': 'select',
+					'data-type': 'select2',
 					'data-field': 'group',
 					'data-pk': id,
 					'data-url': updateUrl,
 					'data-title': response.deviceGroupParentName
 				}).editable({
 					value: response.deviceDetails.groupParent,
-					source: groupSource
+					source: groupSource,
+					select2: {
+						multiple: false,
+						data: groupSource,
+						dropdownAutoWidth: true,
+						initSelection: function(element, callback) {
+							callback({ 'id': response.deviceDetails.groupParent, 'text': response.deviceDetails.deviceGroupParentName })
+						},
+						createSearchChoice: function(term, data) {
+							if ($(data).filter(
+									function() {
+										return this.text.localeCompare(term)===0;
+									}).length===0) {
+								return {id:'create_'+term, text:term};
+							}
+						}
+					}
 				});
 
 				var typeSelect = $('<a/>',{
 					'id':'type_id',
 					'href': '#',
-					'data-type': 'select',
+					'data-type': 'select2',
 					'data-field': 'type',
 					'data-pk': id,
 					'data-url': updateUrl,
 					'data-title': response.deviceTypeName
 				}).editable({
 					value: response.deviceDetails.type,
-					source: typeSource
+					source: typeSource,
+					select2: {
+						multiple: false,
+						data: typeSource,
+						dropdownAutoWidth: true,
+						initSelection: function(element, callback) {
+							callback({ 'id': response.deviceDetails.type, 'text': response.deviceDetails.deviceTypeName })
+						},
+						createSearchChoice: function(term, data) {
+							if ($(data).filter(
+									function() {
+										return this.text.localeCompare(term)===0;
+									}).length===0) {
+								return {id:'create_'+term, text:term};
+							}
+						}
+					}
 				});
-
-				//<a href="#" id="status" data-type="select" data-pk="1" data-url="/post" data-title="Select status"></a>
 
 				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
 				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
@@ -251,6 +303,54 @@
 				sidebar.find('.body').append(groupParent);
 				sidebar.find('.body').append(type);
 
+				$(type).on('select2-selecting',function(e){
+					var string = e.object.id,
+						substring = "create_";
+					if(string.includes(substring)) {
+						$.post(createDeviceTypeUrl, {'device_id':id,'device_type_name':e.object.text} )
+							.success(function (response) {
+								$(e.target).val(response.deviceTypeId);
+								typeSource.push({
+									value: response.deviceTypeId,
+									text: e.object.text,
+									id : response.deviceTypeId
+								})
+							});
+					}
+				});
+
+				$(groupParent).on('select2-selecting',function(e){
+					var string = e.object.id,
+						substring = "create_";
+					if(string.includes(substring)) {
+						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.text} )
+							.success(function (response) {
+								$(e.target).val(response.deviceGroupId);
+								groupSource.push({
+									value: response.deviceGroupId,
+									text: e.object.text,
+									id : response.deviceGroupId
+								})
+							});
+					}
+				});
+
+				$(group).on('select2-selecting',function(e){
+					var string = e.object.id,
+						substring = "create_";
+					if(string.includes(substring)) {
+						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.text} )
+							.success(function (response) {
+								$(e.target).val(response.deviceGroupId);
+								groupSource.push({
+									value: response.deviceGroupId,
+									text: e.object.text,
+									id : response.deviceGroupId
+								})
+							});
+					}
+				});
+
 				editDetail(sidebar);
 				sidebar.show();
 			});
@@ -258,31 +358,6 @@
 
 	});
 
-	$(document).ready(function() {
-		//toggle `popup` / `inline` mode
-		$.fn.editable.defaults.mode = 'inline';
-
-		//make username editable
-		$('#username').editable();
-
-		//make status editable
-		$('#status').editable({
-			type: 'select',
-			title: 'Select status',
-			placement: 'right',
-			value: 2,
-			source: [
-				{value: 1, text: 'status 1'},
-				{value: 2, text: 'status 2'},
-				{value: 3, text: 'status 3'}
-			]
-			/*
-			 //uncomment these lines to send data on server
-			 ,pk: 1
-			 ,url: '/post'
-			 */
-		});
-	});
 
 	var loadChart = function() {
 		var id = $('div#chart').data('id');

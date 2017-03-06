@@ -109,6 +109,22 @@ class SensorLoggerController extends Controller {
 		SensorDevices::updateDevice($id,$field,$value,$this->connection);
 	}
 
+	public function createDeviceType(){
+		$deviceTypeName = $this->request->getParam('device_type_name');
+		$deviceTypeId = DeviceTypes::insertDeviceType($this->userId,$deviceTypeName,$this->connection);
+		if(is_int($deviceTypeId)) {
+			return $this->returnJSON(['deviceTypeId' => $deviceTypeId]);
+		}
+	}
+
+	public function createDeviceGroup() {
+		$deviceGroupName = $this->request->getParam('device_group_name');
+		$deviceGroupId = SensorGroups::insertSensorGroup($this->userId,$deviceGroupName,$this->connection);
+		if(is_int($deviceGroupId)) {
+			return $this->returnJSON(['deviceGroupId' => $deviceGroupId]);
+		}
+	}
+
 	/**
 	 * @NoAdminRequired
 	 * @return TemplateResponse

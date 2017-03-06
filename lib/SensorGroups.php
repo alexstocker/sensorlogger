@@ -24,5 +24,16 @@ class SensorGroups{
 
 		return $data;
 	}
+
+	public static function insertSensorGroup($userId, $deviceGroupName, IDBConnection $db) {
+		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';
+		$stmt = $db->prepare($sql);
+		$stmt->bindParam(1, $userId);
+		$stmt->bindParam(2, $deviceGroupName);
+		if($stmt->execute()){
+			return (int)$db->lastInsertId();
+		}
+		return false;
+	}
 	
 }

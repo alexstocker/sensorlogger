@@ -12,6 +12,10 @@ script('sensorlogger', array(
 
 style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
+
+\OC_Util::addVendorScript('select2/select2');
+\OC_Util::addVendorStyle('select2/select2');
+\OCP\Util::addScript('select2-toggleselect');
 ?>
 <div id="app">
 	<div id="app-navigation">
