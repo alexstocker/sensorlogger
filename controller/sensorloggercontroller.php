@@ -94,7 +94,13 @@ class SensorLoggerController extends Controller {
 	 */
 	public function showDeviceDetails($id) {
 		$deviceDetails = SensorDevices::getDeviceDetails($this->userId,$id,$this->connection);
-		return $this->returnJSON($deviceDetails);
+		$groups = SensorGroups::getDeviceGroups($this->userId,$this->connection);
+		$types = DeviceTypes::getDeviceTypes($this->userId,$this->connection);
+		return $this->returnJSON(array(
+			'deviceDetails' => $deviceDetails, 
+			'groups' => $groups,
+			'types' => $types
+		));
 	}
 
 	public function updateDevice($id) {

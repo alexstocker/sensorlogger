@@ -169,21 +169,82 @@
 					'data-pk': id,
 					'data-url': updateUrl,
 					'data-title': 'response.name',
-					'text': response.name
+					'text': response.deviceDetails.name
 				}).editable();
 
 				sidebar.find('.title').append(title);
 
-				//$('#'+response.name).editable();
+				var groupSource = [];
+
+				for (group in response.groups) {
+					groupSource.push({
+						value : response.groups[group].id,
+						text: response.groups[group].device_group_name}
+					);
+				}
+
+				var typeSource = [];
+
+				for (type in response.types) {
+					typeSource.push({
+						value : response.types[type].id,
+						text: response.types[type].device_type_name}
+					);
+
+				}
+
+				var groupSelect = $('<a/>',{
+					'id':'group_id',
+					'href': '#',
+					'data-type': 'select',
+					'data-field': 'group',
+					'data-pk': id,
+					'data-url': updateUrl,
+					'data-title': response.deviceGroupName
+				}).editable({
+					value: response.deviceDetails.group,
+					source: groupSource
+				});
+
+				var groupParentSelect = $('<a/>',{
+					'id':'group_parent_id',
+					'href': '#',
+					'data-type': 'select',
+					'data-field': 'group',
+					'data-pk': id,
+					'data-url': updateUrl,
+					'data-title': response.deviceGroupParentName
+				}).editable({
+					value: response.deviceDetails.groupParent,
+					source: groupSource
+				});
+
+				var typeSelect = $('<a/>',{
+					'id':'type_id',
+					'href': '#',
+					'data-type': 'select',
+					'data-field': 'type',
+					'data-pk': id,
+					'data-url': updateUrl,
+					'data-title': response.deviceTypeName
+				}).editable({
+					value: response.deviceDetails.type,
+					source: typeSource
+				});
+
+				//<a href="#" id="status" data-type="select" data-pk="1" data-url="/post" data-title="Select status"></a>
 
 				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
 				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 				sidebar.find('.bodyDetails').remove();
 
-				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.uuid);
-				var group = bodyDetailsContainer.clone().append('Group: '+response.deviceGroupName);
-				var groupParent = bodyDetailsContainer.clone().append('Parent group: '+response.deviceGroupParentName);
-				var type = bodyDetailsContainer.clone().append('Type: '+response.deviceTypeName);
+				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.deviceDetails.uuid);
+				//var group = bodyDetailsContainer.clone().append('Group: '+response.deviceGroupName);
+				var group = bodyDetailsContainer.clone().append(groupSelect);
+				//var groupParent = bodyDetailsContainer.clone().append('Parent group: '+response.deviceDetails.deviceGroupParentName);
+				var groupParent = bodyDetailsContainer.clone().append(groupParentSelect);
+				//var type = bodyDetailsContainer.clone().append('Type: '+response.deviceDetails.deviceTypeName);
+				var type = bodyDetailsContainer.clone().append(typeSelect);
 
 				sidebar.find('.body').append(uuid);
 				sidebar.find('.body').append(group);
