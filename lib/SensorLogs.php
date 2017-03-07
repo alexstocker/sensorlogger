@@ -31,10 +31,11 @@ class SensorLogs {
 		$result = $query->execute();
 
 		$data = $result->fetch();
-		
-		$log = Log::fromRow($data);
 
-		return $log;
+		if($data){
+			$data = Log::fromRow($data);
+		}
+		return $data;
 	}
 
 	/**
@@ -53,8 +54,10 @@ class SensorLogs {
 		$data = $result->fetchAll();
 
 		$logs = [];
-		foreach($data as $log) {
-			$logs[] = Log::fromRow($log);
+		if($data) {
+			foreach($data as $log) {
+				$logs[] = Log::fromRow($log);
+			}
 		}
 		return $logs;
 	}
