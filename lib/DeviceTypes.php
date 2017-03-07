@@ -18,10 +18,14 @@ class DeviceTypes {
 	 */
 	public static function getDeviceTypes($userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->select(array('id','device_type_name'))
-			->from('sensorlogger_device_types')
-			->where('user_id = "'.$userId.'"')
+		$query->select('sdt.user_id','sdt.id','sdt.device_type_name','sd.name','sd.uuid')
+			//->selectAlias('sdt.user_id','user_id')
+			//->selectAlias('sdt.id','id')
+			->from('sensorlogger_device_types','sdt')
+			->leftJoin('sdt', 'sensorlogger_devices', 'sd', 'sdt.id = sd.type_id')
+			->where('sdt.user_id = "'.$userId.'"')
 			->orderBy('id', 'DESC');
+			//->groupBy('sensorlogger_device_types.id');
 		$query->setMaxResults(100);
 		$result = $query->execute();
 

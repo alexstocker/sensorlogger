@@ -9,11 +9,11 @@
 	<tbody id ="logList">
 <?php foreach($_['logs'] as $log){ ?>
 	<tr>
-		<td class="td-data"><?php p($log['id']); ?></td>
-		<td class="td-data"><?php p($log['device_uuid']); ?></td>
-		<td class="td-data"><?php p($log['temperature']); ?></td>
-		<td class="td-data"><?php p($log['humidity']); ?></td>
-		<td class="td-data"><?php p($log['created_at']); ?></td>
+		<td class="td-data"><?php p($log->getId()); ?></td>
+		<td class="td-data"><?php p($log->getDeviceUuid()); ?></td>
+		<td class="td-data"><?php p($log->getTemperature()); ?></td>
+		<td class="td-data"><?php p($log->getHumidity()); ?></td>
+		<td class="td-data"><?php p($log->getCreatedAt()); ?></td>
 	</tr>
 <?php } ?>
 	</tbody>

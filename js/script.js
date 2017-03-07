@@ -32,6 +32,8 @@
 	};
 
 	$(document).ready(function () {
+		var sidebar = $('#app-sidebar');
+
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
 			if (!$target.hasClass('menuItem')) {
@@ -40,6 +42,7 @@
 			event.preventDefault();
 			$target.closest('ul').find('.menuItem.active').removeClass('active');
 			$target.addClass('active');
+			sidebar.hide();
 		};
 
 		$('#showList').click(function (e) {
@@ -95,7 +98,8 @@
 
 		});
 
-		$('body').on('click','.deviceChart',function (e) {
+		$('#app-content-wrapper').on('click','.deviceChart',function (e) {
+			sidebar.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/deviceChart/'+id);
 			$.get(url).success(function (response) {
@@ -104,7 +108,8 @@
 			});
 		});
 
-		$('body').on('click','.deviceListData',function (e) {
+		$('#app-content-wrapper').on('click','.deviceListData',function (e) {
+			sidebar.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+id);
 			$.post(url).success(function (response) {
@@ -112,33 +117,11 @@
 			});
 		});
 
-		$('body').on('click','.icon-close',function(e) {
-			var sidebar = $('#app-sidebar');
+		$('#app-content-wrapper').on('click','.icon-close',function(e) {
 			sidebar.hide();
 		});
 
-		var editDetailOld = function(elem) {
-			var editable = $(elem).find('.editable');
-			var elemData= editable.data();
-			$(editable).each( function () {
-				$(this).editable('click',function(e) {
-					console.log(e.value);
-					if(e.value.length != 0) {
-						var url = OC.generateUrl('/apps/sensorlogger/updateDevice/'+elemData.id);
-						$.post(url, {'field':elemData.field,'value':e.value} );
-					}
-				});
-			});
-		};
-
-		var editDetail = function(elem) {
-			//console.log(elem);
-
-		};
-
-		$('body').on('click','.deviceEdit',function(e) {
-			var sidebar = $('#app-sidebar');
-
+		$('#app-content-wrapper').on('click','.deviceEdit',function(e) {
 			var target = $(e.target);
 			if(e.target.nodeName != 'TD') {
 				return;
@@ -152,12 +135,10 @@
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+id);
 			$.post(url).success(function (response) {
-
 				$.fn.editable.defaults.mode = 'inline';
 
-				sidebar.find('.title').empty();
-				//sidebar.find('.title span.handler').append(response.name);
-				//sidebar.find('.title span.handler').attr('data-field','name').attr('data-id',id);
+				var sidebarBody = sidebar.find('.body');
+				var sidebarTitle = sidebar.find('.title')
 
 				var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+id);
 				var createDeviceTypeUrl = OC.generateUrl('/apps/sensorlogger/createDeviceType');
@@ -174,10 +155,7 @@
 					'text': response.deviceDetails.name
 				}).editable();
 
-				sidebar.find('.title').append(title);
-
 				var groupSource = [];
-
 				for (group in response.groups) {
 					groupSource.push({
 						value : response.groups[group].id,
@@ -188,7 +166,6 @@
 				}
 
 				var typeSource = [];
-
 				for (type in response.types) {
 					typeSource.push({
 						value: response.types[type].id,
@@ -288,20 +265,19 @@
 
 				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
 				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
 				sidebar.find('.bodyDetails').remove();
 
 				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.deviceDetails.uuid);
-				//var group = bodyDetailsContainer.clone().append('Group: '+response.deviceGroupName);
 				var group = bodyDetailsContainer.clone().append(groupSelect);
-				//var groupParent = bodyDetailsContainer.clone().append('Parent group: '+response.deviceDetails.deviceGroupParentName);
 				var groupParent = bodyDetailsContainer.clone().append(groupParentSelect);
-				//var type = bodyDetailsContainer.clone().append('Type: '+response.deviceDetails.deviceTypeName);
 				var type = bodyDetailsContainer.clone().append(typeSelect);
 
-				sidebar.find('.body').append(uuid);
-				sidebar.find('.body').append(group);
-				sidebar.find('.body').append(groupParent);
-				sidebar.find('.body').append(type);
+				sidebarTitle.empty().append(title);
+				sidebarBody.append(uuid);
+				sidebarBody.append(group);
+				sidebarBody.append(groupParent);
+				sidebarBody.append(type);
 
 				$(type).on('select2-selecting',function(e){
 					var string = e.object.id,
@@ -350,24 +326,22 @@
 							});
 					}
 				});
-
-				editDetail(sidebar);
 				sidebar.show();
 			});
 		});
 
 	});
-
-
+	
 	var loadChart = function() {
-		var id = $('div#chart').data('id');
+		var plotArea = $('div#chart');
+		var id = $(plotArea).data('id');
 		var url = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
 		$.getJSON(url,"json").success(function(data) {
-			//console.log(data);
 			var line1 = [];
 			var line2 = [];
-			var content = data;
-			$.each(content, function (index, item) {
+
+			try {
+			$.each(data, function (index, item) {
 				line1.push([item.created_at, parseFloat(item.temperature)])
 				line2.push([item.created_at, parseFloat(item.humidity)])
 			});
@@ -406,6 +380,9 @@
 					{yaxis: 'y2axis'}
 				]
 			});
+			} catch (err) {
+				$(plotArea).html(err);
+			}
 		});
 	}
 

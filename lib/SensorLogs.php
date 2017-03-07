@@ -19,7 +19,7 @@ class SensorLogs {
 	/**
 	 * @param $userId
 	 * @param IDBConnection $db
-	 * @return array
+	 * @return Log
 	 */
 	public static function getLastLog($userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
@@ -31,8 +31,10 @@ class SensorLogs {
 		$result = $query->execute();
 
 		$data = $result->fetch();
+		
+		$log = Log::fromRow($data);
 
-		return $data;
+		return $log;
 	}
 
 	/**
@@ -50,7 +52,11 @@ class SensorLogs {
 		$result = $query->execute();
 		$data = $result->fetchAll();
 
-		return $data;
+		$logs = [];
+		foreach($data as $log) {
+			$logs[] = Log::fromRow($log);
+		}
+		return $logs;
 	}
 
 	/**
