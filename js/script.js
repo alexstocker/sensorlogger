@@ -160,7 +160,7 @@
 					groupSource.push({
 						value : response.groups[group].id,
 						text: response.groups[group].device_group_name,
-						id : response.types[group].id
+						id : response.groups[group].id
 					}
 					);
 				}
