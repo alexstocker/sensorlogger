@@ -56,7 +56,8 @@ class SensorLogs {
 		$logs = [];
 		if($data) {
 			foreach($data as $log) {
-				$logs[] = Log::fromRow($log);
+				$logModel = Log::fromRow($log);
+				$logs[] = $logModel;
 			}
 		}
 		return $logs;
@@ -70,7 +71,7 @@ class SensorLogs {
 	 */
 	public static function getLogsByUuId($userId, $uuId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->select(array('id','device_uuid','humidity','temperature','created_at'))
+		$query->select(array('id','device_uuid','humidity','temperature','data','created_at'))
 			->from('sensorlogger_logs')
 			->where('device_uuid = "'.$uuId.'"')
 			->andWhere('user_id = "'.$userId.'"')
@@ -80,7 +81,14 @@ class SensorLogs {
 
 		$data = $result->fetchAll();
 
-		return $data;
+		$logs = [];
+		if($data) {
+			foreach($data as $log) {
+				$logModel = Log::fromRow($log);
+				$logs[] = $logModel;
+			}
+		}
+		return $logs;
 	}
 	
 	/*

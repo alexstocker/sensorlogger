@@ -75,6 +75,28 @@ class SensorDevices extends Mapper {
 
 		$data = $result->fetch();
 
+		if($data) {
+			$data = Device::fromRow($data);
+		}
+
+		return $data;
+	}
+
+	public static function getDeviceByUuid($userId, $uuid, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('*')
+			->from('sensorlogger_devices')
+			->where('uuid = "'.$uuid.'" ')
+			->andWhere('user_id = "'.$userId.'"');
+		$result = $query->execute();
+
+		$data = $result->fetch();
+		if($data) {
+			//foreach($data as $device) {
+				$data = Device::fromRow($data);
+			//}
+		}
+
 		return $data;
 	}
 

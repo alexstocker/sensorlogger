@@ -34,5 +34,11 @@ return array(
 			'verb' => 'POST',
 			//'requirements' => array('path' => '.+'),
 		),
+		array(
+			'name' => 'apisensorlogger#getDeviceDataTypes',
+			'url' => '/api/v1/getdevicedatatypes/',
+			'verb' => 'POST',
+			//'requirements' => array('path' => '.+'),
+		)
 	)
 );

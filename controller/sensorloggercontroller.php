@@ -6,6 +6,8 @@ use OC\AppFramework\Http\Request;
 use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\DeviceTypes;
+use OCA\SensorLogger\Log;
+use OCA\SensorLogger\LogExtended;
 use OCA\SensorLogger\SensorDevices;
 use OCA\SensorLogger\SensorGroups;
 use OCA\SensorLogger\SensorLogs;
@@ -74,7 +76,14 @@ class SensorLoggerController extends Controller {
 		$templateName = 'part.list';  // will use templates/main.php
 		$logs = SensorLogs::getLogs($this->userId,$this->connection);
 		$parameters = array('part' => 'list','logs' => $logs);
-		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters,'blank');
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
 	}
 
 	/**
@@ -85,7 +94,14 @@ class SensorLoggerController extends Controller {
 		$templateName = 'part.list';  // will use templates/main.php
 		$logs = $this->getDeviceData($id);
 		$parameters = array('part' => 'list','logs' => $logs);
-		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters,'blank');
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
 	}
 
 	/**
@@ -96,11 +112,19 @@ class SensorLoggerController extends Controller {
 		$deviceDetails = SensorDevices::getDeviceDetails($this->userId,$id,$this->connection);
 		$groups = SensorGroups::getDeviceGroups($this->userId,$this->connection);
 		$types = DeviceTypes::getDeviceTypes($this->userId,$this->connection);
-		return $this->returnJSON(array(
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = $this->returnJSON(array(
 			'deviceDetails' => $deviceDetails, 
 			'groups' => $groups,
 			'types' => $types
 		));
+
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
 	}
 
 	public function updateDevice($id) {
@@ -237,7 +261,11 @@ class SensorLoggerController extends Controller {
 	 */
 	protected function getChartData($id) {
 		$device = SensorDevices::getDevice($this->userId,$id,$this->connection);
-		$logs = SensorLogs::getLogsByUuId($this->userId,$device['uuid'],$this->connection);
+		$logs = SensorLogs::getLogsByUuId($this->userId,$device->getUuid(),$this->connection);
+		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userId,$device->getId(),$this->connection);
+		if(is_array($dataTypes) && !empty($dataTypes)) {
+			$logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
+		}
 		return $this->returnJSON($logs);
 	}
 

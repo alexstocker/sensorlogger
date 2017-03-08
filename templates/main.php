@@ -1,4 +1,5 @@
 <?php
+
 script('sensorlogger', array(
 	'script',
 	'jquery.poshytip.min',
@@ -7,9 +8,9 @@ script('sensorlogger', array(
 	'plugins/jqplot.dateAxisRenderer.min',
 	'plugins/jqplot.canvasTextRenderer.min',
 	'plugins/jqplot.canvasAxisTickRenderer.min',
-	'plugins/jqplot.highlighter.min'
+	'plugins/jqplot.highlighter.min',
+	'plugins/jqplot.enhancedLegendRenderer.min'
 ));
-
 style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
 

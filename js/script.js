@@ -160,7 +160,7 @@
 					groupSource.push({
 						value : response.groups[group].id,
 						text: response.groups[group].device_group_name,
-						id : response.types[group].id
+						id : response.groups[group].id
 					}
 					);
 				}
@@ -337,49 +337,155 @@
 		var id = $(plotArea).data('id');
 		var url = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
 		$.getJSON(url,"json").success(function(data) {
+			var dataLines = [];
+			var serieslabel = [];
 			var line1 = [];
 			var line2 = [];
 
-			try {
-			$.each(data, function (index, item) {
-				line1.push([item.created_at, parseFloat(item.temperature)])
-				line2.push([item.created_at, parseFloat(item.humidity)])
-			});
-			var plot1 = $.jqplot("chart",[line1,line2],{
-				//title: 'GRAPT TITLE',
-				axes: {
-					xaxis:{
-						//label:"x axis",
-						renderer:$.jqplot.DateAxisRenderer,
-						tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-						tickOptions:{formatString:'%H:%M:%S', angle: -45}
-					},
-					yaxis:{
-						tickOptions:{
-							formatString:'%.2f'
-						}
+			if(data.dataTypes && data.logs) {
+				if (data.logs[0] && data.logs[0].data.length > 0) {
+					var lines = data.logs[0].data;
+					$.each(data.dataTypes, function (index, item) {
+						serieslabel.push(['label', item.description])
+					});
+					for (var i = 0; i < lines.length; i++) {
+						dataLines[i] = [];
+						$.each(data.logs, function (index, item) {
+							var xaxis = item.createdAt;
+							var ydata = item.data[i];
+
+							if (ydata && ydata.value) {
+								ydata = ydata.value;
+								dataLines[i].push([xaxis, parseFloat(ydata)])
+							}
+						});
+						var clonedPlotArea = plotArea.clone();
+						clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper')
 					}
+				}
+			}
+
+			options = {
+				grid: {
+					backgroundColor: "white",
+				},
+				axesDefaults: {
+					labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+				},
+				seriesDefaults: {
+					lineWidth: 2,
+					style: 'square',
+					rendererOptions: { smooth: false }
 				},
 				highlighter: {
 					show: true,
 					sizeAdjust: 7.5
-				},
-				series: [
-					{
-						yaxis: 'yaxis',
-						tickInterval: 0.5,
-						showMarker:false
-						//markerOptions: {size: 2, style: "x"}
-					},{
-						yaxis: 'y2axis',
-						showMarker:false,
-						tickInterval: 1,
-						//markerOptions: {style:"circle"}
+				}
+			};
+
+			if(dataLines.length > 0) {
+				for (var dataLine in dataLines) {
+					$.jqplot("chart-"+dataLine,[dataLines[dataLine]], $.extend(options, {
+						//title: 'GRAPT TITLE',
+						axes: {
+							xaxis:{
+								//label:"x axis",
+								renderer:$.jqplot.DateAxisRenderer,
+								tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+								tickOptions:{formatString:'%H:%M:%S', angle: -45}
+							},
+							yaxis:{
+								tickOptions:{
+									formatString:'%.2f'
+								}
+							}
+						},
+						series: [{
+							label: data.dataTypes[dataLine].description+' ['+data.dataTypes[dataLine].short+']'
+						}],
+						legend:{
+							renderer: $.jqplot.EnhancedLegendRenderer,
+							show: true,
+							showLabels: true,
+							location: 's',
+							placement: 'inside',
+							fontSize: '11px',
+							fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+							rendererOptions: {
+								seriesToggle: 'normal'
+							}
+						}
+					})
+					)
+				}
+			}
+
+			var drawableLines = [];
+			if(dataLines.length < 1) {
+				$.each(data, function (index, item) {
+					line1.push([item.createdAt, parseFloat(item.temperature)])
+					line2.push([item.createdAt, parseFloat(item.humidity)])
+				});
+				drawableLines.push(line1)
+				drawableLines.push(line2)
+			} else {
+				drawableLines = dataLines;
+			}
+
+			try {
+				var plot1 = $.jqplot("chart",drawableLines,{
+					//title: 'GRAPT TITLE',
+					axes: {
+						xaxis:{
+							//label:"x axis",
+							renderer:$.jqplot.DateAxisRenderer,
+							tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+							tickOptions:{formatString:'%H:%M:%S', angle: -45}
+						},
+						yaxis:{
+							tickOptions:{
+								formatString:'%.2f'
+							}
+						}
 					},
-					{yaxis: 'yaxis'},
-					{yaxis: 'y2axis'}
-				]
-			});
+					highlighter: {
+						show: true,
+						sizeAdjust: 7.5
+					},
+					series: [
+						{
+							yaxis: 'yaxis',
+							tickInterval: 0.5,
+							showMarker:false
+							//markerOptions: {size: 2, style: "x"}
+						},{
+							yaxis: 'y2axis',
+							showMarker:false,
+							tickInterval: 1,
+							//markerOptions: {style:"circle"}
+						},
+						{yaxis: 'yaxis'},
+						{yaxis: 'y2axis'}
+					],
+					seriesDefaults: {
+						rendererOptions: { smooth: false }
+					},
+					axesDefaults: {
+						labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+					},
+					legend:{
+						renderer: $.jqplot.EnhancedLegendRenderer,
+						show: true,
+						showLabels: true,
+						location: 's	',
+						placement: 'inside',
+						fontSize: '11px',
+						fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+						rendererOptions: {
+							seriesToggle: 'normal'
+						}
+					}
+				});
 			} catch (err) {
 				$(plotArea).html(err);
 			}

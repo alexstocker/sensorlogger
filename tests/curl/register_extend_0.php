@@ -3,25 +3,35 @@
 
 	$data_json = "{
 	  \"_route\":\"sensorlogger.apisensorlogger.registerDevice\",
-	  \"deviceId\":\"231d2508-786d-400d-bc35-0273a38f664d\",
-	  \"deviceName\":\"Multi data sensor\",
+	  \"deviceId\":\"991d2508-786d-400d-bc35-0273a38f664d\",
+	  \"deviceName\":\"Air Quality (VOCs)\",
 	  \"deviceType\": \"Indoor\",
-	  \"deviceGroup\": \"Wohnzimmer\",
-	  \"deviceParentGroup\": \"Wohnung Wien\",
+	  \"deviceGroup\": \"Bedroom\",
+	  \"deviceParentGroup\": \"Isengaard\",
 	  \"deviceDataTypes\": [
 		{
-		  \"type\": \"temperature\",
-		  \"description\": \"Temperature\",
-		  \"unit\": \"°C\"
+		  \"type\": \"CO\",
+		  \"description\": \"Carbon monoxide\",
+		  \"unit\": \"ppm\"
 		},
 		{
-		  \"type\": \"humidity\",
-		  \"description\": \"Humidity\",
-		  \"unit\": \"% r.F.\"
+		  \"type\": \"C2H6OH\",
+		  \"description\": \"Ethanol\",
+		  \"unit\": \"ppm\"
 		},
 		{
-		  \"type\": \"co2\",
-		  \"description\": \"Carbon dioxide\",
+		  \"type\": \"H2\",
+		  \"description\": \"Hydrogen\",
+		  \"unit\": \"ppm\"
+		},
+		{
+		  \"type\": \"NH3\",
+		  \"description\": \"Ammonia\",
+		  \"unit\": \"ppm\"
+		},
+		{
+		  \"type\": \"CH4\",
+		  \"description\": \"Methane\",
 		  \"unit\": \"ppm\"
 		}
 	  ]
