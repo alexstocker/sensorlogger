@@ -5,12 +5,14 @@ namespace OCA\SensorLogger\Controller;
 use OC\AppFramework\Http\Request;
 use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\DataTypes;
+use OCA\SensorLogger\Device;
 use OCA\SensorLogger\DeviceTypes;
 use OCA\SensorLogger\Log;
 use OCA\SensorLogger\LogExtended;
 use OCA\SensorLogger\SensorDevices;
 use OCA\SensorLogger\SensorGroups;
 use OCA\SensorLogger\SensorLogs;
+use OCA\SensorLogger\Widgets;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -32,16 +34,20 @@ class SensorLoggerController extends Controller {
 
 	/** @var IDBConnection */
 	protected $connection;
+	
+	protected $config;
 
 	public function __construct($AppName,
 								IRequest $request,
 								IDBConnection $connection,
 								IDb $db,
+								IConfig $config,
 								$UserId) {
 		parent::__construct($AppName, $request);
 		$this->connection = $connection;
 		$this->userId = $UserId;
 		$this->db = $db;
+		$this->config = $config;
 	}
 
 	/**
@@ -52,11 +58,13 @@ class SensorLoggerController extends Controller {
 	public function index() {
 		$templateName = 'main';
 		$log = SensorLogs::getLastLog($this->userId, $this->connection);
+		$widgets = $this->getWidgets();
 		
 		$parameters = array(
 				'config' => array(),
 				'part' => 'dashboard',
-				'log' => $log
+				'log' => $log,
+				'widgets' => $widgets
 			);
 		
 		$policy = new ContentSecurityPolicy();
@@ -66,6 +74,32 @@ class SensorLoggerController extends Controller {
 		$response->setContentSecurityPolicy($policy);
 
 		return $response;
+	}
+
+	protected function getWidgets(){
+
+		$devices = SensorDevices::getDevices($this->userId,$this->connection);
+
+		$widgets = [];
+		foreach ($devices as $device) {
+			$widgetConfig = json_decode($this->getUserValue('widget-'.$device->getId(),$this->userId));
+			$log = SensorLogs::getLastLogByUuid($this->userId, $device->getUuid(), $this->connection);
+			if(is_array($log->getData()) && !empty($log->getData())) {
+				foreach($log->getData() as $extendLog){
+					$dataType = DataTypes::getDataTypeById($this->userId,$extendLog->getDataTypeId(),$this->connection);
+					$extendLog->description = $dataType->getDescription();
+					$extendLog->type = $dataType->getType();
+					$extendLog->short = $dataType->getShort();
+					//$log->dataTypeDetails[] = $dataType;
+				}
+			}
+			$widgetConfig->log = array($log);
+
+			$widgetConfig->name = $device->getName();
+			$widgets[] = $widgetConfig;
+		}
+
+		return $widgets;
 	}
 
 	/**
@@ -84,6 +118,21 @@ class SensorLoggerController extends Controller {
 		$response->setContentSecurityPolicy($policy);
 
 		return $response;
+	}
+	
+	public function getWidgetTypes() {
+		$widgetTypes = Widgets::WIDGET_TYPES;
+		$devices = SensorDevices::getDevices($this->userId,$this->connection);
+		return $this->returnJSON(array('widgetTypes' => $widgetTypes, 'devices' => $devices));
+	}
+
+	public function createWidget(){
+		$array = $this->request->getParams();
+		$widgetId = $this->request->getParam('device_id');
+		$widgetType = $this->request->getParams('widgettype_id');
+		$json = json_encode($array);
+		$this->setUserValue('widget-'.$widgetId,$this->userId,$json);
+		return $this->returnJSON(array('sensorlogger-widget-'.$widgetId,$this->userId,$array));
 	}
 
 	/**
@@ -156,7 +205,8 @@ class SensorLoggerController extends Controller {
 	public function showDashboard() {
 		$templateName = 'part.dashboard';
 		$log = SensorLogs::getLastLog($this->userId, $this->connection);
-		$parameters = array('part' => 'dashboard','log' => $log);
+		$widgets = $this->getWidgets();
+		$parameters = array('part' => 'dashboard','log' => $log, 'widgets' => $widgets);
 		return new TemplateResponse($this->appName, $templateName, $parameters,'blank');
 	}
 

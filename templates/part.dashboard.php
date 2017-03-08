@@ -1,15 +1,11 @@
-<div class="section">
-	<?php $log = $_['log']; ?>
-	<?php if($log) { ?>
-		<h2><?php p($log->getTemperature()); ?>°C</h2>
-		<h3><?php p($log->getHumidity()); ?>% r.F.</h3>
-		<h3><?php p($log->getCreatedAt()); ?> UTC</h3>
-	<?php } else { ?>
-		<div id="emptycontent" class="">
-			<div class="icon-info"></div>
-			<h2>No dashboard data vailable</h2>
-			<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki"
-				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
-		</div>
-	<?php } ?>
+<div id="controls">
+	<div class="actions creatable">
+		<a href="#" class="button new" data-original-title="" title="">
+			<span class="icon icon-add"></span>
+			<span class="hidden-visually">Neu</span>
+		</a>
+	</div>
+</div>
+<div id="widget widget-wrapper" class="widget-wrapper">
+<?php print_unescaped($this->inc('widget_dashboard')); ?>
 </div>

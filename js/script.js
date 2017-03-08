@@ -32,7 +32,8 @@
 	};
 
 	$(document).ready(function () {
-		var sidebar = $('#app-sidebar');
+		var sidebar = $('#app-sidebar')
+		var saveBtn = $('#save-btn');
 
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
@@ -43,6 +44,7 @@
 			$target.closest('ul').find('.menuItem.active').removeClass('active');
 			$target.addClass('active');
 			sidebar.hide();
+			saveBtn.hide();
 		};
 
 		$('#showList').click(function (e) {
@@ -100,6 +102,7 @@
 
 		$('#app-content-wrapper').on('click','.deviceChart',function (e) {
 			sidebar.hide();
+			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/deviceChart/'+id);
 			$.get(url).success(function (response) {
@@ -110,6 +113,7 @@
 
 		$('#app-content-wrapper').on('click','.deviceListData',function (e) {
 			sidebar.hide();
+			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+id);
 			$.post(url).success(function (response) {
@@ -119,7 +123,129 @@
 
 		$('#app-content-wrapper').on('click','.icon-close',function(e) {
 			sidebar.hide();
+			saveBtn.hide();
 		});
+
+		$(document.body).on('click','.actions',function(e) {
+			sidebarWidgets();
+			sidebar.show();
+		});
+
+		var sidebarWidgets = function (e) {
+			var saveWidget = OC.generateUrl('/apps/sensorlogger/saveWidget');
+
+			saveBtn.click(function() {
+				$('.editable').editable('submit', {
+					url: saveWidget,
+					ajaxOptions: {
+						dataType: 'json' //assuming json response
+					},
+					success: function(data, config) {
+						if(data && data.id) {  //record created, response like {"id": 2}
+							//set pk
+							$(this).editable('option', 'pk', data.id);
+							//remove unsaved class
+							$(this).removeClass('editable-unsaved');
+							//show messages
+							var msg = 'New user created! Now editables submit individually.';
+							$('#msg').addClass('alert-success').removeClass('alert-error').html(msg).show();
+							$('#save-btn').hide();
+							$(this).off('save.newuser');
+						} else if(data && data.errors){
+							//server-side validation error, response like {"errors": {"username": "username already exist"} }
+							config.error.call(this, data.errors);
+						}
+					},
+					error: function(errors) {
+						var msg = '';
+						if(errors && errors.responseText) { //ajax error, errors = xhr object
+							msg = errors.responseText;
+						} else { //validation error (client-side or server-side)
+							$.each(errors, function(k, v) { msg += k+": "+v+"<br>"; });
+						}
+						$('#msg').removeClass('alert-success').addClass('alert-error').html(msg).show();
+					}
+				});
+			});
+
+			var widgetDataUrl = OC.generateUrl('/apps/sensorlogger/widgetTypeList');
+			$.get(widgetDataUrl).success(function (response) {
+				saveBtn.show();
+				$.fn.editable.defaults.mode = 'inline';
+				var sidebarBody = sidebar.find('.body');
+				var sidebarTitle = sidebar.find('.title');
+
+				var widgetTypeSource = [];
+				for (var key in response.widgetTypes) {
+					widgetTypeSource.push({
+							value : key,
+							text: response.widgetTypes[key],
+							id : key
+						}
+					);
+				}
+
+				var deviceSource = [];
+				for (var key in response.devices) {
+					deviceSource.push({
+							value : response.devices[key].id,
+							text: response.devices[key].name,
+							id : response.devices[key].id,
+						}
+					);
+				}
+
+				var widgetTypeSelect = $('<a/>',{
+					'id':'widgettype_id',
+					'href': '#',
+					'data-type': 'select2',
+					'data-url': '',
+					'data-title': 'Select widget type'
+				}).editable({
+					source: widgetTypeSource,
+					select2: {
+						placeholder: 'Select an option',
+						minimumResultsForSearch: Infinity,
+						multiple: false,
+						data: widgetTypeSource,
+						dropdownAutoWidth: true
+					}
+				});
+
+				var deviceSelect = $('<a/>',{
+					'id':'device_id',
+					'href': '#',
+					'data-type': 'select2',
+					'data-url': '',
+					'data-title': 'Select device'
+				}).editable({
+					source: deviceSource,
+					select2: {
+						placeholder: 'Select an option',
+						minimumResultsForSearch: Infinity,
+						multiple: false,
+						data: deviceSource,
+						dropdownAutoWidth: true
+					}
+				});
+
+				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
+				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
+				sidebar.find('.bodyDetails').remove();
+
+				var widgetType = bodyDetailsContainer.clone().append(widgetTypeSelect);
+				var device = bodyDetailsContainer.clone().append(deviceSelect);
+
+				sidebarBody.append(widgetType);
+				sidebarBody.append(device);
+
+				sidebarTitle.empty().append('Dashboard widget');
+
+			})
+		};
+
+
 
 		$('#app-content-wrapper').on('click','.deviceEdit',function(e) {
 			var target = $(e.target);
@@ -129,6 +255,7 @@
 
 			if(sidebar.is(':visible')) {
 				sidebar.hide();
+				saveBtn.hide();
 				return;
 			}
 
@@ -493,3 +620,42 @@
 	}
 
 })(jQuery, OC);
+
+$(
+	function(){
+		$('a.maxmin').click(
+			function(){
+				$(this).parent().siblings('.dragbox-content').toggle();
+			});
+
+		$('a.delete').click(
+			function(){
+				var sel = '';
+				if(sel) {
+				}
+			}
+		);
+
+		$('.column').sortable({
+			connectWith: '.column',
+			handle: 'h2',
+			cursor: 'move',
+			placeholder: 'placeholder',
+			forcePlaceholderSize: true,
+			opacity: 0.4,
+			stop: function(event, ui)
+			{
+				$(ui.item).find('h2').click();
+				var sortorder='';
+
+				$('.column').each(function(){
+					var itemorder=$(this).sortable('toArray');
+					var columnId=$(this).attr('id');
+					sortorder+=columnId+'='+itemorder.toString()+'&';
+				});
+				sortorder = sortorder.substring(0, sortorder.length - 1)
+				//alert('SortOrder: '+sortorder);
+
+			}
+		}).disableSelection();
+	});

@@ -3,6 +3,8 @@
 return array(
 	'routes' => array(
 		array('name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'),
+		array('name' => 'sensorlogger#getWidgetTypes', 'url' => 'widgetTypeList', 'verb' => 'GET'),
+		array('name' => 'sensorlogger#createWidget', 'url' => 'saveWidget', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#showList', 'url' => 'showList', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#showDeviceData', 'url' => 'showDeviceData/{id}', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#showDeviceDetails', 'url' => 'showDeviceDetails/{id}', 'verb' => 'POST'),

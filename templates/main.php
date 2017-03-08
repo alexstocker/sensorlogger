@@ -40,6 +40,9 @@ style('sensorlogger', 'jquery-editable');
 						<div class="tpl_bodyDetails"></div>
 					</div>
 					<div class="footer">
+						<a id="save-btn" class="btn btn-primary" style="left: 50px; display:none;">
+							<span class="icon icon-save" style="left: 50px;">Save</span>
+						</a>
 						<a class="icon-delete handler close-all ng-hide" ng-click="" ng-show="">
 							<span class="icon icon-delete"></span>
 						</a>

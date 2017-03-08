@@ -16,17 +16,6 @@ class SensorDevices extends Mapper {
 	public function __construct(IDb $db) {
 		parent::__construct($db, 'sensorlogger_devices', '\OCA\SensorLogger\Lib\Device');
 	}
-	
-	public function testQuery($userId, $id, IDBConnection $db){
-		$query = $db->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_devices')
-			->where('id = "'.$id.'" ')
-			->andWhere('user_id = "'.$userId.'"');
-		//$result = $query->execute();
-
-		$entities = $this->findEntities($query->getSQL());
-	}
 
 	/**
 	 * @param $userId

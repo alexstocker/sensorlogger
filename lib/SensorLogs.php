@@ -38,6 +38,24 @@ class SensorLogs {
 		return $data;
 	}
 
+	public static function getLastLogByUuid($userId, $deviceId, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('*')
+			->from('sensorlogger_logs')
+			->where('user_id = "'.$userId.'"')
+			->andWhere('device_uuid = "'.$deviceId.'"')
+			->orderBy('created_at', 'DESC');
+		$query->setMaxResults(1);
+		$result = $query->execute();
+
+		$data = $result->fetch();
+
+		if($data){
+			$data = Log::fromRow($data);
+		}
+		return $data;
+	}
+
 	/**
 	 * @param $userId
 	 * @param IDBConnection $db
