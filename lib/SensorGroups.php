@@ -4,6 +4,11 @@ namespace OCA\SensorLogger;
 
 use OCP\IDBConnection;
 
+/**
+ * Class SensorGroups
+ *
+ * @package OCA\SensorLogger
+ */
 class SensorGroups{
 
 	/**
@@ -24,6 +29,8 @@ class SensorGroups{
 
 		return $data;
 	}
+
+	# TODO [GH6] Add SensorGroup::delete
 
 	public static function insertSensorGroup($userId, $deviceGroupName, IDBConnection $db) {
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';

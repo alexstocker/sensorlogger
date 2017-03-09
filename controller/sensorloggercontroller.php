@@ -76,29 +76,26 @@ class SensorLoggerController extends Controller {
 		return $response;
 	}
 
+	/**
+	 * @return Widgets
+	 */
 	protected function getWidgets(){
-
 		$devices = SensorDevices::getDevices($this->userId,$this->connection);
-
 		$widgets = [];
 		foreach ($devices as $device) {
-			$widgetConfig = json_decode($this->getUserValue('widget-'.$device->getId(),$this->userId));
-			$log = SensorLogs::getLastLogByUuid($this->userId, $device->getUuid(), $this->connection);
-			if(is_array($log->getData()) && !empty($log->getData())) {
-				foreach($log->getData() as $extendLog){
-					$dataType = DataTypes::getDataTypeById($this->userId,$extendLog->getDataTypeId(),$this->connection);
-					$extendLog->description = $dataType->getDescription();
-					$extendLog->type = $dataType->getType();
-					$extendLog->short = $dataType->getShort();
-					//$log->dataTypeDetails[] = $dataType;
+			foreach(Widgets::WIDGET_TYPES as $key => $value) {
+
+				$widgetConfig = json_decode($this->getUserValue(
+					'widget-'.$key.'-'.$device->getId(),
+					$this->userId));
+
+				if($widgetConfig === null) {
+					continue;
 				}
+				$buildWidget = Widgets::build($this->userId, $device, $widgetConfig, $this->connection);
+				$widgets[] = $buildWidget;
 			}
-			$widgetConfig->log = array($log);
-
-			$widgetConfig->name = $device->getName();
-			$widgets[] = $widgetConfig;
 		}
-
 		return $widgets;
 	}
 
@@ -119,19 +116,25 @@ class SensorLoggerController extends Controller {
 
 		return $response;
 	}
-	
+
+	/**
+	 * @return DataResponse
+	 */
 	public function getWidgetTypes() {
 		$widgetTypes = Widgets::WIDGET_TYPES;
 		$devices = SensorDevices::getDevices($this->userId,$this->connection);
 		return $this->returnJSON(array('widgetTypes' => $widgetTypes, 'devices' => $devices));
 	}
 
+	/**
+	 * @return DataResponse
+	 */
 	public function createWidget(){
 		$array = $this->request->getParams();
 		$widgetId = $this->request->getParam('device_id');
-		$widgetType = $this->request->getParams('widgettype_id');
+		$widgetType = $this->request->getParam('widget_type');
 		$json = json_encode($array);
-		$this->setUserValue('widget-'.$widgetId,$this->userId,$json);
+		$this->setUserValue('widget-'.$widgetType.'-'.$widgetId,$this->userId,$json);
 		return $this->returnJSON(array('sensorlogger-widget-'.$widgetId,$this->userId,$array));
 	}
 
@@ -325,7 +328,7 @@ class SensorLoggerController extends Controller {
 	 */
 	protected function getDeviceData($id) {
 		$device = SensorDevices::getDevice($this->userId,$id,$this->connection);
-		$logs = SensorLogs::getLogsByUuId($this->userId,$device['uuid'],$this->connection);
+		$logs = SensorLogs::getLogsByUuId($this->userId,$device->getUuid(),$this->connection);
 		return $logs;
 	}
 }

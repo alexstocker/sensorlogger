@@ -2,10 +2,38 @@
 
 namespace OCA\SensorLogger;
 
-class Widget {
+use OCP\AppFramework\Db\Entity;
+
+/**
+ * Class Widget
+ *
+ * @package OCA\SensorLogger
+ */
+class Widget extends Entity implements \JsonSerializable {
 
 	protected $deviceId;
 	protected $type;
+	protected $log;
+	protected $name;
+
+	public function __construct() {
+		$this->addType('deviceId', 'integer');
+		$this->addType('type', 'string');
+		$this->addType('log', 'string');
+		$this->addType('name', 'string');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function jsonSerialize() {
+		return [
+			'deviceId' => $this->deviceId,
+			'type' => $this->type,
+			'log' => $this->log,
+			'name' => $this->name
+		];
+	}
 
 	/**
 	 * @return mixed
@@ -33,5 +61,33 @@ class Widget {
 	 */
 	public function setDeviceId($deviceId) {
 		$this->deviceId = $deviceId;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getLog() {
+		return $this->log;
+	}
+
+	/**
+	 * @param mixed $log
+	 */
+	public function setLog($log) {
+		$this->log = $log;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param mixed $name
+	 */
+	public function setName($name) {
+		$this->name = $name;
 	}
 }

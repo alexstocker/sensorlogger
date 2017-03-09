@@ -60,8 +60,8 @@
 			var url = OC.generateUrl('/apps/sensorlogger/showDashboard');
 			$.post(url).success(function (response) {
 				$('#app-content-wrapper').empty().append(response);
+				dashboardWidgets(e);
 			});
-
 		});
 
 		$('#deviceList').click(function (e) {
@@ -100,6 +100,7 @@
 
 		});
 
+
 		$('#app-content-wrapper').on('click','.deviceChart',function (e) {
 			sidebar.hide();
 			saveBtn.hide();
@@ -121,7 +122,7 @@
 			});
 		});
 
-		$('#app-content-wrapper').on('click','.icon-close',function(e) {
+		$(document.body).on('click','.icon-close',function(e) {
 			sidebar.hide();
 			saveBtn.hide();
 		});
@@ -196,7 +197,7 @@
 				}
 
 				var widgetTypeSelect = $('<a/>',{
-					'id':'widgettype_id',
+					'id':'widget_type',
 					'href': '#',
 					'data-type': 'select2',
 					'data-url': '',
@@ -245,7 +246,43 @@
 			})
 		};
 
+		var dashboardWidgets = function (e) {
+			$('a.maxmin').click(
+				function(){
+					$(this).parent().siblings('.dragbox-content').toggle();
+				});
 
+			$('a.delete').click(
+				function(){
+					var sel = '';
+					if(sel) {
+					}
+				}
+			);
+
+			$('.column').sortable({
+				connectWith: '.column',
+				handle: 'h2',
+				cursor: 'move',
+				placeholder: 'placeholder',
+				forcePlaceholderSize: true,
+				opacity: 0.4,
+				stop: function(event, ui)
+				{
+					$(ui.item).find('h2').click();
+					var sortorder='';
+
+					$('.column').each(function(){
+						var itemorder=$(this).sortable('toArray');
+						var columnId=$(this).attr('id');
+						sortorder+=columnId+'='+itemorder.toString()+'&';
+					});
+					sortorder = sortorder.substring(0, sortorder.length - 1)
+					//alert('SortOrder: '+sortorder);
+
+				}
+			}).disableSelection();
+		};
 
 		$('#app-content-wrapper').on('click','.deviceEdit',function(e) {
 			var target = $(e.target);
@@ -457,6 +494,8 @@
 			});
 		});
 
+		dashboardWidgets();
+
 	});
 	
 	var loadChart = function() {
@@ -620,42 +659,3 @@
 	}
 
 })(jQuery, OC);
-
-$(
-	function(){
-		$('a.maxmin').click(
-			function(){
-				$(this).parent().siblings('.dragbox-content').toggle();
-			});
-
-		$('a.delete').click(
-			function(){
-				var sel = '';
-				if(sel) {
-				}
-			}
-		);
-
-		$('.column').sortable({
-			connectWith: '.column',
-			handle: 'h2',
-			cursor: 'move',
-			placeholder: 'placeholder',
-			forcePlaceholderSize: true,
-			opacity: 0.4,
-			stop: function(event, ui)
-			{
-				$(ui.item).find('h2').click();
-				var sortorder='';
-
-				$('.column').each(function(){
-					var itemorder=$(this).sortable('toArray');
-					var columnId=$(this).attr('id');
-					sortorder+=columnId+'='+itemorder.toString()+'&';
-				});
-				sortorder = sortorder.substring(0, sortorder.length - 1)
-				//alert('SortOrder: '+sortorder);
-
-			}
-		}).disableSelection();
-	});

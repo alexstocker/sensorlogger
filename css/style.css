@@ -18,6 +18,16 @@
 	top: 55px;
 }
 
+td.right,
+span.right {
+	text-align: right;
+}
+
+td.center,
+span.center {
+	text-align: center;
+}
+
 #app-sidebar div.content-wrapper div.footer {
 	border-top: 1px solid #D3D3D3;
 	bottom: 0;
@@ -87,6 +97,12 @@ table th, table td {
 .dashboard-widget .section {
 	text-align: right;
 	padding-top: 10px;
+	margin-bottom: 10px;
+}
+
+.dashboard-widget .section.list {
+	max-height: 300px;
+	overflow: scroll;
 }
 
 .dashboard-widget .section h3 {
@@ -107,7 +123,7 @@ h2.widget-header a span.icon {
 	float:left;
 }
 .column .dragbox{
-	margin:5px 2px  20px;
+	margin:5px 2px 17px;
 	background:#fff;
 	position:"relative";
 	border:1px solid #eee;
