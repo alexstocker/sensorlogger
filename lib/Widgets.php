@@ -93,5 +93,4 @@ class Widgets {
 		$widget->setName($device->getName());
 		return $widget;
 	}
-	# TODO [GH10] Add Widgets::update
 }
