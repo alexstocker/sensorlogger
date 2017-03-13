@@ -6,10 +6,6 @@ use OCP\AppFramework\Db\Entity;
 
 class Type extends Entity implements \JsonSerializable {
 
-	protected $objectMap = array(
-		'assigendDevices' => 'OCA\SensorLogger\Device[]'
-	);
-
 	protected $id;
 
 	protected $userId;

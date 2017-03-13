@@ -3,7 +3,11 @@
 namespace OCA\SensorLogger;
 use OCP\AppFramework\Db\Entity;
 
-/** @Entity */
+/**
+ * Class Device
+ *
+ * @package OCA\SensorLogger
+ */
 class Device extends Entity implements \JsonSerializable {
 	protected $uuid;
 	protected $userId;
@@ -26,7 +30,10 @@ class Device extends Entity implements \JsonSerializable {
 		$this->addType('deviceGroupName', 'string');
 		$this->addType('deviceGroupParentName', 'string');
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	public function jsonSerialize() {
 		return [
 			'id' => $this->id,

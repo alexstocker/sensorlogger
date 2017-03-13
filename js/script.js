@@ -9,30 +9,11 @@
  */
 
 (function ($, OC) {
-
-	OCA.SensorLogger = OCA.SensorLogger || {};
-
-	OCA.SensorLogger.Filter = {
-		filter: undefined,
-		$navigation: $('#app-navigation'),
-
-		_onPopState: function(params) {
-			params = _.extend({
-				filter: 'all'
-			}, params);
-
-			this.setFilter(params.filter);
-		},
-
-		setFilter: function (filter) {
-			if (filter === this.filter) {
-				return;
-			}
-		}
-	};
-
+	
 	$(document).ready(function () {
-		var sidebar = $('#app-sidebar');
+		var sidebar = $('#app-sidebar')
+		var saveBtn = $('#save-btn');
+		var notification = $("#notification");
 
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
@@ -43,6 +24,7 @@
 			$target.closest('ul').find('.menuItem.active').removeClass('active');
 			$target.addClass('active');
 			sidebar.hide();
+			saveBtn.hide();
 		};
 
 		$('#showList').click(function (e) {
@@ -58,8 +40,8 @@
 			var url = OC.generateUrl('/apps/sensorlogger/showDashboard');
 			$.post(url).success(function (response) {
 				$('#app-content-wrapper').empty().append(response);
+				dashboardWidgets(e);
 			});
-
 		});
 
 		$('#deviceList').click(function (e) {
@@ -98,8 +80,10 @@
 
 		});
 
+
 		$('#app-content-wrapper').on('click','.deviceChart',function (e) {
 			sidebar.hide();
+			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/deviceChart/'+id);
 			$.get(url).success(function (response) {
@@ -110,6 +94,7 @@
 
 		$('#app-content-wrapper').on('click','.deviceListData',function (e) {
 			sidebar.hide();
+			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+id);
 			$.post(url).success(function (response) {
@@ -117,9 +102,173 @@
 			});
 		});
 
-		$('#app-content-wrapper').on('click','.icon-close',function(e) {
-			sidebar.hide();
+		$(document.body).on('click','a.delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('div.column');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteWidget/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget deleted'));
+				}
+			});
 		});
+
+
+		$(document.body).on('click','.icon-close',function(e) {
+			sidebar.hide();
+			saveBtn.hide();
+		});
+
+		$(document.body).on('click,tab','.actions',function(e) {
+			sidebarWidgets();
+			sidebar.show();
+		});
+
+		var sidebarWidgets = function (e) {
+			var saveWidget = OC.generateUrl('/apps/sensorlogger/saveWidget');
+
+			saveBtn.click(function() {
+				$('.editable').editable('submit', {
+					url: saveWidget,
+					ajaxOptions: {
+						dataType: 'json' //assuming json response
+					},
+					success: function(data, config) {
+						if(data && data.id) {
+							$(this).editable('option', 'pk', data.id);
+							$(sidebar).hide();
+							OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
+							$("#showDashboard").trigger('click');
+
+						} else if(data && data.errors){
+							OC.Notification.showTemporary(t('sensorlogger', data.errors));
+						}
+					},
+					error: function(errors) {
+						if(errors && errors.responseText) {
+						} else {
+							$.each(errors, function(k, v) { msg += k+": "+v+"<br>"; });
+						}
+						OC.Notification.showTemporary(t('sensorlogger', 'Some Error occured'));
+					}
+				});
+			});
+
+			var widgetDataUrl = OC.generateUrl('/apps/sensorlogger/widgetTypeList');
+			$.get(widgetDataUrl).success(function (response) {
+				saveBtn.show();
+				$.fn.editable.defaults.mode = 'inline';
+				var sidebarBody = sidebar.find('.body');
+				var sidebarTitle = sidebar.find('.title');
+
+				var widgetTypeSource = [];
+				for (var key in response.widgetTypes) {
+					widgetTypeSource.push({
+							value : key,
+							text: response.widgetTypes[key],
+							id : key
+						}
+					);
+				}
+
+				var deviceSource = [];
+				for (var key in response.devices) {
+					deviceSource.push({
+							value : response.devices[key].id,
+							text: response.devices[key].name,
+							id : response.devices[key].id,
+						}
+					);
+				}
+
+				var widgetTypeSelect = $('<a/>',{
+					'id':'widget_type',
+					'href': '#',
+					'data-type': 'select2',
+					'data-url': '',
+					'data-title': 'Select widget type'
+				}).editable({
+					source: widgetTypeSource,
+					select2: {
+						placeholder: 'Select an option',
+						minimumResultsForSearch: Infinity,
+						multiple: false,
+						data: widgetTypeSource,
+						dropdownAutoWidth: true
+					}
+				});
+
+				var deviceSelect = $('<a/>',{
+					'id':'device_id',
+					'href': '#',
+					'data-type': 'select2',
+					'data-url': '',
+					'data-title': 'Select device'
+				}).editable({
+					source: deviceSource,
+					select2: {
+						placeholder: 'Select an option',
+						minimumResultsForSearch: Infinity,
+						multiple: false,
+						data: deviceSource,
+						dropdownAutoWidth: true
+					}
+				});
+
+				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
+				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
+				sidebar.find('.bodyDetails').remove();
+
+				var widgetType = bodyDetailsContainer.clone().append(widgetTypeSelect);
+				var device = bodyDetailsContainer.clone().append(deviceSelect);
+
+				sidebarBody.append(widgetType);
+				sidebarBody.append(device);
+
+				sidebarTitle.empty().append('Dashboard widget');
+
+			})
+		};
+
+		var dashboardWidgets = function (e) {
+			$('a.maxmin').click(
+				function(){
+					$(this).parent().siblings('.dragbox-content').toggle();
+				});
+
+			$('a.delete').click(
+				function(){
+					var sel = '';
+					if(sel) {
+					}
+				}
+			);
+
+			$('.column').sortable({
+				connectWith: '.column',
+				handle: 'h2',
+				cursor: 'move',
+				placeholder: 'placeholder',
+				forcePlaceholderSize: true,
+				opacity: 0.4,
+				stop: function(event, ui)
+				{
+					$(ui.item).find('h2').click();
+					var sortorder='';
+
+					$('.column').each(function(){
+						var itemorder=$(this).sortable('toArray');
+						var columnId=$(this).attr('id');
+						sortorder+=columnId+'='+itemorder.toString()+'&';
+					});
+					sortorder = sortorder.substring(0, sortorder.length - 1)
+					//alert('SortOrder: '+sortorder);
+
+				}
+			}).disableSelection();
+		};
 
 		$('#app-content-wrapper').on('click','.deviceEdit',function(e) {
 			var target = $(e.target);
@@ -129,6 +278,7 @@
 
 			if(sidebar.is(':visible')) {
 				sidebar.hide();
+				saveBtn.hide();
 				return;
 			}
 
@@ -330,6 +480,8 @@
 			});
 		});
 
+		dashboardWidgets();
+
 	});
 	
 	var loadChart = function() {
@@ -337,49 +489,159 @@
 		var id = $(plotArea).data('id');
 		var url = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
 		$.getJSON(url,"json").success(function(data) {
+			var dataLines = [];
+			var serieslabel = [];
 			var line1 = [];
 			var line2 = [];
 
-			try {
-			$.each(data, function (index, item) {
-				line1.push([item.created_at, parseFloat(item.temperature)])
-				line2.push([item.created_at, parseFloat(item.humidity)])
-			});
-			var plot1 = $.jqplot("chart",[line1,line2],{
-				//title: 'GRAPT TITLE',
-				axes: {
-					xaxis:{
-						//label:"x axis",
-						renderer:$.jqplot.DateAxisRenderer,
-						tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-						tickOptions:{formatString:'%H:%M:%S', angle: -45}
-					},
-					yaxis:{
-						tickOptions:{
-							formatString:'%.2f'
-						}
+			if(data.dataTypes && data.logs) {
+				if (data.logs[0] && data.logs[0].data.length > 0) {
+					var lines = data.logs[0].data;
+					$.each(data.dataTypes, function (index, item) {
+						serieslabel.push(['label', item.description])
+					});
+					for (var i = 0; i < lines.length; i++) {
+						dataLines[i] = [];
+						$.each(data.logs, function (index, item) {
+							var xaxis = item.createdAt;
+							var ydata = item.data[i];
+
+							if (ydata && ydata.value) {
+								ydata = ydata.value;
+								dataLines[i].push([xaxis, parseFloat(ydata)])
+							}
+						});
+						var clonedPlotArea = plotArea.clone();
+						clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper')
 					}
+				}
+			}
+
+			options = {
+				grid: {
+					backgroundColor: "white",
+				},
+				axesDefaults: {
+					labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+				},
+				seriesDefaults: {
+					lineWidth: 2,
+					style: 'square',
+					rendererOptions: { smooth: false }
 				},
 				highlighter: {
 					show: true,
 					sizeAdjust: 7.5
-				},
-				series: [
-					{
-						yaxis: 'yaxis',
-						tickInterval: 0.5,
-						showMarker:false
-						//markerOptions: {size: 2, style: "x"}
-					},{
-						yaxis: 'y2axis',
-						showMarker:false,
-						tickInterval: 1,
-						//markerOptions: {style:"circle"}
+				}
+			};
+
+			if(dataLines.length > 0) {
+				for (var dataLine in dataLines) {
+					$.jqplot("chart-"+dataLine,[dataLines[dataLine]], $.extend(options, {
+						//title: 'GRAPT TITLE',
+						axes: {
+							xaxis:{
+								//label:"x axis",
+								renderer:$.jqplot.DateAxisRenderer,
+								tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+								tickOptions:{formatString:'%H:%M:%S', angle: -45}
+							},
+							yaxis:{
+								tickOptions:{
+									formatString:'%.2f'
+								}
+							}
+						},
+						series: [{
+							label: data.dataTypes[dataLine].description+' ['+data.dataTypes[dataLine].short+']'
+						}],
+						legend:{
+							renderer: $.jqplot.EnhancedLegendRenderer,
+							show: true,
+							showLabels: true,
+							location: 's',
+							placement: 'inside',
+							fontSize: '11px',
+							fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+							rendererOptions: {
+								seriesToggle: 'normal'
+							}
+						}
+					})
+					)
+				}
+			}
+
+			var drawableLines = [];
+			if(dataLines.length < 1) {
+				$.each(data, function (index, item) {
+					line1.push([item.createdAt, parseFloat(item.temperature)])
+					line2.push([item.createdAt, parseFloat(item.humidity)])
+				});
+				drawableLines.push(line1)
+				drawableLines.push(line2)
+			} else {
+				drawableLines = dataLines;
+			}
+
+			try {
+				var plot1 = $.jqplot("chart",drawableLines,{
+					//title: 'GRAPT TITLE',
+					axes: {
+						xaxis:{
+							//label:"x axis",
+							renderer:$.jqplot.DateAxisRenderer,
+							tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+							tickOptions:{formatString:'%H:%M:%S', angle: -45}
+						},
+						yaxis:{
+							tickOptions:{
+								formatString:'%.2f'
+							}
+						}
 					},
-					{yaxis: 'yaxis'},
-					{yaxis: 'y2axis'}
-				]
-			});
+					highlighter: {
+						show: true,
+						sizeAdjust: 7.5
+					},
+					series: [
+						{
+							yaxis: 'yaxis',
+							tickInterval: 0.5,
+							showMarker:false,
+							label: 'Temperature [°C]',
+							color: 'red'
+							//markerOptions: {size: 2, style: "x"}
+						},{
+							yaxis: 'y2axis',
+							showMarker:false,
+							tickInterval: 1,
+							label: 'Humidity [%]',
+							color: 'blue'
+							//markerOptions: {style:"circle"}
+						},
+						{yaxis: 'yaxis'},
+						{yaxis: 'y2axis'},
+					],
+					seriesDefaults: {
+						rendererOptions: { smooth: false }
+					},
+					axesDefaults: {
+						labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+					},
+					legend:{
+						renderer: $.jqplot.EnhancedLegendRenderer,
+						show: true,
+						showLabels: true,
+						//location: 's	',
+						placement: 'inside',
+						fontSize: '11px',
+						fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+						rendererOptions: {
+							seriesToggle: 'normal'
+						}
+					}
+				});
 			} catch (err) {
 				$(plotArea).html(err);
 			}

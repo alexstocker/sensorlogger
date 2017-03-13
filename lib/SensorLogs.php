@@ -38,6 +38,24 @@ class SensorLogs {
 		return $data;
 	}
 
+	public static function getLastLogByUuid($userId, $deviceId, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('*')
+			->from('sensorlogger_logs')
+			->where('user_id = "'.$userId.'"')
+			->andWhere('device_uuid = "'.$deviceId.'"')
+			->orderBy('created_at', 'DESC');
+		$query->setMaxResults(1);
+		$result = $query->execute();
+
+		$data = $result->fetch();
+
+		if($data){
+			$data = Log::fromRow($data);
+		}
+		return $data;
+	}
+
 	/**
 	 * @param $userId
 	 * @param IDBConnection $db
@@ -56,7 +74,8 @@ class SensorLogs {
 		$logs = [];
 		if($data) {
 			foreach($data as $log) {
-				$logs[] = Log::fromRow($log);
+				$logModel = Log::fromRow($log);
+				$logs[] = $logModel;
 			}
 		}
 		return $logs;
@@ -68,19 +87,27 @@ class SensorLogs {
 	 * @param IDBConnection $db
 	 * @return array
 	 */
-	public static function getLogsByUuId($userId, $uuId, IDBConnection $db) {
+	public static function getLogsByUuId($userId, $uuId, IDBConnection $db, $limit = 1000, $offset = 0) {
 		$query = $db->getQueryBuilder();
-		$query->select(array('id','device_uuid','humidity','temperature','created_at'))
+		$query->select(array('id','device_uuid','humidity','temperature','data','created_at'))
 			->from('sensorlogger_logs')
 			->where('device_uuid = "'.$uuId.'"')
 			->andWhere('user_id = "'.$userId.'"')
 			->orderBy('created_at', 'DESC');
-		$query->setMaxResults(1000);
+		$query->setMaxResults($limit);
+		$query->setFirstResult($offset);
 		$result = $query->execute();
 
 		$data = $result->fetchAll();
 
-		return $data;
+		$logs = [];
+		if($data) {
+			foreach($data as $log) {
+				$logModel = Log::fromRow($log);
+				$logs[] = $logModel;
+			}
+		}
+		return $logs;
 	}
 	
 	/*

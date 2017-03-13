@@ -1,4 +1,5 @@
 <?php
+
 script('sensorlogger', array(
 	'script',
 	'jquery.poshytip.min',
@@ -7,11 +8,19 @@ script('sensorlogger', array(
 	'plugins/jqplot.dateAxisRenderer.min',
 	'plugins/jqplot.canvasTextRenderer.min',
 	'plugins/jqplot.canvasAxisTickRenderer.min',
-	'plugins/jqplot.highlighter.min'
+	'plugins/jqplot.highlighter.min',
+	'plugins/jqplot.enhancedLegendRenderer.min'
 ));
-
 style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
+
+
+# TODO [GH11] Rebuild JS
+# Rewrite JS and split it into smaller files
+
+//\OC_Util::addScript('sensorlogger','app');
+//\OC_Util::addScript('sensorlogger','navigation');
+//\OC_Util::addScript('sensorlogger','deviceactions');
 
 \OC_Util::addVendorScript('select2/select2');
 \OC_Util::addVendorStyle('select2/select2');
@@ -39,7 +48,10 @@ style('sensorlogger', 'jquery-editable');
 						<div class="tpl_bodyDetails"></div>
 					</div>
 					<div class="footer">
-						<a class="icon-delete handler close-all ng-hide" ng-click="" ng-show="">
+						<a id="save-btn" class="icon-save" style="display:none;">
+							<span class="icon icon-save" ></span>
+						</a>
+						<a class="icon-delete handler" style="display:none;">
 							<span class="icon icon-delete"></span>
 						</a>
 						<a class="icon-close handler close-all">

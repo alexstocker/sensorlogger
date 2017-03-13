@@ -16,17 +16,6 @@ class SensorDevices extends Mapper {
 	public function __construct(IDb $db) {
 		parent::__construct($db, 'sensorlogger_devices', '\OCA\SensorLogger\Lib\Device');
 	}
-	
-	public function testQuery($userId, $id, IDBConnection $db){
-		$query = $db->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_devices')
-			->where('id = "'.$id.'" ')
-			->andWhere('user_id = "'.$userId.'"');
-		//$result = $query->execute();
-
-		$entities = $this->findEntities($query->getSQL());
-	}
 
 	/**
 	 * @param $userId
@@ -38,6 +27,7 @@ class SensorDevices extends Mapper {
 		$query->select('*')
 			->selectAlias('sd.user_id','user_id')
 			->selectAlias('sd.id','id')
+			->selectAlias('sdt.device_type_name','device_type_name')
 			->selectAlias('sdg0.device_group_name','device_group_name')
 			->selectAlias('sdg1.device_group_name','device_group_parent_name')
 			->from('sensorlogger_devices','sd')
@@ -74,6 +64,28 @@ class SensorDevices extends Mapper {
 		$result = $query->execute();
 
 		$data = $result->fetch();
+
+		if($data) {
+			$data = Device::fromRow($data);
+		}
+
+		return $data;
+	}
+
+	public static function getDeviceByUuid($userId, $uuid, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('*')
+			->from('sensorlogger_devices')
+			->where('uuid = "'.$uuid.'" ')
+			->andWhere('user_id = "'.$userId.'"');
+		$result = $query->execute();
+
+		$data = $result->fetch();
+		if($data) {
+			//foreach($data as $device) {
+				$data = Device::fromRow($data);
+			//}
+		}
 
 		return $data;
 	}

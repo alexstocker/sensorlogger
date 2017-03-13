@@ -3,7 +3,7 @@
 namespace OCA\SensorLogger;
 use OCP\AppFramework\Db\Entity;
 
-class Log  extends Entity implements \JsonSerializable {
+class Log extends Entity implements \JsonSerializable {
 
 	protected $deviceUuid;
 	protected $userId;
@@ -59,5 +59,28 @@ class Log  extends Entity implements \JsonSerializable {
 	 */
 	public function setHumidity($humidity) {
 		$this->humidity = number_format($humidity,2);
+	}
+
+	/**
+	 * @return LogExtended[]
+	 */
+	public function getData() {
+		return $this->data;
+	}
+
+	/**
+	 * @param mixed $data
+	 */
+	public function setData($data) {
+		$dataTypes = json_decode($data);
+
+		$array = [];
+		foreach($dataTypes as $dataType) {
+			if($dataType->value) {
+				$array[] = new LogExtended($dataType);
+			}
+		}
+		
+		$this->data = $array;
 	}
 }

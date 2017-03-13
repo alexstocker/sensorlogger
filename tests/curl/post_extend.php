@@ -3,11 +3,24 @@
 
 	$humidity = mt_rand (1.00*10, 99.99*10) / 10;
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
+	$co2 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "f7645058-fe8c-11e6-bc64-92361f002671",
-					"temperature" => $temperature,
-					"humidity" => $humidity,
-					"date" => date('Y-m-d H:i:s'));
+	$array = array("deviceId" => "231d2508-786d-400d-bc35-0273a38f664d",
+					"date" => date('Y-m-d H:i:s'),
+					"data" => array(array(
+						"dataTypeId" => 1,
+						"value" => $temperature
+						),
+						array(
+							"dataTypeId" => 2,
+							"value" => $humidity
+						),
+						array(
+							"dataTypeId" => 3,
+							"value" => $co2,
+						)
+					));
+
 	$data_json = json_encode($array);
 
 	$username = 'admin';

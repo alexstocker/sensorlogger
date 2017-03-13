@@ -2,8 +2,11 @@
 
 namespace OCA\SensorLogger\Controller;
 
+use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\SensorDevices;
+use OCP\API;
 use OCP\AppFramework\ApiController;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IRequest;
@@ -42,7 +45,30 @@ class ApiSensorLoggerController extends ApiController {
 	 * @CORS
 	 */
 	public function createLog() {
-		$this->insertLog($this->request->getParams());
+		$params = $this->request->getParams();
+		if(isset($params['data'])) {
+			$this->insertExtendedLog($params);
+		} else {
+			$this->insertLog($params);
+		}
+
+	}
+
+	protected function insertExtendedLog($array) {
+		$registered = $this->checkRegisteredDevice($array);
+		if($registered) {
+			$deviceId = $array['deviceId'];
+			$dataJson = json_encode($array['data']);
+
+			$sql = 'INSERT INTO `*PREFIX*sensorlogger_logs` (created_at,user_id,device_uuid,`data`) VALUES(?,?,?,?)';
+			$stmt = $this->db->prepare($sql);
+			$stmt->bindParam(1, $array['date']);
+			$stmt->bindParam(2, $this->userId);
+			$stmt->bindParam(3, $deviceId);
+			$stmt->bindParam(4, $dataJson);
+			$stmt->execute();
+		}
+		return true;
 	}
 
 	/**
@@ -267,5 +293,30 @@ class ApiSensorLoggerController extends ApiController {
 			return 'Missing device ID';
 		}
 		return false;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @CORS
+	 */
+	public function getDeviceDataTypes(){
+		$params = $this->request->getParams();
+		$device = SensorDevices::getDeviceByUuid($this->userId,$params['deviceId'],$this->db);
+		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userId,$device->getId(),$this->db);
+		//return json_encode($dataTypes);
+		return $this->returnJSON($dataTypes);
+	}
+
+	/**
+	 * @param $array
+	 * @return DataResponse
+	 */
+	public function returnJSON($array) {
+		try {
+			return new DataResponse($array);
+		} catch (\Exception $ex) {
+			return new DataResponse(array('msg' => 'not found!'), API::RESPOND_NOT_FOUND);
+		}
 	}
 }
