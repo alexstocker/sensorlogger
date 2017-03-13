@@ -146,6 +146,10 @@ class SensorLoggerController extends Controller {
 		}
 	}
 
+	/**
+	 * @param $id
+	 * @return DataResponse
+	 */
 	public function deleteWidget($id) {
 		try {
 			$this->config->deleteUserValue($this->userId,$this->appName,$id);

@@ -15,8 +15,8 @@ style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
 
 
-# TODO Rebuild JS
-# Rewrite JS and split it into smaler files
+# TODO [GH11] Rebuild JS
+# Rewrite JS and split it into smaller files
 
 //\OC_Util::addScript('sensorlogger','app');
 //\OC_Util::addScript('sensorlogger','navigation');
