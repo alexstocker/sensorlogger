@@ -27,6 +27,7 @@ class SensorDevices extends Mapper {
 		$query->select('*')
 			->selectAlias('sd.user_id','user_id')
 			->selectAlias('sd.id','id')
+			->selectAlias('sdt.device_type_name','device_type_name')
 			->selectAlias('sdg0.device_group_name','device_group_name')
 			->selectAlias('sdg1.device_group_name','device_group_parent_name')
 			->from('sensorlogger_devices','sd')

@@ -9,31 +9,11 @@
  */
 
 (function ($, OC) {
-
-	OCA.SensorLogger = OCA.SensorLogger || {};
-
-	OCA.SensorLogger.Filter = {
-		filter: undefined,
-		$navigation: $('#app-navigation'),
-
-		_onPopState: function(params) {
-			params = _.extend({
-				filter: 'all'
-			}, params);
-
-			this.setFilter(params.filter);
-		},
-
-		setFilter: function (filter) {
-			if (filter === this.filter) {
-				return;
-			}
-		}
-	};
-
+	
 	$(document).ready(function () {
 		var sidebar = $('#app-sidebar')
 		var saveBtn = $('#save-btn');
+		var notification = $("#notification");
 
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
@@ -122,12 +102,25 @@
 			});
 		});
 
+		$(document.body).on('click','a.delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('div.column');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteWidget/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget deleted'));
+				}
+			});
+		});
+
+
 		$(document.body).on('click','.icon-close',function(e) {
 			sidebar.hide();
 			saveBtn.hide();
 		});
 
-		$(document.body).on('click','.actions',function(e) {
+		$(document.body).on('click,tab','.actions',function(e) {
 			sidebarWidgets();
 			sidebar.show();
 		});
@@ -142,29 +135,22 @@
 						dataType: 'json' //assuming json response
 					},
 					success: function(data, config) {
-						if(data && data.id) {  //record created, response like {"id": 2}
-							//set pk
+						if(data && data.id) {
 							$(this).editable('option', 'pk', data.id);
-							//remove unsaved class
-							$(this).removeClass('editable-unsaved');
-							//show messages
-							var msg = 'New user created! Now editables submit individually.';
-							$('#msg').addClass('alert-success').removeClass('alert-error').html(msg).show();
-							$('#save-btn').hide();
-							$(this).off('save.newuser');
+							$(sidebar).hide();
+							OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
+							$("#showDashboard").trigger('click');
+
 						} else if(data && data.errors){
-							//server-side validation error, response like {"errors": {"username": "username already exist"} }
-							config.error.call(this, data.errors);
+							OC.Notification.showTemporary(t('sensorlogger', data.errors));
 						}
 					},
 					error: function(errors) {
-						var msg = '';
-						if(errors && errors.responseText) { //ajax error, errors = xhr object
-							msg = errors.responseText;
-						} else { //validation error (client-side or server-side)
+						if(errors && errors.responseText) {
+						} else {
 							$.each(errors, function(k, v) { msg += k+": "+v+"<br>"; });
 						}
-						$('#msg').removeClass('alert-success').addClass('alert-error').html(msg).show();
+						OC.Notification.showTemporary(t('sensorlogger', 'Some Error occured'));
 					}
 				});
 			});
@@ -622,16 +608,20 @@
 						{
 							yaxis: 'yaxis',
 							tickInterval: 0.5,
-							showMarker:false
+							showMarker:false,
+							label: 'Temperature [°C]',
+							color: 'red'
 							//markerOptions: {size: 2, style: "x"}
 						},{
 							yaxis: 'y2axis',
 							showMarker:false,
 							tickInterval: 1,
+							label: 'Humidity [%]',
+							color: 'blue'
 							//markerOptions: {style:"circle"}
 						},
 						{yaxis: 'yaxis'},
-						{yaxis: 'y2axis'}
+						{yaxis: 'y2axis'},
 					],
 					seriesDefaults: {
 						rendererOptions: { smooth: false }
@@ -643,7 +633,7 @@
 						renderer: $.jqplot.EnhancedLegendRenderer,
 						show: true,
 						showLabels: true,
-						location: 's	',
+						//location: 's	',
 						placement: 'inside',
 						fontSize: '11px',
 						fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],

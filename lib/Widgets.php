@@ -64,23 +64,25 @@ class Widgets {
 		
 		# TODO [GH8] makeover Widgets::build
 
-		if(property_exists($log,'data')){
-			if(is_array($log->getData()) && !empty($log->getData())) {
-				foreach($log->getData() as $extendLog){
-					$dataType = DataTypes::getDataTypeById($userId,$extendLog->getDataTypeId(),$connection);
-					$extendLog->description = $dataType->getDescription();
-					$extendLog->type = $dataType->getType();
-					$extendLog->short = $dataType->getShort();
-				}
-			}
-		} else {
-			foreach($log as $lg) {
-				if(is_array($lg->getData()) && !empty($lg->getData())) {
-					foreach($lg->getData() as $extendLog){
-						$dataType = DataTypes::getDataTypeById($userId,$extendLog->getDataTypeId(),$connection);
+		if($log) {
+			if (property_exists($log, 'data')) {
+				if (is_array($log->getData()) && !empty($log->getData())) {
+					foreach ($log->getData() as $extendLog) {
+						$dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
 						$extendLog->description = $dataType->getDescription();
 						$extendLog->type = $dataType->getType();
 						$extendLog->short = $dataType->getShort();
+					}
+				}
+			} else {
+				foreach ($log as $lg) {
+					if (is_array($lg->getData()) && !empty($lg->getData())) {
+						foreach ($lg->getData() as $extendLog) {
+							$dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
+							$extendLog->description = $dataType->getDescription();
+							$extendLog->type = $dataType->getType();
+							$extendLog->short = $dataType->getShort();
+						}
 					}
 				}
 			}

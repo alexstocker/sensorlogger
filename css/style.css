@@ -18,14 +18,20 @@
 	top: 55px;
 }
 
+div.right,
 td.right,
 span.right {
 	text-align: right;
 }
 
+div.center,
 td.center,
 span.center {
 	text-align: center;
+}
+
+#app-sidebar {
+	z-index: 1000 !important;
 }
 
 #app-sidebar div.content-wrapper div.footer {
@@ -60,6 +66,12 @@ span.center {
 	position: absolute;
 	bottom: 7px;
 	left: 8px;
+}
+
+#app-sidebar div.content-wrapper div.footer .icon-save .icon {
+	background-image: url('../img/save.svg');
+	background-size: 100% 100%;
+	left: 30px;
 }
 
 #app-sidebar div.content-wrapper div.footer .icon-close .icon {
@@ -117,6 +129,7 @@ h2.widget-header a span.icon {
 
 .column{
 	width:31%;
+	min-width: 240px;
 	margin-right:.5%;
 	margin-left: .5%;
 	background:#fff;

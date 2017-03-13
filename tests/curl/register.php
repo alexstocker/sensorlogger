@@ -7,7 +7,7 @@
 	  \"deviceName\":\"Multi data sensor\",
 	  \"deviceType\": \"Indoor\",
 	  \"deviceGroup\": \"Wohnzimmer\",
-	  \"deviceParentGroup\": \"Wohnung Wien\",
+	  \"deviceParentGroup\": \"Wohnung\",
 	  \"deviceDataTypes\": [
 		{
 		  \"type\": \"temperature\",

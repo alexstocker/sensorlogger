@@ -5,7 +5,7 @@
 	  \"_route\":\"sensorlogger.apisensorlogger.registerDevice\",
 	  \"deviceId\":\"991d2508-786d-400d-bc35-0273a38f664d\",
 	  \"deviceName\":\"Air Quality (VOCs)\",
-	  \"deviceType\": \"Indoor\",
+	  \"deviceType\": \"Outdoor\",
 	  \"deviceGroup\": \"Bedroom\",
 	  \"deviceParentGroup\": \"Isengaard\",
 	  \"deviceDataTypes\": [

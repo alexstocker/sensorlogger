@@ -14,6 +14,14 @@ script('sensorlogger', array(
 style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
 
+
+# TODO Rebuild JS
+# Rewrite JS and split it into smaler files
+
+//\OC_Util::addScript('sensorlogger','app');
+//\OC_Util::addScript('sensorlogger','navigation');
+//\OC_Util::addScript('sensorlogger','deviceactions');
+
 \OC_Util::addVendorScript('select2/select2');
 \OC_Util::addVendorStyle('select2/select2');
 \OCP\Util::addScript('select2-toggleselect');
@@ -40,10 +48,10 @@ style('sensorlogger', 'jquery-editable');
 						<div class="tpl_bodyDetails"></div>
 					</div>
 					<div class="footer">
-						<a id="save-btn" class="btn btn-primary" style="left: 50px; display:none;">
-							<span class="icon icon-save" style="left: 50px;">Save</span>
+						<a id="save-btn" class="icon-save" style="display:none;">
+							<span class="icon icon-save" ></span>
 						</a>
-						<a class="icon-delete handler close-all ng-hide" ng-click="" ng-show="">
+						<a class="icon-delete handler" style="display:none;">
 							<span class="icon icon-delete"></span>
 						</a>
 						<a class="icon-close handler close-all">

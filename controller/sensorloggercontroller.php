@@ -3,6 +3,7 @@
 namespace OCA\SensorLogger\Controller;
 
 use OC\AppFramework\Http\Request;
+use OC\OCS\Exception;
 use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
@@ -134,8 +135,24 @@ class SensorLoggerController extends Controller {
 		$widgetId = $this->request->getParam('device_id');
 		$widgetType = $this->request->getParam('widget_type');
 		$json = json_encode($array);
-		$this->setUserValue('widget-'.$widgetType.'-'.$widgetId,$this->userId,$json);
-		return $this->returnJSON(array('sensorlogger-widget-'.$widgetId,$this->userId,$array));
+		if(!$widgetId || !$widgetType) {
+			return $this->returnJSON(array('errors' => 'Could not create widget!'));
+		}
+		try {
+			$this->setUserValue('widget-'.$widgetType.'-'.$widgetId,$this->userId,$json);
+			return $this->returnJSON(array('id' => 'widget-'.$widgetType.'-'.$widgetId));
+		} catch (Exception $e) {
+			return $this->returnJSON(array('errors' => 'Could not create widget!'));
+		}
+	}
+
+	public function deleteWidget($id) {
+		try {
+			$this->config->deleteUserValue($this->userId,$this->appName,$id);
+			return $this->returnJSON(array('success' => true));
+		} catch (Exception $e) {
+			return $this->returnJSON(array('success' => false));
+		}
 	}
 
 	/**
