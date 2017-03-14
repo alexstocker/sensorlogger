@@ -1,5 +1,7 @@
 # Sensor Logger
 
+Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
+
 ![SensorLogger Dashboard](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_dashboard-1.png)
 
 ![SensorLogger Chart](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_0.png)
