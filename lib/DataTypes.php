@@ -26,6 +26,12 @@ class DataTypes {
 		return $data;
 	}
 
+	/**
+	 * @param $userId
+	 * @param $dataTypeId
+	 * @param IDBConnection $db
+	 * @return DataType
+	 */
 	public static function getDataTypeById($userId, $dataTypeId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id','description','type','short'))

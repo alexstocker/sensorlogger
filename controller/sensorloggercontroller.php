@@ -2,14 +2,10 @@
 
 namespace OCA\SensorLogger\Controller;
 
-use OC\AppFramework\Http\Request;
 use OC\OCS\Exception;
 use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\DataTypes;
-use OCA\SensorLogger\Device;
 use OCA\SensorLogger\DeviceTypes;
-use OCA\SensorLogger\Log;
-use OCA\SensorLogger\LogExtended;
 use OCA\SensorLogger\SensorDevices;
 use OCA\SensorLogger\SensorGroups;
 use OCA\SensorLogger\SensorLogs;
@@ -19,10 +15,8 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
-use OCP\IDb;
 use OCP\IDBConnection;
 use OCP\IRequest;
-use OCP\IURLGenerator;
 
 /**
  * Class SensorLoggerController
@@ -31,23 +25,36 @@ use OCP\IURLGenerator;
  */
 class SensorLoggerController extends Controller {
 
+	/**
+	 * @var
+	 */
 	private $userId;
 
 	/** @var IDBConnection */
 	protected $connection;
-	
+
+	/**
+	 * @var IConfig
+	 */
 	protected $config;
 
+	/**
+	 * SensorLoggerController constructor.
+	 *
+	 * @param string $AppName
+	 * @param IRequest $request
+	 * @param IDBConnection $connection
+	 * @param IConfig $config
+	 * @param $UserId
+	 */
 	public function __construct($AppName,
-								IRequest $request,
-								IDBConnection $connection,
-								IDb $db,
-								IConfig $config,
-								$UserId) {
+								   IRequest $request,
+								   IDBConnection $connection,
+								   IConfig $config,
+								   $UserId) {
 		parent::__construct($AppName, $request);
 		$this->connection = $connection;
 		$this->userId = $UserId;
-		$this->db = $db;
 		$this->config = $config;
 	}
 
@@ -58,26 +65,28 @@ class SensorLoggerController extends Controller {
 	 */
 	public function index() {
 		$templateName = 'main';
-		$log = SensorLogs::getLastLog($this->userId, $this->connection);
+		//$log = SensorLogs::getLastLog($this->userId, $this->connection);
 		$widgets = $this->getWidgets();
-		
+
 		$parameters = array(
-				'config' => array(),
 				'part' => 'dashboard',
-				'log' => $log,
+				//'log' => $log,
 				'widgets' => $widgets
 			);
-		
-		$policy = new ContentSecurityPolicy();
-		$policy->addAllowedFrameDomain("'self'");
+
+		//$this->showDashboard();
+
+		//$policy = new ContentSecurityPolicy();
+		//$policy->addAllowedFrameDomain("'self'");
 
 		$response = new TemplateResponse($this->appName, $templateName, $parameters);
-		$response->setContentSecurityPolicy($policy);
+		//$response->setContentSecurityPolicy($policy);
 
 		return $response;
 	}
 
 	/**
+	 * @NoAdminRequired
 	 * @return Widgets
 	 */
 	protected function getWidgets(){
@@ -119,6 +128,7 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
+	 * @NoAdminRequired
 	 * @return DataResponse
 	 */
 	public function getWidgetTypes() {
@@ -128,6 +138,7 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
+	 * @NoAdminRequired
 	 * @return DataResponse
 	 */
 	public function createWidget(){
@@ -147,6 +158,7 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
+	 * @NoAdminRequired
 	 * @param $id
 	 * @return DataResponse
 	 */
@@ -160,6 +172,7 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
+	 * @NoAdminRequired
 	 * @param int $id
 	 * @return TemplateResponse
 	 */
@@ -178,6 +191,7 @@ class SensorLoggerController extends Controller {
 	}
 
 	/**
+	 * @NoAdminRequired
 	 * @param int $id
 	 * @return DataResponse
 	 */
@@ -190,7 +204,7 @@ class SensorLoggerController extends Controller {
 		$policy->addAllowedFrameDomain("'self'");
 
 		$response = $this->returnJSON(array(
-			'deviceDetails' => $deviceDetails, 
+			'deviceDetails' => $deviceDetails,
 			'groups' => $groups,
 			'types' => $types
 		));
@@ -200,12 +214,20 @@ class SensorLoggerController extends Controller {
 		return $response;
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @param $id
+	 */
 	public function updateDevice($id) {
 		$field = $this->request->getParam('name');
 		$value = $this->request->getParam('value');
 		SensorDevices::updateDevice($id,$field,$value,$this->connection);
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @return DataResponse
+	 */
 	public function createDeviceType(){
 		$deviceTypeName = $this->request->getParam('device_type_name');
 		$deviceTypeId = DeviceTypes::insertDeviceType($this->userId,$deviceTypeName,$this->connection);
@@ -214,6 +236,10 @@ class SensorLoggerController extends Controller {
 		}
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @return DataResponse
+	 */
 	public function createDeviceGroup() {
 		$deviceGroupName = $this->request->getParam('device_group_name');
 		$deviceGroupId = SensorGroups::insertSensorGroup($this->userId,$deviceGroupName,$this->connection);

@@ -63,30 +63,33 @@ class Widgets {
 		}
 		
 		# TODO [GH8] makeover Widgets::build
-
-		if($log) {
-			if (property_exists($log, 'data')) {
-				if (is_array($log->getData()) && !empty($log->getData())) {
-					foreach ($log->getData() as $extendLog) {
+		
+		if($log && is_array($log)) {
+			/** @var Log $lg */
+			foreach ($log as $lg) {
+				if (is_array($lg->getData()) && !empty($lg->getData())) {
+					foreach ($lg->getData() as $extendLog) {
 						$dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
-						$extendLog->description = $dataType->getDescription();
-						$extendLog->type = $dataType->getType();
-						$extendLog->short = $dataType->getShort();
-					}
-				}
-			} else {
-				foreach ($log as $lg) {
-					if (is_array($lg->getData()) && !empty($lg->getData())) {
-						foreach ($lg->getData() as $extendLog) {
-							$dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
-							$extendLog->description = $dataType->getDescription();
-							$extendLog->type = $dataType->getType();
-							$extendLog->short = $dataType->getShort();
-						}
+						$extendLog->setDescription($dataType->getDescription());
+						$extendLog->setType($dataType->getType());
+						$extendLog->setShort($dataType->getShort());
 					}
 				}
 			}
 		}
+
+		if($log && is_object($log)) {
+			if (is_array($log->getData()) && !empty($log->getData())) {
+				/** @var LogExtended $extendLog */
+				foreach ($log->getData() as $extendLog) {
+					$dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
+					$extendLog->setDescription($dataType->getDescription());
+					$extendLog->setType($dataType->getType());
+					$extendLog->setShort($dataType->getShort());
+				}
+			}
+		}
+
 		$widget->setDeviceId($device->getId());
 		$widget->setType($config->widget_type);
 		$widget->setLog($log);

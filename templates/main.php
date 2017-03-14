@@ -1,5 +1,4 @@
 <?php
-
 script('sensorlogger', array(
 	'script',
 	'jquery.poshytip.min',
@@ -14,7 +13,6 @@ script('sensorlogger', array(
 style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
 
-
 # TODO [GH11] Rebuild JS
 # Rewrite JS and split it into smaller files
 
@@ -22,8 +20,8 @@ style('sensorlogger', 'jquery-editable');
 //\OC_Util::addScript('sensorlogger','navigation');
 //\OC_Util::addScript('sensorlogger','deviceactions');
 
-\OC_Util::addVendorScript('select2/select2');
-\OC_Util::addVendorStyle('select2/select2');
+\OCP\Util::addScript('core','../core/vendor/select2/select2');
+\OCP\Util::addStyle('core','../core/vendor/select2/select2');
 \OCP\Util::addScript('select2-toggleselect');
 ?>
 <div id="app">
@@ -34,7 +32,7 @@ style('sensorlogger', 'jquery-editable');
 
 	<div id="app-content">
 		<div id="app-content-wrapper">
-			<?php print_unescaped($this->inc('part.dashboard')); ?>
+			<?php print_unescaped($this->inc('part.'.$_['part'])); ?>
 		</div>
 	</div>
 	<div id="app-sidebar" data-type="" data-id="" ng-class="" style="display: none;">

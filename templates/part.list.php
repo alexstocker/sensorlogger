@@ -8,11 +8,20 @@
 	</thead>
 	<tbody id ="logList">
 <?php foreach($_['logs'] as $log){ ?>
+	<?php $valueString = ''; ?>
+
 	<tr>
 		<td class="td-data"><?php p($log->getId()); ?></td>
 		<td class="td-data"><?php p($log->getDeviceUuid()); ?></td>
+		<?php if(sizeof($log->getData()) > 0) { ?>
+			<?php foreach($log->getData() as $lg) { ?>
+				<?php $valueString .= $lg->getValue().' '; ?>
+			<?php } ?>
+			<td class="td-data" colspan="2">Multi Value Sensor <small>(<?php p($valueString); ?>)</small></td>
+		<?php } else { ?>
 		<td class="td-data"><?php p($log->getTemperature()); ?></td>
 		<td class="td-data"><?php p($log->getHumidity()); ?></td>
+		<?php } ?>
 		<td class="td-data"><?php p($log->getCreatedAt()); ?></td>
 	</tr>
 <?php } ?>

@@ -13,6 +13,7 @@ namespace OCA\SensorLogger\AppInfo;
 
 use OCA\SensorLogger\SensorLogs;
 use OCP\AppFramework\App;
+use OCP\Util;
 
 require_once __DIR__ . '/autoload.php';
 

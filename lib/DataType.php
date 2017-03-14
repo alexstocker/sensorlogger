@@ -14,7 +14,7 @@ class DataType extends Entity implements \JsonSerializable {
 		$this->addType('userId', 'string');
 		$this->addType('description', 'string');
 		$this->addType('type','string');
-		$this->addType('short','short');
+		$this->addType('short','string');
 	}
 
 	public function jsonSerialize() {
@@ -25,5 +25,47 @@ class DataType extends Entity implements \JsonSerializable {
 			'type' => $this->type,
 			'short' => $this->short
 			];
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getDescription() {
+		return $this->description;
+	}
+
+	/**
+	 * @param mixed $description
+	 */
+	public function setDescription($description) {
+		$this->description = $description;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	/**
+	 * @param mixed $type
+	 */
+	public function setType($type) {
+		$this->type = $type;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getShort() {
+		return $this->short;
+	}
+
+	/**
+	 * @param mixed $short
+	 */
+	public function setShort($short) {
+		$this->short = $short;
 	}
 }

@@ -11,7 +11,7 @@
 
 				<div class="section <?php p($widget->getType()); ?>">
 
-					<?php if($widget->getType() == 'last') { ?>
+					<?php if($widget->getType() === 'last') { ?>
 						<?php if($widget->getLog()) { ?>
 							<?php if(is_array($widget->getLog()->getData()) && !empty($widget->getLog()->getData())) { ?>
 								<?php foreach ($widget->getLog()->getData() as $dataLog) { ?>
@@ -34,7 +34,7 @@
 							</div>
 						<?php } ?>
 					<?php } ?>
-					<?php if($widget->getType() == 'list') { ?>
+					<?php if($widget->getType() === 'list') { ?>
 						<?php if($widget->getLog()) { ?>
 							<table style="width: 100%;">
 								<?php foreach ($widget->getLog() as $dataLog) { ?>
@@ -79,7 +79,7 @@
 							</div>
 						<?php } ?>
 					<?php } ?>
-					<?php if($widget->getType() == 'chart') { ?>
+					<?php if($widget->getType() === 'chart') { ?>
 						<?php //var_dump($widget); ?>
 						<div class="widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
 
