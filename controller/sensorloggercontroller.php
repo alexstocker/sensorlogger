@@ -16,7 +16,10 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\IDBConnection;
+use OCP\IL10N;
+use OCP\INavigationManager;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 
 /**
  * Class SensorLoggerController
@@ -38,24 +41,37 @@ class SensorLoggerController extends Controller {
 	 */
 	protected $config;
 
+	protected $urlGenerator;
+	protected $navigationManager;
+	protected $l10n;
+
 	/**
 	 * SensorLoggerController constructor.
 	 *
 	 * @param string $AppName
 	 * @param IRequest $request
+	 * @param IURLGenerator $urlGenerator
+	 * @param INavigationManager $navigationManager
+	 * @param IL10N $l10n
 	 * @param IDBConnection $connection
 	 * @param IConfig $config
 	 * @param $UserId
 	 */
 	public function __construct($AppName,
-								   IRequest $request,
-								   IDBConnection $connection,
-								   IConfig $config,
-								   $UserId) {
+									IRequest $request,
+									IURLGenerator $urlGenerator,
+									INavigationManager $navigationManager,
+									IL10N $l10n,
+									IDBConnection $connection,
+									IConfig $config,
+									$UserId) {
 		parent::__construct($AppName, $request);
 		$this->connection = $connection;
 		$this->userId = $UserId;
 		$this->config = $config;
+		$this->urlGenerator = $urlGenerator;
+		$this->navigationManager = $navigationManager;
+		$this->l10n = $l10n;
 	}
 
 	/**
@@ -65,22 +81,93 @@ class SensorLoggerController extends Controller {
 	 */
 	public function index() {
 		$templateName = 'main';
-		//$log = SensorLogs::getLastLog($this->userId, $this->connection);
 		$widgets = $this->getWidgets();
+
+
 
 		$parameters = array(
 				'part' => 'dashboard',
-				//'log' => $log,
-				'widgets' => $widgets
+				'widgets' => $widgets,
+				'navItems' => $this->getNavigationItems()
 			);
 
-		//$this->showDashboard();
-
-		//$policy = new ContentSecurityPolicy();
-		//$policy->addAllowedFrameDomain("'self'");
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
 
 		$response = new TemplateResponse($this->appName, $templateName, $parameters);
-		//$response->setContentSecurityPolicy($policy);
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
+	}
+
+	protected function getNavigationItems() {
+		$navItems = \OCA\SensorLogger\App::getNavigationManager()->getAll();
+		usort($navItems, function($item1, $item2) {
+			return $item1['order'] - $item2['order'];
+		});
+
+		return $navItems;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function sharingIn(){
+		# TODO [GH18]implement sensorloggercontroller::sharingIn
+		$templateName = 'main';  // will use templates/main.php
+		$parameters = array(
+			'part' => 'listSharedDevices',
+			'devices' => [],
+			'navItems' => $this->getNavigationItems());
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters);
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function sharingOut(){
+		#TODO [GH19] implement sensorloggercontroller::sharingOut
+		$templateName = 'main';  // will use templates/main.php
+		$parameters = array(
+			'part' => 'listSharedDevices',
+			'devices' => [],
+			'navItems' => $this->getNavigationItems());
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters);
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function sharedLink(){
+		# TODO [GH20] imnplement sensorloggercontroller::sharedLink
+		$templateName = 'main';  // will use templates/main.php
+		$parameters = array(
+			'part' => 'listSharedDevices',
+			'devices' => [],
+			'navItems' => $this->getNavigationItems());
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters);
+		$response->setContentSecurityPolicy($policy);
 
 		return $response;
 	}

@@ -2,6 +2,9 @@
 
 namespace OCA\SensorLogger\Controller;
 
+use OC\OCS\Exception;
+use OC\OCS\Result;
+use OC\Share\Share;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\SensorDevices;
 use OCP\API;
@@ -9,7 +12,14 @@ use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IConfig;
 use OCP\IDBConnection;
+use OCP\IGroupManager;
+use OCP\IL10N;
 use OCP\IRequest;
+use OCP\IUser;
+use OCP\IUserManager;
+use OCP\Share\Exceptions\ShareNotFound;
+use OCP\Share\IManager;
+use OCP\Share\IShare;
 
 /**
  * Class ApiSensorLoggerController
@@ -21,12 +31,28 @@ class ApiSensorLoggerController extends ApiController {
 	private $userId;
 	private $db;
 
+	/** @var IManager */
+	private $shareManager;
+	/** @var IGroupManager */
+	private $groupManager;
+	/** @var IUserManager */
+	private $userManager;
+	/** @var IUser */
+	private $currentUser;
+	/** @var IL10N */
+	private $l;
+
 	protected $config;
 
 	public function __construct($AppName,
 								IRequest $request,
 								IDBConnection $db,
 								IConfig $config,
+								IManager $shareManager,
+								IGroupManager $groupManager,
+								IUserManager $userManager,
+								IUser $currentUser,
+								IL10N $l10n,
 								$UserId) {
 		parent::__construct(
 			$AppName,
@@ -37,6 +63,11 @@ class ApiSensorLoggerController extends ApiController {
 		$this->db = $db;
 		$this->userId = $UserId;
 		$this->config = $config;
+		$this->shareManager = $shareManager;
+		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
+		$this->currentUser = $currentUser;
+		$this->l = $l10n;
 	}
 
 	/**
@@ -54,6 +85,10 @@ class ApiSensorLoggerController extends ApiController {
 
 	}
 
+	/**
+	 * @param $array
+	 * @return bool
+	 */
 	protected function insertExtendedLog($array) {
 		$registered = $this->checkRegisteredDevice($array);
 		if($registered) {
@@ -282,7 +317,6 @@ class ApiSensorLoggerController extends ApiController {
 
 			$stmt->bindParam(1, $array['deviceId']);
 			$stmt->bindParam(2, $array['deviceName']);
-			//$stmt->bindParam(3, date('Y-m-d H:i:s'));
 			$stmt->bindParam(3, $array['deviceTypeId']);
 			$stmt->bindParam(4, $this->userId);
 
@@ -306,6 +340,115 @@ class ApiSensorLoggerController extends ApiController {
 		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userId,$device->getId(),$this->db);
 		//return json_encode($dataTypes);
 		return $this->returnJSON($dataTypes);
+	}
+
+	/**
+	 * Get all shared devices
+	 */
+	public function getAllShares() {
+		# TODO [GH12] Add apisensorloggercontroller::getallshares
+	}
+
+	/**
+	 * Share a device
+	 */
+	public function createShare() {
+		# TODO [GH13] Add apisensorloggercontroller::createShare
+	}
+
+	/**
+	 * Get a shared device by id
+	 * @param $id
+	 * @return Result
+	 */
+	public function getShare($id) {
+		# TODO [GH14] Add apisensorloggercontroller::getShare
+		if (!$this->shareManager->shareApiEnabled()) {
+			return new Result(null, 404, $this->l->t('Share API is disabled'));
+		}
+
+		try {
+			$share = $this->getShareById($id);
+		} catch (ShareNotFound $e) {
+			return new Result(null, 404, $this->l->t('Wrong share ID, share doesn\'t exist'));
+		}
+
+		if ($this->canAccessShare($share)) {
+			try {
+			} catch (Exception $e) {
+			}
+		}
+
+		return new Result(null, 404, $this->l->t('Wrong share ID, share doesn\'t exist'));
+	}
+
+	/**
+	 * @param $id
+	 * @return null|IShare
+	 * @throws ShareNotFound
+	 */
+	private function getShareById($id) {
+		# TODO [GH15] Add apisensorloggercontroller::getShareById
+
+		$share = null;
+
+		try {
+			$share = $this->shareManager->getShareById('ocinternal:'.$id);
+		} catch (ShareNotFound $e) {
+			if (!$this->shareManager->outgoingServer2ServerSharesAllowed()) {
+				throw new ShareNotFound();
+			}
+			$share = $this->shareManager->getShareById('ocFederatedSharing:' . $id);
+		}
+
+		return $share;
+	}
+
+	/**
+	 * Update shared device
+	 */
+	public function updateShare() {
+		# TODO [GH16] Add apisensorloggercontroller::updateShare
+	}
+
+	/**
+	 * Delete a shared device
+	 */
+	public function deleteShare() {
+		# TODO [GH17] Add apisensorloggercontroller::deleteshare
+	}
+
+	/**
+	 * @param IShare $share
+	 * @return bool
+	 */
+	protected function canAccessShare(IShare $share) {
+		// A file with permissions 0 can't be accessed by us. So Don't show it
+		if ($share->getPermissions() === 0) {
+			return false;
+		}
+
+		// Owner of the file and the sharer of the file can always get share
+		if ($share->getShareOwner() === $this->currentUser->getUID() ||
+			$share->getSharedBy() === $this->currentUser->getUID()
+		) {
+			return true;
+		}
+
+		// If the share is shared with you (or a group you are a member of)
+		if ($share->getShareType() === Share::SHARE_TYPE_USER &&
+			$share->getSharedWith() === $this->currentUser->getUID()) {
+			return true;
+		}
+
+		if ($share->getShareType() === Share::SHARE_TYPE_GROUP) {
+			$sharedWith = $this->groupManager->get($share->getSharedWith());
+			if (!is_null($sharedWith) && $sharedWith->inGroup($this->currentUser)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
