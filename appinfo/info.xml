@@ -5,7 +5,7 @@
     <description>SensorLogger for ownCloud</description>
     <licence>AGPL</licence>
     <author>Alexander Stocker</author>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <namespace>SensorLogger</namespace>
     <category>tool</category>
     <repository type="git">https://github.com/alexstocker/sensorlogger.git</repository>
