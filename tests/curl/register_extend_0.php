@@ -3,7 +3,7 @@
 
 	$data_json = "{
 	  \"_route\":\"sensorlogger.apisensorlogger.registerDevice\",
-	  \"deviceId\":\"991d2508-786d-400d-bc35-0273a38f664d\",
+	  \"deviceId\":\"99999999-786d-400d-bc35-0273a38f664d\",
 	  \"deviceName\":\"Air Quality (VOCs)\",
 	  \"deviceType\": \"Outdoor\",
 	  \"deviceGroup\": \"Bedroom\",
@@ -37,8 +37,8 @@
 	  ]
 	}";
 
-	$username = 'admin';
-	$token = 'JJKHU-HSYPO-WBAJE-IHERV';
+	$username = 'test';
+	$token = 'NCNST-JBMZG-VENQJ-EQMDY';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

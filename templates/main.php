@@ -1,5 +1,4 @@
 <?php
-
 script('sensorlogger', array(
 	'script',
 	'jquery.poshytip.min',
@@ -14,7 +13,6 @@ script('sensorlogger', array(
 style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
 
-
 # TODO [GH11] Rebuild JS
 # Rewrite JS and split it into smaller files
 
@@ -22,8 +20,8 @@ style('sensorlogger', 'jquery-editable');
 //\OC_Util::addScript('sensorlogger','navigation');
 //\OC_Util::addScript('sensorlogger','deviceactions');
 
-\OC_Util::addVendorScript('select2/select2');
-\OC_Util::addVendorStyle('select2/select2');
+\OCP\Util::addScript('core','../core/vendor/select2/select2');
+\OCP\Util::addStyle('core','../core/vendor/select2/select2');
 \OCP\Util::addScript('select2-toggleselect');
 ?>
 <div id="app">
@@ -34,32 +32,48 @@ style('sensorlogger', 'jquery-editable');
 
 	<div id="app-content">
 		<div id="app-content-wrapper">
-			<?php print_unescaped($this->inc('part.dashboard')); ?>
+			<?php print_unescaped($this->inc('part.'.$_['part'])); ?>
 		</div>
 	</div>
 	<div id="app-sidebar" data-type="" data-id="" ng-class="" style="display: none;">
 		<div class="content-wrapper">
-			<div ng-controller="DetailsController" ng-click="" class="handler ng-scope">
-				<div ng-show="" ng-class="" class="disabled">
+			<div class="detailDeviceInfoContainer">
+				<div class="mainDeviceInfoView">
+
 					<div class="title" ng-class="{'editing':route.parameter=='name'}">
 						<span class="handler editable"></span>
-						</div>
+					</div>
 					<div class="body" watch-top="" ng-style="{top:divTop}" style="top: 30px;">
 						<div class="tpl_bodyDetails"></div>
 					</div>
-					<div class="footer">
-						<a id="save-btn" class="icon-save" style="display:none;">
-							<span class="icon icon-save" ></span>
-						</a>
-						<a class="icon-delete handler" style="display:none;">
-							<span class="icon icon-delete"></span>
-						</a>
-						<a class="icon-close handler close-all">
-							<span class="icon icon-close"></span>
-						</a>
-					</div>
+
+
+				</div>
+				<div class="systemTagsInfoView"></div>
+			</div>
+			<ul class="tabHeaders">
+				<li class="tabHeader selected" data-tabid="shareTabView" data-tabindex="2">
+					<a href="#">Teilen</a>
+				</li>
+			</ul>
+			<div id="tabsContainer">
+				<div id="shareTabView">
+					<div class="dialogContainer"></div>
 				</div>
 			</div>
+
+			<div class="footer">
+				<a id="save-btn" class="icon-save" style="display:none;">
+					<span class="icon icon-save" ></span>
+				</a>
+				<a class="icon-delete handler" style="display:none;">
+					<span class="icon icon-delete"></span>
+				</a>
+				<a class="icon-close handler close-all">
+					<span class="icon icon-close"></span>
+				</a>
+			</div>
+
 		</div>
 	</div>
 </div>

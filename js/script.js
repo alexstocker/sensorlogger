@@ -120,7 +120,7 @@
 			saveBtn.hide();
 		});
 
-		$(document.body).on('click,tab','.actions',function(e) {
+		$(document.body).on('click','.actions',function(e) {
 			sidebarWidgets();
 			sidebar.show();
 		});

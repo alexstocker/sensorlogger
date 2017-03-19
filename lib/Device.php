@@ -47,4 +47,18 @@ class Device extends Entity implements \JsonSerializable {
 			'deviceGroupParentName' => $this->deviceGroupParentName
 		];
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getUuid() {
+		return $this->uuid;
+	}
+
+	/**
+	 * @param mixed $uuid
+	 */
+	public function setUuid($uuid) {
+		$this->uuid = $uuid;
+	}
 }

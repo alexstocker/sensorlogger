@@ -19,6 +19,10 @@ return array(
 		array('name' => 'sensorlogger#dataTypeList', 'url' => 'dataTypeList', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deviceChart', 'url' => 'deviceChart/{id}', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#chartData', 'url' => 'chartData/{id}', 'verb' => 'GET'),
+		array('name' => 'sensorlogger#sharingIn', 'url' => 'sharingIn', 'verb' => 'GET'),
+		array('name' => 'sensorlogger#sharingOut', 'url' => 'sharingOut', 'verb' => 'GET'),
+		array('name' => 'sensorlogger#sharedLink', 'url' => 'sharedLink', 'verb' => 'GET'),
+		
 		array(
 			'name' => 'apisensorlogger#preflighted_cors',
 			'url' => '/api/v1/{path}',
@@ -42,6 +46,32 @@ return array(
 			'url' => '/api/v1/getdevicedatatypes/',
 			'verb' => 'POST',
 			//'requirements' => array('path' => '.+'),
+		),
+		array(
+			'name' => 'apisensorlogger#getAllShares',
+			'url' => '/api/v1/shares',
+			'verb' => 'GET'
+		),
+		array(
+			'name' => 'apisensorlogger#createShare',
+			'url' => '/api/v1/shares/create',
+			'verb' => 'POST'
+		),
+		array(
+			'name' => 'apisensorlogger#getShare',
+			'url' => '/api/v1/shares/{id}/get',
+			'verb' => 'GET'
+		),
+		array(
+			'name' => 'apisensorlogger#updateShare',
+			'url' => '/api/v1/shares/{id}/update',
+			'verb' => 'PUT'
+		),
+		array(
+			'name' => 'apisensorlogger#deleteShare',
+			'url' => '/api/v1/shares/{id}/delete',
+			'verb' => 'DELETE'
 		)
+
 	)
 );
