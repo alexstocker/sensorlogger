@@ -7,7 +7,7 @@
     <description><![CDATA[Log sensor data to your nextcloud instance, view data and graphs. Group and tag your sensors and share data]]></description>
     <licence>agpl</licence>
     <author mail="sensorlogger@html5live.at" homepage="https://www.html5live.at">HTML5Live</author>
-    <version>0.0.1</version>
+    <version>0.0.3nc</version>
     <namespace>SensorLogger</namespace>
     <category>monitoring</category>
     <bugs>https://github.com/alexstocker/sensorlogger</bugs>
