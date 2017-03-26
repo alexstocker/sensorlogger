@@ -1,5 +1,5 @@
 <?php
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/createlog/';
+	$url = 'http://nextcloud11.loc/index.php/apps/sensorlogger/api/v1/createlog/';
 
 	$humidity = mt_rand (1.00*10, 99.99*10) / 10;
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
@@ -11,7 +11,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'test';
-	$token = 'NCNST-JBMZG-VENQJ-EQMDY';
+	$token = 'TJWRN-AGRIW-FXCZW-EQXFX';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

@@ -51,7 +51,7 @@ class ApiSensorLoggerController extends ApiController {
 								IManager $shareManager,
 								IGroupManager $groupManager,
 								IUserManager $userManager,
-								IUser $currentUser,
+								//IUser $currentUser,
 								IL10N $l10n,
 								$UserId) {
 		parent::__construct(
@@ -66,7 +66,7 @@ class ApiSensorLoggerController extends ApiController {
 		$this->shareManager = $shareManager;
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
-		$this->currentUser = $currentUser;
+		//$this->currentUser = $currentUser;
 		$this->l = $l10n;
 	}
 

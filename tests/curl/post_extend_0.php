@@ -1,5 +1,5 @@
 <?php
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/createlog/';
+	$url = 'http://nextcloud11.loc/index.php/apps/sensorlogger/api/v1/createlog/';
 
 	$co = mt_rand (1*10, 1000*10) / 10;
 	$c2h6oh = mt_rand (10*10, 500*10) / 10;
@@ -11,23 +11,23 @@
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(
 						array(
-							"dataTypeId" => 9,
+							"dataTypeId" => 4,
 							"value" => $co
 						),
 						array(
-							"dataTypeId" => 10,
+							"dataTypeId" => 5,
 							"value" => $c2h6oh
 						),
 						array(
-							"dataTypeId" => 11,
+							"dataTypeId" => 6,
 							"value" => $h2,
 						),
 						array(
-							"dataTypeId" => 12,
+							"dataTypeId" => 7,
 							"value" => $nh3,
 						),
 						array(
-							"dataTypeId" => 13,
+							"dataTypeId" => 8,
 							"value" => $ch4,
 						)
 					));
@@ -35,7 +35,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'test';
-	$token = 'NCNST-JBMZG-VENQJ-EQMDY';
+	$token = 'TJWRN-AGRIW-FXCZW-EQXFX';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

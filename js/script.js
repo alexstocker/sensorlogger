@@ -8,6 +8,33 @@
  * @copyright ELExG 2017
  */
 
+(function( $ ) {
+	$.fn.dashBoardWidgets = function(options) {
+		//console.log(this);
+		var settings = $.extend({
+			type: "last"
+		}, options );
+
+		if (settings.type === "last") {
+
+		} else if (settings.type === "list") {
+
+		} else if (settings.type === "chart") {
+
+				return settings.action;
+		} else {}
+	};
+
+	$.fn.dashBoardChart = function(options) {
+		var settings = $.extend({
+			plotArea: $('div#chart'),
+			id: $(plotArea).data('id'),
+			url: OC.generateUrl('/apps/sensorlogger/chartData/' + id)
+	}, options );
+
+	}
+})( jQuery );
+
 (function ($, OC) {
 	
 	$(document).ready(function () {
@@ -88,7 +115,8 @@
 			var url = OC.generateUrl('/apps/sensorlogger/deviceChart/'+id);
 			$.get(url).success(function (response) {
 				$('#app-content-wrapper').empty().append(response);
-				loadChart();
+				var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
+				loadChart($('div#chart'),$('div#chart').data('id'),dataUrl);
 			});
 		});
 
@@ -233,11 +261,6 @@
 		};
 
 		var dashboardWidgets = function (e) {
-			$('a.maxmin').click(
-				function(){
-					$(this).parent().siblings('.dragbox-content').toggle();
-				});
-
 			$('a.delete').click(
 				function(){
 					var sel = '';
@@ -264,10 +287,23 @@
 						sortorder+=columnId+'='+itemorder.toString()+'&';
 					});
 					sortorder = sortorder.substring(0, sortorder.length - 1)
-					//alert('SortOrder: '+sortorder);
-
 				}
 			}).disableSelection();
+			//console.log($(".column"));
+
+			$(".column").each(function(){
+				var type = $(this).children().data('widget-type');
+
+				if(type === "chart") {
+					var id = $(this).children().data('id');
+					var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
+					var chartContainer = $(this).children().find('.chartcontainer');
+					var data = {"limit":10};
+					loadChart(chartContainer,id,dataUrl,data);
+				}
+			});
+
+
 		};
 
 		$('#app-content-wrapper').on('click','.deviceEdit',function(e) {
@@ -479,16 +515,14 @@
 				sidebar.show();
 			});
 		});
-
 		dashboardWidgets();
-
 	});
-	
-	var loadChart = function() {
-		var plotArea = $('div#chart');
-		var id = $(plotArea).data('id');
-		var url = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
-		$.getJSON(url,"json").success(function(data) {
+
+	var loadChart = function(plotArea,id,url,data) {
+		//var plotArea = area;
+		//var id = $(plotArea).data('id');
+		//var url = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
+		$.getJSON(url,data,"json").success(function(data) {
 			var dataLines = [];
 			var serieslabel = [];
 			var line1 = [];
@@ -511,8 +545,16 @@
 								dataLines[i].push([xaxis, parseFloat(ydata)])
 							}
 						});
+
+						console.log(plotArea.parent().hasClass('widget'));
+
 						var clonedPlotArea = plotArea.clone();
-						clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper')
+						if(plotArea.parent().hasClass('widget')) {
+							clonedPlotArea.attr('id', 'chart-' + i).appendTo(plotArea.parent());
+						} else {
+							clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper');
+						}
+
 					}
 				}
 			}
@@ -585,7 +627,7 @@
 			}
 
 			try {
-				var plot1 = $.jqplot("chart",drawableLines,{
+				var plot1 = $.jqplot($(plotArea).attr('id'),drawableLines,{
 					//title: 'GRAPT TITLE',
 					axes: {
 						xaxis:{
@@ -646,6 +688,6 @@
 				$(plotArea).html(err);
 			}
 		});
-	}
+	};
 
 })(jQuery, OC);

@@ -1,5 +1,5 @@
 <?php
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://nextcloud11.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
 
 	$data_json = "{
 	  \"_route\":\"sensorlogger.apisensorlogger.registerDevice\",
@@ -38,7 +38,7 @@
 	}";
 
 	$username = 'test';
-	$token = 'NCNST-JBMZG-VENQJ-EQMDY';
+	$token = 'TJWRN-AGRIW-FXCZW-EQXFX';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
