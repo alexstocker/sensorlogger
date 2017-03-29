@@ -15,7 +15,6 @@ use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
-use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
@@ -37,8 +36,6 @@ class ApiSensorLoggerController extends ApiController {
 	private $groupManager;
 	/** @var IUserManager */
 	private $userManager;
-	/** @var IUser */
-	private $currentUser;
 	/** @var IL10N */
 	private $l;
 
@@ -51,7 +48,6 @@ class ApiSensorLoggerController extends ApiController {
 								IManager $shareManager,
 								IGroupManager $groupManager,
 								IUserManager $userManager,
-								IUser $currentUser,
 								IL10N $l10n,
 								$UserId) {
 		parent::__construct(
@@ -66,7 +62,6 @@ class ApiSensorLoggerController extends ApiController {
 		$this->shareManager = $shareManager;
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
-		$this->currentUser = $currentUser;
 		$this->l = $l10n;
 	}
 
@@ -423,31 +418,12 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return bool
 	 */
 	protected function canAccessShare(IShare $share) {
-		// A file with permissions 0 can't be accessed by us. So Don't show it
+
+		# TODO [GH21] Add apisensorloggercontroller::canAccessShare
+		
 		if ($share->getPermissions() === 0) {
 			return false;
 		}
-
-		// Owner of the file and the sharer of the file can always get share
-		if ($share->getShareOwner() === $this->currentUser->getUID() ||
-			$share->getSharedBy() === $this->currentUser->getUID()
-		) {
-			return true;
-		}
-
-		// If the share is shared with you (or a group you are a member of)
-		if ($share->getShareType() === Share::SHARE_TYPE_USER &&
-			$share->getSharedWith() === $this->currentUser->getUID()) {
-			return true;
-		}
-
-		if ($share->getShareType() === Share::SHARE_TYPE_GROUP) {
-			$sharedWith = $this->groupManager->get($share->getSharedWith());
-			if (!is_null($sharedWith) && $sharedWith->inGroup($this->currentUser)) {
-				return true;
-			}
-		}
-
 		return false;
 	}
 
