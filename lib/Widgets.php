@@ -44,7 +44,6 @@ class Widgets {
 	 * @return Widget
 	 */
 	public static function build($userId, $device, $config, $connection) {
-		# TODO [GH7] Add Chart Widget
 		$widget = new Widget();
 
 		$log = '';
@@ -53,7 +52,6 @@ class Widgets {
 				$log = SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $connection);
 				break;
 			case 'chart':
-				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection);
 				break;
 			case 'list':
 				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection,10);

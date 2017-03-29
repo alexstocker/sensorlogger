@@ -4,7 +4,7 @@
 	<?php foreach ($widgets as $widget) { ?>
 
 		<div id="column-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="column">
-			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="widget dashboard-widget dragbox">
+			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="widget dashboard-widget dragbox" data-id="<?php p($widget->getDeviceId()); ?>" data-widget-type="<?php p($widget->getType()); ?>">
 				<h2 class="widget-header ui-widget-header"><?php p($widget->getName()); ?>
 					<a href="#" class="delete opIcons"><span class="icon icon-delete-white" data-id="widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"></span></a>
 				</h2>
@@ -81,8 +81,9 @@
 					<?php } ?>
 					<?php if($widget->getType() === 'chart') { ?>
 						<?php //var_dump($widget); ?>
-						<div class="widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
-
+						<div class="widget widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
+							<?php //var_dump($widget)//$device = $_['device'] ?>
+							<div id="widget-plotArea-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="chartcontainer" data-id="<?php p($widget->getDeviceId()); ?>"></div>
 						</div>
 					<?php } ?>
 				</div>

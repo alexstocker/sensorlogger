@@ -3,8 +3,8 @@
 
 	$data_json = "{
 	  \"_route\":\"sensorlogger.apisensorlogger.registerDevice\",
-	  \"deviceId\":\"231d2508-786d-400d-bc35-0273a38f664d\",
-	  \"deviceName\":\"Multi data sensor\",
+	  \"deviceId\":\"6e643ee8-0f9f-11e7-93ae-92361f002671\",
+	  \"deviceName\":\"Multi data sensor V2\",
 	  \"deviceType\": \"Indoor\",
 	  \"deviceGroup\": \"Wohnzimmer\",
 	  \"deviceParentGroup\": \"Wohnung\",
@@ -22,13 +22,13 @@
 		{
 		  \"type\": \"co2\",
 		  \"description\": \"Carbon dioxide\",
-		  \"unit\": \"ppm\"
+		  \"unit\": \"ppm\"	
 		}
 	  ]
 	}";
 
-	$username = 'admin';
-	$token = 'JJKHU-HSYPO-WBAJE-IHERV';
+	$username = 'test';
+	$token = 'NCNST-JBMZG-VENQJ-EQMDY';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

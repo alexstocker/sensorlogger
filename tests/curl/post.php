@@ -21,5 +21,6 @@
 	curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
 	$response  = curl_exec($ch);
+var_dump($response);
 	curl_close($ch);
 ?>

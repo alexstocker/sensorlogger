@@ -112,7 +112,8 @@ table th, table td {
 	margin-bottom: 10px;
 }
 
-.dashboard-widget .section.list {
+.dashboard-widget .section.list,
+.dashboard-widget .section.chart {
 	max-height: 300px;
 	overflow: scroll;
 }
@@ -138,7 +139,7 @@ h2.widget-header a span.icon {
 .column .dragbox{
 	margin:5px 2px 17px;
 	background:#fff;
-	position:"relative";
+	position: relative;
 	border:1px solid #eee;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
