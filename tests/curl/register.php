@@ -27,8 +27,8 @@
 	  ]
 	}";
 
-	$username = 'admin';
-	$token = 'JJKHU-HSYPO-WBAJE-IHERV';
+	$username = 'test';
+	$token = 'HTFQO-WCNSR-UDEVJ-EPLYE';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

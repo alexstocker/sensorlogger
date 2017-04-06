@@ -2,12 +2,29 @@
 <info>
     <id>sensorlogger</id>
     <name>Sensorlogger</name>
-    <description>SensorLogger for ownCloud</description>
-    <licence>AGPL</licence>
+    <description>
+        SensorLogger for ownCloud enables users to log data provided by sensor devices
+        like humidity, temperature, air quality (voc) or any other type of data send.
+
+        INSTALL: https://github.com/alexstocker/sensorlogger/wiki/Install
+
+        API: https://github.com/alexstocker/sensorlogger/wiki/API-Calls
+
+        SAMPLE USAGE PHP CURL: https://github.com/alexstocker/sensorlogger/tree/master/tests/curl
+        SAMPLE USAGE PYTHON: https://github.com/alexstocker/sensordata
+
+        Please report bugs, issues and feature requests to
+
+        ISSUES: https://github.com/alexstocker/sensorlogger/issues
+
+        Any contributions are welcome!
+    </description>
+    <licence>MIT</licence>
     <author>Alexander Stocker</author>
     <version>0.0.3</version>
     <namespace>SensorLogger</namespace>
     <category>tool</category>
+    <ocsid>174814</ocsid>
     <repository type="git">https://github.com/alexstocker/sensorlogger.git</repository>
     <dependencies>
         <owncloud min-version="9.0" max-version="10.0"/>
