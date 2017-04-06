@@ -2,7 +2,6 @@
 
 namespace OCA\SensorLogger;
 
-use OCA\Files\App;
 use OCP\AppFramework\Controller;
 use OCP\IConfig;
 use \OCP\IDb;
