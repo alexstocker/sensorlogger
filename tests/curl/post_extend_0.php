@@ -11,23 +11,23 @@
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(
 						array(
-							"dataTypeId" => 9,
+							"dataTypeId" => 4,
 							"value" => $co
 						),
 						array(
-							"dataTypeId" => 10,
+							"dataTypeId" => 5,
 							"value" => $c2h6oh
 						),
 						array(
-							"dataTypeId" => 11,
+							"dataTypeId" => 6,
 							"value" => $h2,
 						),
 						array(
-							"dataTypeId" => 12,
+							"dataTypeId" => 7,
 							"value" => $nh3,
 						),
 						array(
-							"dataTypeId" => 13,
+							"dataTypeId" => 8,
 							"value" => $ch4,
 						)
 					));
@@ -35,7 +35,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'test';
-	$token = 'NCNST-JBMZG-VENQJ-EQMDY';
+	$token = 'HTFQO-WCNSR-UDEVJ-EPLYE';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
