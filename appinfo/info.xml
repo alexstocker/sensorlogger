@@ -5,14 +5,14 @@
     <name>Sensor Logger</name>
     <summary>Log sensor data to your nextcloud instance</summary>
     <description><![CDATA[
-        SensorLogger for ownCloud enables users to log data provided by sensor devices
+        SensorLogger for nextcloud enables users to log data provided by sensor devices
         like humidity, temperature, air quality (voc) or any other type of data send.
 
         INSTALL: https://github.com/alexstocker/sensorlogger/wiki/Install
 
         API: https://github.com/alexstocker/sensorlogger/wiki/API-Calls
 
-        SAMPLE USAGE PHP CURL: https://github.com/alexstocker/sensorlogger/tree/master/tests/curl
+        SAMPLE USAGE PHP CURL: https://github.com/alexstocker/sensorlogger/tree/master-nc/tests/curl
         SAMPLE USAGE PYTHON: https://github.com/alexstocker/sensordata
 
         Please report bugs, issues and feature requests to
@@ -31,6 +31,7 @@
     <documentation>
         <user>https://github.com/alexstocker/sensorlogger/wiki</user>
     </documentation>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2017/04/sensorlogger-1.png</screenshot>
     <dependencies>
         <php min-version="5.6" />
         <owncloud min-version="9.2"/>
