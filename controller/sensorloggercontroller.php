@@ -264,6 +264,10 @@ class SensorLoggerController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function showDeviceData($id) {
+
+		# TODO [GH26] Rework sensorloggercontroller::showDeviceData
+		# and rework template too
+		
 		$templateName = 'part.list';  // will use templates/main.php
 		$logs = $this->getDeviceData($id);
 		$parameters = array('part' => 'list','logs' => $logs);
