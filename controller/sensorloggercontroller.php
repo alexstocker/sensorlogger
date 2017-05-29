@@ -82,9 +82,7 @@ class SensorLoggerController extends Controller {
 	public function index() {
 		$templateName = 'main';
 		$widgets = $this->getWidgets();
-
-
-
+		
 		$parameters = array(
 				'part' => 'dashboard',
 				'widgets' => $widgets,
@@ -103,8 +101,14 @@ class SensorLoggerController extends Controller {
 	protected function getNavigationItems() {
 		$navItems = \OCA\SensorLogger\App::getNavigationManager()->getAll();
 		usort($navItems, function($item1, $item2) {
-			return $item1['order'] - $item2['order'];
+				return $item1['order'] - $item2['order'];
 		});
+
+		foreach($navItems as $navIdx => $navValues) {
+			if($navValues['appName'] !== 'sensorlogger') {
+				unset($navItems[$navIdx]);
+			}
+		}
 
 		return $navItems;
 	}

@@ -17,27 +17,16 @@ use OCP\Util;
 
 require_once __DIR__ . '/autoload.php';
 
-\OCP\App::registerAdmin('files', 'admin');
+\OCP\App::registerAdmin('sensorlogger', 'admin');
 
 
 $app = new App('sensorlogger');
 $container = $app->getContainer();
 
 $config = \OC::$server->getConfig();
+$urlGenerator = $container->query('OCP\IURLGenerator');
+$l10n = $container->query('OCP\IL10N');
 
-/*
-$container->query('OCP\INavigationManager')->add(function () use ($container) {
-	$urlGenerator = $container->query('OCP\IURLGenerator');
-	$l10n = $container->query('OCP\IL10N');
-	return [
-		'id' => 'sensorlogger',
-		'order' => 10,
-		'href' => $urlGenerator->linkToRoute('sensorlogger.sensorlogger.index'),
-		'icon' => $urlGenerator->imagePath('sensorlogger', 'app.svg'),
-		'name' => $l10n->t('Sensor Logger'),
-	];
-});
-*/
 \OC::$server->getNavigationManager()->add(function () {
 	$urlGenerator = \OC::$server->getURLGenerator();
 	$l = \OC::$server->getL10N('sensorlogger');
@@ -49,10 +38,6 @@ $container->query('OCP\INavigationManager')->add(function () use ($container) {
 		'name' => $l->t('SensorLogger'),
 	];
 });
-
-
-$urlGenerator = $container->query('OCP\IURLGenerator');
-$l10n = $container->query('OCP\IL10N');
 
 \OCA\SensorLogger\App::getNavigationManager()->add(
 	array(
