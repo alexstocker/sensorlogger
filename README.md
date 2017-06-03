@@ -15,3 +15,6 @@ Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 ![SensorLogger Devices](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_devices-1.png)
 
 ![SensorLogger Device details](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails_edit.png)
+
+## Changelog
+- Fixed Issue #27 initial reported by @gsantner
