@@ -2,7 +2,7 @@
 * **Enhancement**:
 * Now checking for already available DataTypes to omit duplicates on device registration
 * **Bugfix**:
-* Fixed Bug referring to Issue #19 reported by @user17476566786
+* Fixed Bug referring to Issue #29 reported by @user17476566786
 
 #SensorLogger (0.0.4)
 * **Enhancement**:
