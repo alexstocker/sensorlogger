@@ -2,12 +2,13 @@
 	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/createlog/';
 
 	$co = mt_rand (1*10, 1000*10) / 10;
+	$co2 = mt_rand (1*10, 10000*10) / 10;
 	$c2h6oh = mt_rand (10*10, 500*10) / 10;
-	$h2 = mt_rand (1*10, 1000*10) / 10;
+	$h = mt_rand (1*10, 1000*10) / 10;
 	$nh3 = mt_rand (1*10, 500*10) / 10;
 	$ch4 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "99999999-786d-400d-bc35-0273a38f664d",
+	$array = array("deviceId" => "4aa62764-59d1-1e21-b103-7161475fce8c",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(
 						array(
@@ -15,12 +16,16 @@
 							"value" => $co
 						),
 						array(
+							"dataTypeId" => 9,
+							"value" => $co2
+						),
+						array(
 							"dataTypeId" => 5,
 							"value" => $c2h6oh
 						),
 						array(
-							"dataTypeId" => 6,
-							"value" => $h2,
+							"dataTypeId" => 10,
+							"value" => $h,
 						),
 						array(
 							"dataTypeId" => 7,
@@ -35,7 +40,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'test';
-	$token = 'HTFQO-WCNSR-UDEVJ-EPLYE';
+	$token = 'KXUSU-QSDOK-KBPSC-XMZRA';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

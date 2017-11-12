@@ -189,7 +189,7 @@ class SensorLoggerController extends Controller {
 				if($widgetConfig === null) {
 					continue;
 				}
-				$buildWidget = Widgets::build($this->userId, $device, $widgetConfig, $this->connection);
+				$buildWidget = Widgets::build($this->userId, $device, $widgetConfig, $this->connection, $this->config);
 				$widgets[] = $buildWidget;
 			}
 		}
@@ -252,6 +252,20 @@ class SensorLoggerController extends Controller {
 	public function deleteWidget($id) {
 		try {
 			$this->config->deleteUserValue($this->userId,$this->appName,$id);
+			return $this->returnJSON(array('success' => true));
+		} catch (Exception $e) {
+			return $this->returnJSON(array('success' => false));
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @param $id
+	 * @return DataResponse
+	 */
+	public function deleteDevice($id) {
+		try {
+			SensorDevices::deleteDevice($id,$this->connection);
 			return $this->returnJSON(array('success' => true));
 		} catch (Exception $e) {
 			return $this->returnJSON(array('success' => false));

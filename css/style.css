@@ -74,6 +74,30 @@ span.center {
 	left: 30px;
 }
 
+.icon.icon-reset-white {
+	background-image: url('../img/reset-white.svg');
+	background-size: 100% 100%;
+	left: 30px;
+}
+
+.icon.icon-reset {
+	background-image: url('../img/reset.svg');
+	background-size: 100% 100%;
+	left: 30px;
+}
+
+.icon.icon-datalist {
+	background-image: url('/core/img/actions/toggle-filelist.svg');
+	background-size: 100% 100%;
+	left: 30px;
+}
+
+.icon.icon-datachart {
+	background-image: url('../img/graph.svg');
+	background-size: 100% 100%;
+	left: 30px;
+}
+
 #app-sidebar div.content-wrapper div.footer .icon-close .icon {
 	left: auto;
 	right: 8px;

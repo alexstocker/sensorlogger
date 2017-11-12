@@ -39,12 +39,14 @@ class Widgets {
 	/**
 	 * @param string $userId
 	 * @param Device $device
-	 * @param IConfig $config
+	 * @parem $config
+	 * @param IConfig $systemConfig
 	 * @param IDBConnection $connection
 	 * @return Widget
 	 */
-	public static function build($userId, $device, $config, $connection) {
-		# TODO [GH7] Add Chart Widget
+	public static function build($userId, $device, $config, $connection, $systemConfig) {
+		$userTimeZone = $systemConfig->getUserValueForUsers('core','timezone',[$userId]);
+
 		$widget = new Widget();
 
 		$log = '';

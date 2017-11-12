@@ -116,6 +116,15 @@ class SensorDevices extends Mapper {
 			return true;
 		}
 	}
+	
+	public static function deleteDevice($id, IDBConnection $db) {
+		$sql = 'DELETE FROM `oc_sensorlogger_devices` WHERE oc_sensorlogger_devices.id = ?';
+		$stmt = $db->prepare($sql);
+		$stmt->bindParam(1, $id);
+		if($stmt->execute()){
+			return true;
+		}
+	}
 
 	public static function insertDevice($userId, $array, IDBConnection $db) {
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';

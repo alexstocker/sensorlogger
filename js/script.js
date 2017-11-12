@@ -8,6 +8,33 @@
  * @copyright ELExG 2017
  */
 
+(function( $ ) {
+	$.fn.dashBoardWidgets = function(options) {
+		//console.log(this);
+		var settings = $.extend({
+			type: "last"
+		}, options );
+
+		if (settings.type === "last") {
+
+		} else if (settings.type === "list") {
+
+		} else if (settings.type === "chart") {
+
+				return settings.action;
+		} else {}
+	};
+
+	$.fn.dashBoardChart = function(options) {
+		var settings = $.extend({
+			plotArea: $('div#chart'),
+			id: $(plotArea).data('id'),
+			url: OC.generateUrl('/apps/sensorlogger/chartData/' + id)
+	}, options );
+
+	}
+})( jQuery );
+
 (function ($, OC) {
 	
 	$(document).ready(function () {
@@ -88,7 +115,9 @@
 			var url = OC.generateUrl('/apps/sensorlogger/deviceChart/'+id);
 			$.get(url).success(function (response) {
 				$('#app-content-wrapper').empty().append(response);
-				loadChart();
+				var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
+				loadChart($('div#chart'),$('div#chart').data('id'),dataUrl);
+
 			});
 		});
 
@@ -102,7 +131,7 @@
 			});
 		});
 
-		$(document.body).on('click','a.delete',function (e) {
+		$(document.body).on('click','a.widget-delete',function (e) {
 			var id = $(e.target).data('id');
 			var container = $(e.target).closest('div.column');
 			var url = OC.generateUrl('/apps/sensorlogger/deleteWidget/'+id);
@@ -110,6 +139,18 @@
 				if(response.success) {
 					container.remove();
 					OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget deleted'));
+				}
+			});
+		});
+
+		$(document.body).on('click','a.device-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDevice/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Device deleted'));
 				}
 			});
 		});
@@ -233,11 +274,6 @@
 		};
 
 		var dashboardWidgets = function (e) {
-			$('a.maxmin').click(
-				function(){
-					$(this).parent().siblings('.dragbox-content').toggle();
-				});
-
 			$('a.delete').click(
 				function(){
 					var sel = '';
@@ -264,10 +300,24 @@
 						sortorder+=columnId+'='+itemorder.toString()+'&';
 					});
 					sortorder = sortorder.substring(0, sortorder.length - 1)
-					//alert('SortOrder: '+sortorder);
-
 				}
 			}).disableSelection();
+			//console.log($(".column"));
+
+			$(".column").each(function(){
+				var type = $(this).children().data('widget-type');
+
+				if(type === "chart") {
+					var id = $(this).children().data('id');
+					var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
+					var chartContainer = $(this).children().find('.chartcontainer');
+					var data = {"limit":1280};
+					plotArea = chartContainer;
+					loadChart(chartContainer,id,dataUrl,data);
+				}
+			});
+
+
 		};
 
 		$('#app-content-wrapper').on('click','.deviceEdit',function(e) {
@@ -479,16 +529,13 @@
 				sidebar.show();
 			});
 		});
-
 		dashboardWidgets();
-
 	});
-	
-	var loadChart = function() {
-		var plotArea = $('div#chart');
-		var id = $(plotArea).data('id');
-		var url = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
-		$.getJSON(url,"json").success(function(data) {
+	var drawableLines;
+	var plotArea;
+
+	var loadChart = function(plotArea,id,url,data) {
+		$.getJSON(url,data,"json").success(function(data) {
 			var dataLines = [];
 			var serieslabel = [];
 			var line1 = [];
@@ -498,8 +545,13 @@
 				if (data.logs[0] && data.logs[0].data.length > 0) {
 					var lines = data.logs[0].data;
 					$.each(data.dataTypes, function (index, item) {
-						serieslabel.push(['label', item.description])
+						serieslabel.push(
+							{
+								'series':item
+							}
+						)
 					});
+					//console.log(serieslabel);
 					for (var i = 0; i < lines.length; i++) {
 						dataLines[i] = [];
 						$.each(data.logs, function (index, item) {
@@ -511,8 +563,14 @@
 								dataLines[i].push([xaxis, parseFloat(ydata)])
 							}
 						});
+
 						var clonedPlotArea = plotArea.clone();
-						clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper')
+						if(plotArea.parent().hasClass('widget')) {
+							clonedPlotArea.attr('id', 'chart-' + i).appendTo(plotArea.parent());
+						} else {
+							clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper');
+						}
+
 					}
 				}
 			}
@@ -572,7 +630,7 @@
 				}
 			}
 
-			var drawableLines = [];
+			drawableLines = [];
 			if(dataLines.length < 1) {
 				$.each(data, function (index, item) {
 					line1.push([item.createdAt, parseFloat(item.temperature)])
@@ -584,68 +642,210 @@
 				drawableLines = dataLines;
 			}
 
+
 			try {
-				var plot1 = $.jqplot("chart",drawableLines,{
-					//title: 'GRAPT TITLE',
-					axes: {
-						xaxis:{
-							//label:"x axis",
-							renderer:$.jqplot.DateAxisRenderer,
-							tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-							tickOptions:{formatString:'%H:%M:%S', angle: -45}
-						},
-						yaxis:{
-							tickOptions:{
-								formatString:'%.2f'
-							}
-						}
-					},
-					highlighter: {
-						show: true,
-						sizeAdjust: 7.5
-					},
-					series: [
-						{
-							yaxis: 'yaxis',
-							tickInterval: 0.5,
-							showMarker:false,
-							label: 'Temperature [°C]',
-							color: 'red'
-							//markerOptions: {size: 2, style: "x"}
-						},{
-							yaxis: 'y2axis',
-							showMarker:false,
-							tickInterval: 1,
-							label: 'Humidity [%]',
-							color: 'blue'
-							//markerOptions: {style:"circle"}
-						},
-						{yaxis: 'yaxis'},
-						{yaxis: 'y2axis'},
-					],
-					seriesDefaults: {
-						rendererOptions: { smooth: false }
-					},
-					axesDefaults: {
-						labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-					},
-					legend:{
-						renderer: $.jqplot.EnhancedLegendRenderer,
-						show: true,
-						showLabels: true,
-						//location: 's	',
-						placement: 'inside',
-						fontSize: '11px',
-						fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
-						rendererOptions: {
-							seriesToggle: 'normal'
-						}
-					}
+				plotRealTimeChart(plotArea,drawableLines,serieslabel);
+
+				$("a#toggle_realtime").on('click',function(){
+					plotArea = $(this).attr('data-plotarea');
+					doUpdate();
 				});
 			} catch (err) {
 				$(plotArea).html(err);
 			}
 		});
+	};
+
+	function getRandomArbitrary(min, max) {
+		return Math.random() * (max - min) + min;
+	}
+
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	var data = drawableLines;
+
+	var plotChart = function(plotArea,drawableLines) {
+		$.jqplot($(plotArea).attr('id'),drawableLines,{
+			//title: 'GRAPT TITLE',
+			axes: {
+				xaxis:{
+					//label:"x axis",
+					renderer:$.jqplot.DateAxisRenderer,
+					tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+					tickOptions:{formatString:'%H:%M:%S', angle: -45}
+				},
+				yaxis:{
+					tickOptions:{
+						formatString:'%.2f'
+					}
+				}
+			},
+			highlighter: {
+				show: true,
+				sizeAdjust: 7.5
+			},
+			series: [
+				{
+					yaxis: 'yaxis',
+					tickInterval: 0.5,
+					showMarker:false,
+					label: 'Temperature [°C]',
+					color: 'red'
+					//markerOptions: {size: 2, style: "x"}
+				},{
+					yaxis: 'y2axis',
+					showMarker:false,
+					tickInterval: 1,
+					label: 'Humidity [%]',
+					color: 'blue'
+					//markerOptions: {style:"circle"}
+				},
+				{yaxis: 'yaxis'},
+				{yaxis: 'y2axis'},
+			],
+			seriesDefaults: {
+				rendererOptions: { smooth: false }
+			},
+			axesDefaults: {
+				labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+			},
+			legend:{
+				renderer: $.jqplot.EnhancedLegendRenderer,
+				show: true,
+				showLabels: true,
+				//location: 's	',
+				placement: 'inside',
+				fontSize: '11px',
+				fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+				rendererOptions: {
+					seriesToggle: 'normal'
+				}
+			}
+		});
+	};
+
+	var plotRealTimeChart = function(plotArea,drawableLines,labels) {
+		var series = [];
+		if(labels.length > 0) {
+			//console.log(labels);
+			for (var label in labels) {
+				var serie = {
+					yaxis: 'yaxis',
+					tickInterval: 1,
+					showMarker:true,
+					label: labels[label].series.description+' ['+labels[label].series.type+']'
+				};
+				series.push(serie);
+			}
+
+
+		} else {
+			series = [
+				{
+					yaxis: 'yaxis',
+					tickInterval: 0.5,
+					showMarker:false,
+					label: 'Temperature [°C]',
+					color: 'red'
+					//markerOptions: {size: 2, style: "x"}
+				},{
+					yaxis: 'y2axis',
+					showMarker:false,
+					tickInterval: 1,
+					label: 'Humidity [%]',
+					color: 'blue'
+					//markerOptions: {style:"circle"}
+				},
+				{yaxis: 'yaxis'},
+				{yaxis: 'y2axis'},
+			]
+		}
+		var plot = $.jqplot($(plotArea).attr('id'),drawableLines,{
+			axes: {
+				xaxis:{
+					//label:"x axis",
+					renderer:$.jqplot.DateAxisRenderer,
+					tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+					tickOptions:{formatString:'%H:%M:%S', angle: -10}
+				},
+				yaxis:{
+					tickOptions:{
+						formatString:'%.2f'
+					}
+				}
+			},
+			highlighter: {
+				show: true,
+				sizeAdjust: 7.5
+			},
+			series: series,
+			cursor: {
+				show: true,
+				tooltipLocation:'sw',
+				zoom:true
+			},
+			seriesDefaults: {
+				rendererOptions: { smooth: false }
+			},
+			axesDefaults: {
+				labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+			},
+			legend:{
+				renderer: $.jqplot.EnhancedLegendRenderer,
+				show: true,
+				showLabels: true,
+				//location: 's	',
+				placement: 'inside',
+				fontSize: '11px',
+				fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+				rendererOptions: {
+					seriesToggle: 'normal'
+				}
+			}
+		});
+		$('a#zoom_reset').click(function() { plot.resetZoom() });
+	};
+
+
+
+	function doUpdate() {
+		var t = 10000;
+		var n = 20;
+
+console.log(drawableLines[0].length);
+		//console.log(plotArea);
+
+
+		if(drawableLines[0].length > n-1){
+			drawableLines[0].shift();
+		}
+
+		var y = getRandomArbitrary(10,39);
+		var y1 = getRandomInt(1,100);
+		var x = new Date();
+
+	//	console.log(x.toLocaleTimeString());
+
+		drawableLines[0].push([x.toLocaleTimeString(),y]);
+		drawableLines[1].push([x.toLocaleTimeString(),y1]);
+		if (plotRealTimeChart) {
+			$(plotArea).empty();
+		}
+
+		//console.log(plotChart);
+
+		//plotChart.series[0].data = data;
+		//il problema è che adesso i valori su y delle ticks non sono più statici
+		//e cambiano ad ogni aggiornamento, quindi cambia la logica sottostante
+		// devo intervenire sui valori all'interno di options.
+		//options.axes.xaxis.min = data[0][0];
+		//options.axes.xaxis.max = data[data.length-1][0];
+		//plotChart = $.jqplot (plotArea, [data]);
+		//console.log(drawableLines);
+		plotRealTimeChart(plotArea,drawableLines);
+		setTimeout(doUpdate, t);
 	}
 
 })(jQuery, OC);

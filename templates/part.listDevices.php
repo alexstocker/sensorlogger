@@ -15,7 +15,19 @@
 		<td class="td-data"><?php p($device->getName()); ?></td>
 		<td class="td-data"><?php p($device->getDeviceTypeName()); ?></td>
 		<td class="td-data"><?php p($device->getDeviceGroupName()); ?></td>
-		<td class="td-data"><button class="deviceChart" data-id="<?php p($device->getId()); ?>">Chart</button><button class="deviceListData" data-id="<?php p($device->getId()); ?>">Data</button></td>
+		<td class="td-data">
+			<a href="#" class="deviceChart device-datalist" data-id="<?php p($device->getId()); ?>" title="<?php p($l->t('Device Chart Data')); ?>">
+				<span class="icon icon-datachart"></span>
+			</a>
+			<a href="#" class="deviceListData device-datalist" data-id="<?php p($device->getId()); ?>" title="<?php p($l->t('Device List Data')); ?>">
+				<span class="icon icon-datalist"></span>
+			</a>
+			<a href="#" class="device-delete" title="<?php p($l->t('Delete Device')); ?>">
+				<span class="icon icon-delete"
+					  data-id="<?php p($device->getId()); ?>">
+				</span>
+			</a>
+		</td>
 	</tr>
 <?php } ?>
 	</tbody>
