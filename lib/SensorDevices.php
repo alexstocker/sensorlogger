@@ -118,7 +118,7 @@ class SensorDevices extends Mapper {
 	}
 	
 	public static function deleteDevice($id, IDBConnection $db) {
-		$sql = 'DELETE FROM `oc_sensorlogger_devices` WHERE oc_sensorlogger_devices.id = ?';
+		$sql = 'DELETE FROM `*PREFIX*oc_sensorlogger_devices` WHERE oc_sensorlogger_devices.id = ?';
 		$stmt = $db->prepare($sql);
 		$stmt->bindParam(1, $id);
 		if($stmt->execute()){

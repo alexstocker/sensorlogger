@@ -95,6 +95,11 @@ class ApiSensorLoggerController extends ApiController {
 	protected function insertExtendedLog($array) {
 		$registered = $this->checkRegisteredDevice($array);
 		if($registered) {
+
+			if(!isset($array['date']) || empty($array['date'])) {
+				$array['date'] = date('Y-m-d H:i:s');
+			}
+
 			$deviceId = $array['deviceId'];
 			$dataJson = json_encode($array['data']);
 
