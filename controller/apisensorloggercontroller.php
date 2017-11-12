@@ -120,6 +120,11 @@ class ApiSensorLoggerController extends ApiController {
 				$registered = $this->insertDevice($array);
 			}
 		}
+
+		if(!isset($array['date']) || empty($array['date'])) {
+			$array['date'] = date('Y-m-d H:i:s');
+		}
+
 		if($registered || !isset($array['deviceId'])) {
 			$deviceId = $array['deviceId'] ?: null;
 

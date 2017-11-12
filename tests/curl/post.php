@@ -7,7 +7,8 @@
 	$array = array("deviceId" => "someUUID-fe8c-11e6-bc64-92361f002671",
 					"temperature" => $temperature,
 					"humidity" => $humidity,
-					"date" => date('Y-m-d H:i:s'));
+	//				"date" => date('Y-m-d H:i:s')
+	);
 	$data_json = json_encode($array);
 
 	$username = 'test';
@@ -21,5 +22,6 @@
 	curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$response  = curl_exec($ch);
+	var_dump($response);
 	curl_close($ch);
 ?>
