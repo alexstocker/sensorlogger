@@ -1,28 +1,15 @@
-#SensorLogger (0.0.4)
-* **Enhancement**:
-* dashboard widget (chart)
-* added extended registerDevice (example: ./tests/curl/register.php)
-* added extended createLog (example: ./tests/curl/post_extend.php)
-* added getDataTypes (example: ./tests/curl/getdatatypes.php)
+# SensorLogger
+### (0.0.5) UNRELEASED
+  * Added DeleteDevice action, added Chart zooming ability, added Error some error codes, updated test/curl examples
+  * Added Issue reference #26
+  * Version updated to 0.0.3
+  * Updated README
+  * Updated App image
+  * Added navigationManager, extended API controller and main controller by sharing stuff (to be implemented)
+  * Updated and extend getters/setters, fixed some error
+  * Fixed version
+  * Removed TODO tag
+  * Added TODO
+  * Added deleteWidget
 
-* **Security**: no changes
-* **Backwards incompatible change**: no changes
-* **New dependency**: no changes
-* **Bugfix**: no bugs :-)
-
-#SensorLogger (0.0.2)
-* **Enhancement**:
-* dashboard widget (list and last)
-* chart view
-
-* **Security**: no changes
-* **Backwards incompatible change**: no changes
-* **New dependency**: no changes
-* **Bugfix**: no bugs :-)
-
-#SensorLogger (0.0.1)
-* **Security**: Security description here
-* **Backwards incompatible change**: Changes in the API
-* **New dependency**: New dependencies such as a new ownCloud or PHP version
-* **Bugfix**: Bugfix description
-* **Enhancement**: New feature description
+-- Alexander Stocker
