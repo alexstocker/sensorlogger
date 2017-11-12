@@ -1,7 +1,11 @@
 # SensorLogger
 ### (0.0.5) UNRELEASED
+  * Added suggest from @bargru #33
+  * Added .gitignore and updated CHANGELOG
   * Added DeleteDevice action, added Chart zooming ability, added Error some error codes, updated test/curl examples
   * Added Issue reference #26
+  * Hotfix
+  * Minor changes
   * Version updated to 0.0.3
   * Updated README
   * Updated App image
@@ -11,5 +15,4 @@
   * Removed TODO tag
   * Added TODO
   * Added deleteWidget
-
 -- Alexander Stocker
