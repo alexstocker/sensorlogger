@@ -50,6 +50,30 @@ class DataTypes {
 		return $data;
 	}
 
+	/**
+	 * @param $userId
+	 * @param IDBConnection $db
+	 * @return array
+	 */
+	public static function getDataTypesByUserId($userId, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('*')
+			->from('sensorlogger_data_types')
+			->where('user_id = "'.$userId.'"');
+		$results = $query->execute();
+		$data = [];
+		foreach($results->fetchAll() as $result) {
+			$data[] = DataType::fromRow($result);
+		}
+		return $data;
+	}
+
+	/**
+	 * @param $userId
+	 * @param $deviceId
+	 * @param IDBConnection $db
+	 * @return array
+	 */
 	public static function getDeviceDataTypesByDeviceId($userId, $deviceId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select(array('sdt.id','sdt.description','sdt.type','sdt.short','sdt.type'))
