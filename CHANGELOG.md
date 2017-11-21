@@ -1,5 +1,6 @@
 # SensorLogger
 ### (0.0.5nc) UNRELEASED
+  * Added DeleteDevice action, added Chart zooming ability, added Error some error codes, updated test/curl examples
   * Fixed Issue #27
   * Updated info description
   * Update to 0.0.4 for nextcloud

@@ -794,10 +794,6 @@
 		var t = 10000;
 		var n = 20;
 
-console.log(drawableLines[0].length);
-		//console.log(plotArea);
-
-
 		if(drawableLines[0].length > n-1){
 			drawableLines[0].shift();
 		}

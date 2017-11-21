@@ -4,6 +4,7 @@ script('sensorlogger', array(
 	'jquery.poshytip.min',
 	'jquery-editable-poshytip.min',
 	'jquery.jqplot.min',
+	'plugins/jqplot.cursor.min',
 	'plugins/jqplot.dateAxisRenderer.min',
 	'plugins/jqplot.canvasTextRenderer.min',
 	'plugins/jqplot.canvasAxisTickRenderer.min',
