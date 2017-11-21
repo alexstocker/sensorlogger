@@ -25,7 +25,7 @@ class SensorLogs {
 		$query->select('*')
 			->from('sensorlogger_logs')
 			->where('user_id = "'.$userId.'"')
-			->orderBy('created_at', 'DESC');
+			->orderBy('id', 'DESC');
 		$query->setMaxResults(1);
 		$result = $query->execute();
 
@@ -43,7 +43,7 @@ class SensorLogs {
 			->from('sensorlogger_logs')
 			->where('user_id = "'.$userId.'"')
 			->andWhere('device_uuid = "'.$deviceId.'"')
-			->orderBy('created_at', 'DESC');
+			->orderBy('id', 'DESC');
 		$query->setMaxResults(1);
 		$result = $query->execute();
 
@@ -92,7 +92,7 @@ class SensorLogs {
 			->from('sensorlogger_logs')
 			->where('device_uuid = "'.$uuId.'"')
 			->andWhere('user_id = "'.$userId.'"')
-			->orderBy('created_at', 'DESC');
+			->orderBy('id', 'DESC');
 		$query->setMaxResults($limit);
 		$query->setFirstResult($offset);
 		$result = $query->execute();

@@ -1,11 +1,11 @@
 <?php
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/getdevicedatatypes/';
+	$url = 'http://nextcloud12.loc/index.php/apps/sensorlogger/api/v1/getdevicedatatypes/';
 
-	$array = array("deviceId" => "99999999-786d-400d-bc35-0273a38f664d");
+	$array = array("deviceId" => "87a80561-273d-a1ec-67cf-30a997d92fa6");
 	$data_json = json_encode($array);
 
 	$username = 'test';
-	$token = 'HTFQO-WCNSR-UDEVJ-EPLYE';
+	$token = 'kP4Rf-ZytHM-sqFsc-F25Sk-nra4K';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

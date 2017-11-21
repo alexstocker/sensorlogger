@@ -39,11 +39,14 @@ class Widgets {
 	/**
 	 * @param string $userId
 	 * @param Device $device
-	 * @param IConfig $config
+	 * @parem $config
+	 * @param IConfig $systemConfig
 	 * @param IDBConnection $connection
 	 * @return Widget
 	 */
-	public static function build($userId, $device, $config, $connection) {
+	public static function build($userId, $device, $config, $connection, $systemConfig) {
+		$userTimeZone = $systemConfig->getUserValueForUsers('core','timezone',[$userId]);
+
 		$widget = new Widget();
 
 		$log = '';
@@ -52,6 +55,7 @@ class Widgets {
 				$log = SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $connection);
 				break;
 			case 'chart':
+				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection);
 				break;
 			case 'list':
 				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection,10);

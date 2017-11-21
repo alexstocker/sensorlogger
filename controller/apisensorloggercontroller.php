@@ -2,19 +2,25 @@
 
 namespace OCA\SensorLogger\Controller;
 
+use Guzzle\Plugin\ErrorResponse\Exception\ErrorResponseException;
 use OC\OCS\Exception;
 use OC\OCS\Result;
 use OC\Share\Share;
+use OCA\SensorLogger\DataType;
 use OCA\SensorLogger\DataTypes;
+use OCA\SensorLogger\Error;
 use OCA\SensorLogger\SensorDevices;
 use OCP\API;
 use OCP\AppFramework\ApiController;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
+use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
@@ -36,6 +42,8 @@ class ApiSensorLoggerController extends ApiController {
 	private $groupManager;
 	/** @var IUserManager */
 	private $userManager;
+	/** @var IUser */
+	private $currentUser;
 	/** @var IL10N */
 	private $l;
 
@@ -87,6 +95,11 @@ class ApiSensorLoggerController extends ApiController {
 	protected function insertExtendedLog($array) {
 		$registered = $this->checkRegisteredDevice($array);
 		if($registered) {
+
+			if(!isset($array['date']) || empty($array['date'])) {
+				$array['date'] = date('Y-m-d H:i:s');
+			}
+
 			$deviceId = $array['deviceId'];
 			$dataJson = json_encode($array['data']);
 
@@ -112,6 +125,11 @@ class ApiSensorLoggerController extends ApiController {
 				$registered = $this->insertDevice($array);
 			}
 		}
+
+		if(!isset($array['date']) || empty($array['date'])) {
+			$array['date'] = date('Y-m-d H:i:s');
+		}
+
 		if($registered || !isset($array['deviceId'])) {
 			$deviceId = $array['deviceId'] ?: null;
 
@@ -136,17 +154,97 @@ class ApiSensorLoggerController extends ApiController {
 	 * @CORS
 	 */
 	public function registerDevice() {
-		if(!$this->checkRegisteredDevice($this->request->getParams()) &&
-			$this->checkRegisteredDevice($this->request->getParams()) !== null) {
+		$params = $this->request->getParams();
+		$paramErrors = $this->checkRequestParams($params);
+		if((!$this->checkRegisteredDevice($this->request->getParams()) &&
+			$this->checkRegisteredDevice($this->request->getParams()) !== null) &&
+			empty($paramErrors)) {
 
 			$lastInsertId = $this->insertDevice($this->request->getParams());
 			if(is_int($lastInsertId)) {
-				$this->checkRequestParams($lastInsertId,$this->request->getParams());
+				$deviceTypeId = $this->insertDeviceType($this->request->getParams());
+				if(is_int($deviceTypeId)) {
+					try {
+						SensorDevices::updateDevice($lastInsertId,'type_id',(string)$deviceTypeId,$this->db);
+					} catch (\Exception $e) {}
+				}
+				$deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
+				if(is_int($deviceGroupId)) {
+					try {
+						SensorDevices::updateDevice($lastInsertId,'group_id',$deviceGroupId,$this->db);
+					} catch (\Exception $e) {}
+				}
+				$deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
+				if(is_int($deviceGroupParentId)) {
+					try {
+						SensorDevices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
+					} catch (\Exception $e) {
+					}
+				}
+
+				foreach($params['deviceDataTypes'] as $key => $array){
+					$availableDataTypes = DataTypes::getDataTypesByUserId($this->userId,$this->db);
+					/** @var DataType $availableDataType */
+					foreach($availableDataTypes as $availableDataType) {
+						if($availableDataType->getShort() === $array['unit'] && $availableDataType->getType() === $array['type']) {
+							$dataTypeId = $availableDataType->getId();
+							if(is_int($dataTypeId)) {
+								$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
+							}
+							continue 2;
+						}
+					}
+					$dataTypeId = $this->insertDataTypes($array);
+					if(is_int($dataTypeId)) {
+						$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
+					}
+				}
+				return $this->requestResponse(true,Http::STATUS_OK,'Device successfully registered');
 			}
+		} else if(!empty($paramErrors)){
+			$messages = [];
+			foreach($paramErrors as $error => $paramError) {
+				$messages[] = $paramError;
+			}
+			return $this->requestResponse(false,Error::MISSING_PARAM,implode(',',$messages));
 		} else {
-			return true;
+			return $this->requestResponse(false,Error::DEVICE_EXISTS,'Device already exists!');
 		}
-		return false;
+
+		return $this->requestResponse(false,Error::UNKNOWN,'RegisterDevice failed due UNKNOWN reason. Sorry.');
+	}
+
+	/**
+	 * @param bool $success
+	 * @param int|null $code
+	 * @param string|null $message
+	 * @param array|null $data
+	 * @return Error|JSONResponse
+	 * @throws \Exception
+	 */
+	protected function requestResponse($success, $code = null, $message = null, $data = []) {
+		if(!$success) {
+			if($code === null) {
+				$code = Error::UNKNOWN;
+			}
+			$response = new JSONResponse();
+			$array = [
+				'success' => false,
+				'error' => ['code' => $code,
+					'message' => $message
+				]
+			];
+		} else {
+			$response = new JSONResponse();
+			$array = [
+				'success' => true,
+				'message' => $message,
+				'data' => $data
+			];
+
+		}
+		$response->setData($array)->render();
+		return $response;
 	}
 
 	/**
@@ -216,42 +314,22 @@ class ApiSensorLoggerController extends ApiController {
 	}
 
 	/**
-	 * @param int $deviceId
-	 * @param array $params
+	 * @param $params
+	 * @return bool|JSONResponse
 	 */
-	protected function checkRequestParams($deviceId,$params) {
-		if(isset($params['deviceType']) && !empty($params['deviceType'])) {
-			$deviceTypeId = $this->insertDeviceType($params);
-			if(is_int($deviceTypeId)) {
-				try {
-					SensorDevices::updateDevice($deviceId,'type_id',(string)$deviceTypeId,$this->db);
-				} catch (\Exception $e) {}
-			}
+	protected function checkRequestParams($params) {
+		$paramErrors = [];
+		if(!isset($params['deviceType']) || empty($params['deviceType'])) {
+			$paramErrors[] = 'Param deviceType missing!';
 		}
-		if(isset($params['deviceGroup']) && !empty($params['deviceGroup'])) {
-			$deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
-			if(is_int($deviceGroupId)) {
-				try {
-				SensorDevices::updateDevice($deviceId,'group_id',$deviceGroupId,$this->db);
-				} catch (\Exception $e) {}
-			}
+		if(!isset($params['deviceGroup']) || empty($params['deviceGroup'])) {
+			$paramErrors[] = 'Param deviceGroup missing!';
 		}
-		if(isset($params['deviceParentGroup']) && !empty($params['deviceParentGroup'])) {
-			$deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
-			if(is_int($deviceGroupParentId)) {
-				try {
-					SensorDevices::updateDevice($deviceId, 'group_parent_id', $deviceGroupParentId, $this->db);
-				} catch (\Exception $e) {
-				}
-			}
+		if(!isset($params['deviceParentGroup']) || empty($params['deviceParentGroup'])) {
+			$paramErrors[] = 'Param deviceParentGroup missing!';
 		}
-		if(isset($params['deviceDataTypes']) && is_array($params['deviceDataTypes'])) {
-			foreach($params['deviceDataTypes'] as $array){
-				$dataTypeId = $this->insertDataTypes($array);
-				if(is_int($dataTypeId)) {
-					$this->insertDeviceDataTypes($deviceId,$dataTypeId);
-				}
-			}
+		if(!isset($params['deviceDataTypes']) || empty($params['deviceDataTypes'])) {
+			$paramErrors[] = 'Param deviceDataTypes missing!';
 		}
 	}
 
@@ -418,12 +496,31 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return bool
 	 */
 	protected function canAccessShare(IShare $share) {
-
-		# TODO [GH21] Add apisensorloggercontroller::canAccessShare
-		
+		// A file with permissions 0 can't be accessed by us. So Don't show it
 		if ($share->getPermissions() === 0) {
 			return false;
 		}
+
+		// Owner of the file and the sharer of the file can always get share
+		if ($share->getShareOwner() === $this->currentUser->getUID() ||
+			$share->getSharedBy() === $this->currentUser->getUID()
+		) {
+			return true;
+		}
+
+		// If the share is shared with you (or a group you are a member of)
+		if ($share->getShareType() === Share::SHARE_TYPE_USER &&
+			$share->getSharedWith() === $this->currentUser->getUID()) {
+			return true;
+		}
+
+		if ($share->getShareType() === Share::SHARE_TYPE_GROUP) {
+			$sharedWith = $this->groupManager->get($share->getSharedWith());
+			if (!is_null($sharedWith) && $sharedWith->inGroup($this->currentUser)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 

@@ -83,4 +83,18 @@ class Log extends Entity implements \JsonSerializable {
 		
 		$this->data = $array;
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getCreatedAt() {
+		return $this->createdAt;
+	}
+
+	/**
+	 * @param mixed $createdAt
+	 */
+	public function setCreatedAt($createdAt) {
+		$this->createdAt = $createdAt;
+	}
 }

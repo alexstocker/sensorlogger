@@ -82,7 +82,9 @@ class SensorLoggerController extends Controller {
 	public function index() {
 		$templateName = 'main';
 		$widgets = $this->getWidgets();
-		
+
+
+
 		$parameters = array(
 				'part' => 'dashboard',
 				'widgets' => $widgets,
@@ -193,7 +195,7 @@ class SensorLoggerController extends Controller {
 				if($widgetConfig === null) {
 					continue;
 				}
-				$buildWidget = Widgets::build($this->userId, $device, $widgetConfig, $this->connection);
+				$buildWidget = Widgets::build($this->userId, $device, $widgetConfig, $this->connection, $this->config);
 				$widgets[] = $buildWidget;
 			}
 		}
@@ -264,10 +266,28 @@ class SensorLoggerController extends Controller {
 
 	/**
 	 * @NoAdminRequired
+	 * @param $id
+	 * @return DataResponse
+	 */
+	public function deleteDevice($id) {
+		try {
+			SensorDevices::deleteDevice($id,$this->connection);
+			return $this->returnJSON(array('success' => true));
+		} catch (Exception $e) {
+			return $this->returnJSON(array('success' => false));
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
 	 * @param int $id
 	 * @return TemplateResponse
 	 */
 	public function showDeviceData($id) {
+
+		# TODO [GH26] Rework sensorloggercontroller::showDeviceData
+		# and rework template too
+		
 		$templateName = 'part.list';  // will use templates/main.php
 		$logs = $this->getDeviceData($id);
 		$parameters = array('part' => 'list','logs' => $logs);
@@ -451,9 +471,8 @@ class SensorLoggerController extends Controller {
 	 * @return string
 	 */
 	protected function getChartData($id) {
-		$limit = $this->request->getParam('limit') ?: 1000;
 		$device = SensorDevices::getDevice($this->userId,$id,$this->connection);
-		$logs = SensorLogs::getLogsByUuId($this->userId,$device->getUuid(),$this->connection,$limit);
+		$logs = SensorLogs::getLogsByUuId($this->userId,$device->getUuid(),$this->connection);
 		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userId,$device->getId(),$this->connection);
 		if(is_array($dataTypes) && !empty($dataTypes)) {
 			$logs = array('logs' => $logs, 'dataTypes' => $dataTypes);

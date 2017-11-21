@@ -8,38 +8,20 @@
  * @copyright ELExG 2017
  */
 
-(function( $ ) {
-	$.fn.dashBoardWidgets = function(options) {
-		//console.log(this);
-		var settings = $.extend({
-			type: "last"
-		}, options );
 
-		if (settings.type === "last") {
-
-		} else if (settings.type === "list") {
-
-		} else if (settings.type === "chart") {
-
-				return settings.action;
-		} else {}
-	};
-
-	$.fn.dashBoardChart = function(options) {
-		var settings = $.extend({
-			plotArea: $('div#chart'),
-			id: $(plotArea).data('id'),
-			url: OC.generateUrl('/apps/sensorlogger/chartData/' + id)
-	}, options );
-
-	}
-})( jQuery );
 
 (function ($, OC) {
-	
-	$(document).ready(function () {
-		var sidebar = $('#app-sidebar')
+
+	$(function () {
+		var sidebar = $('#app-sidebar');
 		var saveBtn = $('#save-btn');
+		var showList = $('#showList');
+		var showDashboard = $('#showDashboard');
+		var deviceList = $('#deviceList');
+		var deviceTypeList = $('#deviceTypeList');
+		var deviceGroupList = $('#deviceGroupList');
+		var dataTypeList = $('#dataTypeList');
+		var appContentWrapper = $('#app-content-wrapper');
 		var notification = $("#notification");
 
 		var _onClickAction = function(event) {
@@ -54,61 +36,61 @@
 			saveBtn.hide();
 		};
 
-		$('#showList').click(function (e) {
+		showList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/showList');
 			$.post(url).success(function (response) {
-				$('#app-content-wrapper').empty().append(response);
+				appContentWrapper.empty().append(response);
 			});
 		});
 
-		$('#showDashboard').click(function (e) {
+		showDashboard.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/showDashboard');
 			$.post(url).success(function (response) {
-				$('#app-content-wrapper').empty().append(response);
+				appContentWrapper.empty().append(response);
 				dashboardWidgets(e);
 			});
 		});
 
-		$('#deviceList').click(function (e) {
+		deviceList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceList');
 			$.post(url).success(function (response) {
-				$('#app-content-wrapper').empty().append(response);
+				appContentWrapper.empty().append(response);
 			});
 
 		});
 
-		$('#deviceTypeList').click(function (e) {
+		deviceTypeList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceTypeList');
 			$.post(url).success(function (response) {
-				$('#app-content-wrapper').empty().append(response);
+				appContentWrapper.empty().append(response);
 			});
 
 		});
 
-		$('#deviceGroupList').click(function (e) {
+		deviceGroupList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceGroupList');
 			$.post(url).success(function (response) {
-				$('#app-content-wrapper').empty().append(response);
+				appContentWrapper.empty().append(response);
 			});
 
 		});
 
-		$('#dataTypeList').click(function (e) {
+		dataTypeList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/dataTypeList');
 			$.post(url).success(function (response) {
-				$('#app-content-wrapper').empty().append(response);
+				appContentWrapper.empty().append(response);
 			});
 
 		});
 
 
-		$('#app-content-wrapper').on('click','.deviceChart',function (e) {
+		appContentWrapper.on('click','.deviceChart',function (e) {
 			sidebar.hide();
 			saveBtn.hide();
 			var id = $(this).data('id');
@@ -117,20 +99,21 @@
 				$('#app-content-wrapper').empty().append(response);
 				var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
 				loadChart($('div#chart'),$('div#chart').data('id'),dataUrl);
+
 			});
 		});
 
-		$('#app-content-wrapper').on('click','.deviceListData',function (e) {
+		appContentWrapper.on('click','.deviceListData',function (e) {
 			sidebar.hide();
 			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+id);
 			$.post(url).success(function (response) {
-				$('#app-content-wrapper').empty().append(response);
+				appContentWrapper.empty().append(response);
 			});
 		});
 
-		$(document.body).on('click','a.delete',function (e) {
+		appContentWrapper.on('click','a.widget-delete',function (e) {
 			var id = $(e.target).data('id');
 			var container = $(e.target).closest('div.column');
 			var url = OC.generateUrl('/apps/sensorlogger/deleteWidget/'+id);
@@ -142,8 +125,20 @@
 			});
 		});
 
+		appContentWrapper.on('click','a.device-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDevice/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Device deleted'));
+				}
+			});
+		});
 
-		$(document.body).on('click','.icon-close',function(e) {
+
+		sidebar.on('click','.icon-close',function(e) {
 			sidebar.hide();
 			saveBtn.hide();
 		});
@@ -167,7 +162,7 @@
 							$(this).editable('option', 'pk', data.id);
 							$(sidebar).hide();
 							OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
-							$("#showDashboard").trigger('click');
+							showDashboard.trigger('click');
 
 						} else if(data && data.errors){
 							OC.Notification.showTemporary(t('sensorlogger', data.errors));
@@ -298,15 +293,14 @@
 					var id = $(this).children().data('id');
 					var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
 					var chartContainer = $(this).children().find('.chartcontainer');
-					var data = {"limit":10};
+					var data = {"limit":1280};
+					plotArea = chartContainer;
 					loadChart(chartContainer,id,dataUrl,data);
 				}
 			});
-
-
 		};
 
-		$('#app-content-wrapper').on('click','.deviceEdit',function(e) {
+		appContentWrapper.on('click','.deviceEdit',function(e) {
 			var target = $(e.target);
 			if(e.target.nodeName != 'TD') {
 				return;
@@ -517,11 +511,10 @@
 		});
 		dashboardWidgets();
 	});
+	var drawableLines;
+	var plotArea;
 
 	var loadChart = function(plotArea,id,url,data) {
-		//var plotArea = area;
-		//var id = $(plotArea).data('id');
-		//var url = OC.generateUrl('/apps/sensorlogger/chartData/' + id);
 		$.getJSON(url,data,"json").success(function(data) {
 			var dataLines = [];
 			var serieslabel = [];
@@ -532,8 +525,13 @@
 				if (data.logs[0] && data.logs[0].data.length > 0) {
 					var lines = data.logs[0].data;
 					$.each(data.dataTypes, function (index, item) {
-						serieslabel.push(['label', item.description])
+						serieslabel.push(
+							{
+								'series':item
+							}
+						)
 					});
+					//console.log(serieslabel);
 					for (var i = 0; i < lines.length; i++) {
 						dataLines[i] = [];
 						$.each(data.logs, function (index, item) {
@@ -545,8 +543,6 @@
 								dataLines[i].push([xaxis, parseFloat(ydata)])
 							}
 						});
-
-						console.log(plotArea.parent().hasClass('widget'));
 
 						var clonedPlotArea = plotArea.clone();
 						if(plotArea.parent().hasClass('widget')) {
@@ -614,7 +610,7 @@
 				}
 			}
 
-			var drawableLines = [];
+			drawableLines = [];
 			if(dataLines.length < 1) {
 				$.each(data, function (index, item) {
 					line1.push([item.createdAt, parseFloat(item.temperature)])
@@ -626,68 +622,210 @@
 				drawableLines = dataLines;
 			}
 
+
 			try {
-				var plot1 = $.jqplot($(plotArea).attr('id'),drawableLines,{
-					//title: 'GRAPT TITLE',
-					axes: {
-						xaxis:{
-							//label:"x axis",
-							renderer:$.jqplot.DateAxisRenderer,
-							tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-							tickOptions:{formatString:'%H:%M:%S', angle: -45}
-						},
-						yaxis:{
-							tickOptions:{
-								formatString:'%.2f'
-							}
-						}
-					},
-					highlighter: {
-						show: true,
-						sizeAdjust: 7.5
-					},
-					series: [
-						{
-							yaxis: 'yaxis',
-							tickInterval: 0.5,
-							showMarker:false,
-							label: 'Temperature [°C]',
-							color: 'red'
-							//markerOptions: {size: 2, style: "x"}
-						},{
-							yaxis: 'y2axis',
-							showMarker:false,
-							tickInterval: 1,
-							label: 'Humidity [%]',
-							color: 'blue'
-							//markerOptions: {style:"circle"}
-						},
-						{yaxis: 'yaxis'},
-						{yaxis: 'y2axis'},
-					],
-					seriesDefaults: {
-						rendererOptions: { smooth: false }
-					},
-					axesDefaults: {
-						labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-					},
-					legend:{
-						renderer: $.jqplot.EnhancedLegendRenderer,
-						show: true,
-						showLabels: true,
-						//location: 's	',
-						placement: 'inside',
-						fontSize: '11px',
-						fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
-						rendererOptions: {
-							seriesToggle: 'normal'
-						}
-					}
+				plotRealTimeChart(plotArea,drawableLines,serieslabel);
+
+				$("a#toggle_realtime").on('click',function(){
+					plotArea = $(this).attr('data-plotarea');
+					doUpdate();
 				});
 			} catch (err) {
 				$(plotArea).html(err);
 			}
 		});
 	};
+
+	function getRandomArbitrary(min, max) {
+		return Math.random() * (max - min) + min;
+	}
+
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	var data = drawableLines;
+
+	var plotChart = function(plotArea,drawableLines) {
+		$.jqplot($(plotArea).attr('id'),drawableLines,{
+			//title: 'GRAPT TITLE',
+			axes: {
+				xaxis:{
+					//label:"x axis",
+					renderer:$.jqplot.DateAxisRenderer,
+					tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+					tickOptions:{formatString:'%H:%M:%S', angle: -45}
+				},
+				yaxis:{
+					tickOptions:{
+						formatString:'%.2f'
+					}
+				}
+			},
+			highlighter: {
+				show: true,
+				sizeAdjust: 7.5
+			},
+			series: [
+				{
+					yaxis: 'yaxis',
+					tickInterval: 0.5,
+					showMarker:false,
+					label: 'Temperature [°C]',
+					color: 'red'
+					//markerOptions: {size: 2, style: "x"}
+				},{
+					yaxis: 'y2axis',
+					showMarker:false,
+					tickInterval: 1,
+					label: 'Humidity [%]',
+					color: 'blue'
+					//markerOptions: {style:"circle"}
+				},
+				{yaxis: 'yaxis'},
+				{yaxis: 'y2axis'},
+			],
+			seriesDefaults: {
+				rendererOptions: { smooth: false }
+			},
+			axesDefaults: {
+				labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+			},
+			legend:{
+				renderer: $.jqplot.EnhancedLegendRenderer,
+				show: true,
+				showLabels: true,
+				//location: 's	',
+				placement: 'inside',
+				fontSize: '11px',
+				fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+				rendererOptions: {
+					seriesToggle: 'normal'
+				}
+			}
+		});
+	};
+
+	var plotRealTimeChart = function(plotArea,drawableLines,labels) {
+		var series = [];
+		if(labels.length > 0) {
+			//console.log(labels);
+			for (var label in labels) {
+				var serie = {
+					yaxis: 'yaxis',
+					tickInterval: 1,
+					showMarker:true,
+					label: labels[label].series.description+' ['+labels[label].series.type+']'
+				};
+				series.push(serie);
+			}
+
+
+		} else {
+			series = [
+				{
+					yaxis: 'yaxis',
+					tickInterval: 0.5,
+					showMarker:false,
+					label: 'Temperature [°C]',
+					color: 'red'
+					//markerOptions: {size: 2, style: "x"}
+				},{
+					yaxis: 'y2axis',
+					showMarker:false,
+					tickInterval: 1,
+					label: 'Humidity [%]',
+					color: 'blue'
+					//markerOptions: {style:"circle"}
+				},
+				{yaxis: 'yaxis'},
+				{yaxis: 'y2axis'},
+			]
+		}
+		var plot = $.jqplot($(plotArea).attr('id'),drawableLines,{
+			axes: {
+				xaxis:{
+					//label:"x axis",
+					renderer:$.jqplot.DateAxisRenderer,
+					tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+					tickOptions:{formatString:'%H:%M:%S', angle: -10}
+				},
+				yaxis:{
+					tickOptions:{
+						formatString:'%.2f'
+					}
+				}
+			},
+			highlighter: {
+				show: true,
+				sizeAdjust: 7.5
+			},
+			series: series,
+			cursor: {
+				show: true,
+				tooltipLocation:'sw',
+				zoom:true
+			},
+			seriesDefaults: {
+				rendererOptions: { smooth: false }
+			},
+			axesDefaults: {
+				labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+			},
+			legend:{
+				renderer: $.jqplot.EnhancedLegendRenderer,
+				show: true,
+				showLabels: true,
+				//location: 's	',
+				placement: 'inside',
+				fontSize: '11px',
+				fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+				rendererOptions: {
+					seriesToggle: 'normal'
+				}
+			}
+		});
+		$('a#zoom_reset').click(function() { plot.resetZoom() });
+	};
+
+
+
+	function doUpdate() {
+		var t = 10000;
+		var n = 20;
+
+console.log(drawableLines[0].length);
+		//console.log(plotArea);
+
+
+		if(drawableLines[0].length > n-1){
+			drawableLines[0].shift();
+		}
+
+		var y = getRandomArbitrary(10,39);
+		var y1 = getRandomInt(1,100);
+		var x = new Date();
+
+	//	console.log(x.toLocaleTimeString());
+
+		drawableLines[0].push([x.toLocaleTimeString(),y]);
+		drawableLines[1].push([x.toLocaleTimeString(),y1]);
+		if (plotRealTimeChart) {
+			$(plotArea).empty();
+		}
+
+		//console.log(plotChart);
+
+		//plotChart.series[0].data = data;
+		//il problema è che adesso i valori su y delle ticks non sono più statici
+		//e cambiano ad ogni aggiornamento, quindi cambia la logica sottostante
+		// devo intervenire sui valori all'interno di options.
+		//options.axes.xaxis.min = data[0][0];
+		//options.axes.xaxis.max = data[data.length-1][0];
+		//plotChart = $.jqplot (plotArea, [data]);
+		//console.log(drawableLines);
+		plotRealTimeChart(plotArea,drawableLines);
+		setTimeout(doUpdate, t);
+	}
 
 })(jQuery, OC);

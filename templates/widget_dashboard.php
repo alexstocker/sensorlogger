@@ -1,12 +1,20 @@
 <?php $widgets = $_['widgets']; ?>
 <?php if($widgets) { ?>
-
 	<?php foreach ($widgets as $widget) { ?>
 
 		<div id="column-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="column">
 			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="widget dashboard-widget dragbox" data-id="<?php p($widget->getDeviceId()); ?>" data-widget-type="<?php p($widget->getType()); ?>">
 				<h2 class="widget-header ui-widget-header"><?php p($widget->getName()); ?>
-					<a href="#" class="delete opIcons"><span class="icon icon-delete-white" data-id="widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"></span></a>
+					<?php if($widget->getType() === 'chart') { ?>
+						<a href="#" id="zoom_reset" title="<?php p($l->t('Reset Chart')); ?>" class="reset opIcons">
+							<span class="icon icon-reset-white"></span>
+						</a>
+					<?php } ?>
+					<a href="#" class="widget-delete opIcons" title="<?php p($l->t('Delete Widget')); ?>">
+						<span class="icon icon-delete-white"
+							  data-id="widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
+						</span>
+					</a>
 				</h2>
 
 				<div class="section <?php p($widget->getType()); ?>">
@@ -84,6 +92,9 @@
 						<div class="widget widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
 							<?php //var_dump($widget)//$device = $_['device'] ?>
 							<div id="widget-plotArea-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="chartcontainer" data-id="<?php p($widget->getDeviceId()); ?>"></div>
+						</div>
+						<div>
+
 						</div>
 					<?php } ?>
 				</div>
