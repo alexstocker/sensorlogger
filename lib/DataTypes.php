@@ -89,4 +89,13 @@ class DataTypes {
 
 		return $data;
 	}
+
+	public static function deleteDeviceDataTypesByDeviceId($deviceId, IDBConnection $db) {
+        $sql = 'DELETE FROM `*PREFIX*sensorlogger_device_data_types` WHERE *PREFIX*sensorlogger_device_data_types.device_id = ?';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(1, $deviceId);
+        if($stmt->execute()){
+            return true;
+        }
+    }
 }

@@ -12,7 +12,7 @@ function genUniquID() {
 	return $uuid;
 }
 
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
 
 	$registerArray = [
 		'_route' => 'sensorlogger.apisensorlogger.registerDevice',
@@ -56,7 +56,7 @@ function genUniquID() {
 	$data_json = json_encode($registerArray);
 
 	$username = 'test';
-	$token = 'KXUSU-QSDOK-KBPSC-XMZRA';
+	$token = 'MDBFK-CLTDQ-JUDHW-AKJLB';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

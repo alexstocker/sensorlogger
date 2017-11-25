@@ -9,9 +9,11 @@ script('sensorlogger', array(
 	'plugins/jqplot.canvasTextRenderer.min',
 	'plugins/jqplot.canvasAxisTickRenderer.min',
 	'plugins/jqplot.highlighter.min',
-	'plugins/jqplot.enhancedLegendRenderer.min'
+	'plugins/jqplot.enhancedLegendRenderer.min',
+    //'select2'
 ));
 style('sensorlogger', 'style');
+style('sensorlogger', 'select2');
 style('sensorlogger', 'jquery-editable');
 
 # TODO [GH11] Rebuild JS
@@ -20,10 +22,10 @@ style('sensorlogger', 'jquery-editable');
 //\OC_Util::addScript('sensorlogger','app');
 //\OC_Util::addScript('sensorlogger','navigation');
 //\OC_Util::addScript('sensorlogger','deviceactions');
+vendor_style('select2/select2');
+vendor_script('select2/select2');
 
-\OCP\Util::addScript('core','../core/vendor/select2/select2');
-\OCP\Util::addStyle('core','../core/vendor/select2/select2');
-\OCP\Util::addScript('select2-toggleselect');
+
 ?>
 <div id="app">
 	<div id="app-navigation">

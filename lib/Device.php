@@ -18,6 +18,7 @@ class Device extends Entity implements \JsonSerializable {
 	protected $deviceTypeName;
 	protected $deviceGroupName;
 	protected $deviceGroupParentName;
+	protected $isDeletable;
 
 	public function __construct() {
 		$this->addType('uuid', 'string');
@@ -29,6 +30,7 @@ class Device extends Entity implements \JsonSerializable {
 		$this->addType('deviceTypeName', 'string');
 		$this->addType('deviceGroupName', 'string');
 		$this->addType('deviceGroupParentName', 'string');
+		$this->addType('isDeletable', 'boolean');
 	}
 
 	/**
@@ -61,4 +63,20 @@ class Device extends Entity implements \JsonSerializable {
 	public function setUuid($uuid) {
 		$this->uuid = $uuid;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getIsDeletable()
+    {
+        return $this->isDeletable;
+    }
+
+    /**
+     * @param mixed $isDeletable
+     */
+    public function setIsDeletable($isDeletable)
+    {
+        $this->isDeletable = $isDeletable;
+    }
 }
