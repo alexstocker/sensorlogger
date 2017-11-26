@@ -9,11 +9,9 @@ script('sensorlogger', array(
 	'plugins/jqplot.canvasTextRenderer.min',
 	'plugins/jqplot.canvasAxisTickRenderer.min',
 	'plugins/jqplot.highlighter.min',
-	'plugins/jqplot.enhancedLegendRenderer.min',
-    //'select2'
+	'plugins/jqplot.enhancedLegendRenderer.min'
 ));
 style('sensorlogger', 'style');
-style('sensorlogger', 'select2');
 style('sensorlogger', 'jquery-editable');
 
 # TODO [GH11] Rebuild JS

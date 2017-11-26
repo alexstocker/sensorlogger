@@ -10,7 +10,6 @@
 	</thead>
 	<tbody id="deviceList">
 <?php foreach($_['devices'] as $device){ ?>
-    <?php //var_dump($device); ?>
 	<tr data-id="<?php p($device->getId()); ?>" data-type="dir" class="deviceEdit">
         <td class="td-data">
             <a href="#" class="deviceChart device-datalist" data-id="<?php p($device->getId()); ?>" title="<?php p($l->t('Device Chart Data')); ?>">

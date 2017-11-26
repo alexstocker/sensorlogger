@@ -1,8 +1,7 @@
 # SensorLogger
 ### (0.0.5) UNRELEASED
-
+  * Fixed missing Select2 on oc v10.0.3, added DataTypes::deleteDeviceDataTypesByDeviceId, SensorDevices::isDeletable
   * Added missing DataTypes::getDataTypesByUserId
-  * Updated CHANGELOG
   * Added suggest from @bargru #33
   * Added .gitignore and updated CHANGELOG
   * Added DeleteDevice action, added Chart zooming ability, added Error some error codes, updated test/curl examples
