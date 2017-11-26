@@ -1,5 +1,5 @@
 # SensorLogger
-### (0.0.5) UNRELEASED
+### (0.0.5)
   * Fixed missing Select2 on oc v10.0.3, added DataTypes::deleteDeviceDataTypesByDeviceId, SensorDevices::isDeletable
   * Added missing DataTypes::getDataTypesByUserId
   * Added suggest from @bargru #33

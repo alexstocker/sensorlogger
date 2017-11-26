@@ -1,7 +1,6 @@
 # Sensor Logger
 
-Upcomming Version: v0.0.5
-Latest Version: v0.0.4.1
+Latest Version: [0.0.5](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.5)
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
