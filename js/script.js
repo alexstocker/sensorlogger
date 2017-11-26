@@ -133,6 +133,8 @@
 				if(response.success) {
 					container.remove();
 					OC.Notification.showTemporary(t('sensorlogger', 'Device deleted'));
+				} else {
+                    OC.Notification.showTemporary(t('sensorlogger', 'Device NOT deleted'));
 				}
 			});
 		});

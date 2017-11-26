@@ -5,6 +5,7 @@ namespace OCA\SensorLogger\Controller;
 use OC\OCS\Exception;
 use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\DataTypes;
+use OCA\SensorLogger\Device;
 use OCA\SensorLogger\DeviceTypes;
 use OCA\SensorLogger\SensorDevices;
 use OCA\SensorLogger\SensorGroups;
@@ -103,7 +104,7 @@ class SensorLoggerController extends Controller {
 	protected function getNavigationItems() {
 		$navItems = \OCA\SensorLogger\App::getNavigationManager()->getAll();
 		usort($navItems, function($item1, $item2) {
-				return $item1['order'] - $item2['order'];
+			return $item1['order'] - $item2['order'];
 		});
 
 		foreach($navItems as $navIdx => $navValues) {
@@ -269,13 +270,16 @@ class SensorLoggerController extends Controller {
 	 * @param $id
 	 * @return DataResponse
 	 */
-	public function deleteDevice($id) {
-		try {
-			SensorDevices::deleteDevice($id,$this->connection);
-			return $this->returnJSON(array('success' => true));
-		} catch (Exception $e) {
-			return $this->returnJSON(array('success' => false));
-		}
+	public function deleteDevice($id)
+    {
+        if (SensorDevices::isDeletable($this->userId, (int)$id, $this->connection)) {
+            try {
+                SensorDevices::deleteDevice((int)$id, $this->connection);
+                DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
+                return $this->returnJSON(array('success' => true));
+            } catch (Exception $e) {}
+        }
+        return $this->returnJSON(array('success' => false));
 	}
 
 	/**

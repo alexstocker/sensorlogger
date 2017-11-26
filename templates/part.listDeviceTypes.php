@@ -1,3 +1,4 @@
+<div class="content-wrapper">
 <table id="sensorDeviceTypesTable" style="width: 100%;">
 	<thead>
 		<th id="id"><span class="th-header">#</span></th>
@@ -25,3 +26,4 @@
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
 	</div>
 <?php } ?>
+</div>

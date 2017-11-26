@@ -72,6 +72,16 @@ class SensorDevices extends Mapper {
 		return $data;
 	}
 
+	public static function isDeletable($userId, $id, IDBConnection $db) {
+        	/** @var Device $device */
+        	$device = SensorDevices::getDevice($userId, (int)$id, $db);
+		if(SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $db)) {
+		    return false;
+		} else {
+		    return true;
+		}
+    	}
+
 	public static function getDeviceByUuid($userId, $uuid, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
@@ -118,7 +128,7 @@ class SensorDevices extends Mapper {
 	}
 	
 	public static function deleteDevice($id, IDBConnection $db) {
-		$sql = 'DELETE FROM `*PREFIX*oc_sensorlogger_devices` WHERE oc_sensorlogger_devices.id = ?';
+		$sql = 'DELETE FROM `*PREFIX*sensorlogger_devices` WHERE *PREFIX*sensorlogger_devices.id = ?';
 		$stmt = $db->prepare($sql);
 		$stmt->bindParam(1, $id);
 		if($stmt->execute()){

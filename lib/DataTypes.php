@@ -50,30 +50,30 @@ class DataTypes {
 		return $data;
 	}
 
-    /**
-     * @param $userId
-     * @param IDBConnection $db
-     * @return array
-     */
-    public static function getDataTypesByUserId($userId, IDBConnection $db) {
-        $query = $db->getQueryBuilder();
-        $query->select('*')
-            ->from('sensorlogger_data_types')
-            ->where('user_id = "'.$userId.'"');
-        $results = $query->execute();
-        $data = [];
-        foreach($results->fetchAll() as $result) {
-            $data[] = DataType::fromRow($result);
-        }
-        return $data;
-    }
+	/**
+	 * @param $userId
+	 * @param IDBConnection $db
+	 * @return array
+	 */
+	public static function getDataTypesByUserId($userId, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('*')
+			->from('sensorlogger_data_types')
+			->where('user_id = "'.$userId.'"');
+		$results = $query->execute();
+		$data = [];
+		foreach($results->fetchAll() as $result) {
+			$data[] = DataType::fromRow($result);
+		}
+		return $data;
+	}
 
-    /**
-     * @param $userId
-     * @param $deviceId
-     * @param IDBConnection $db
-     * @return array
-     */
+	/**
+	 * @param $userId
+	 * @param $deviceId
+	 * @param IDBConnection $db
+	 * @return array
+	 */
 	public static function getDeviceDataTypesByDeviceId($userId, $deviceId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select(array('sdt.id','sdt.description','sdt.type','sdt.short','sdt.type'))
@@ -89,4 +89,13 @@ class DataTypes {
 
 		return $data;
 	}
+
+	public static function deleteDeviceDataTypesByDeviceId($deviceId, IDBConnection $db) {
+        $sql = 'DELETE FROM `*PREFIX*sensorlogger_device_data_types` WHERE *PREFIX*sensorlogger_device_data_types.device_id = ?';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(1, $deviceId);
+        if($stmt->execute()){
+            return true;
+        }
+    }
 }
