@@ -1,5 +1,7 @@
 # Sensor Logger
 
+Latest Version: [0.0.5nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.5nc)
+
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
 ![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_nc_dashboard.png)

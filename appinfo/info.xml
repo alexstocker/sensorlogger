@@ -23,7 +23,7 @@
     ]]></description>
     <licence>agpl</licence>
     <author mail="sensorlogger@html5live.at" homepage="https://www.html5live.at">HTML5Live</author>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <namespace>SensorLogger</namespace>
     <category>tools</category>
     <bugs>https://github.com/alexstocker/sensorlogger/issues</bugs>
