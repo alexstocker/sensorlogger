@@ -1,5 +1,8 @@
 # Sensor Logger
 
+Upcomming Version: v0.0.5
+Latest Version: v0.0.4.1
+
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
 ![SensorLogger Dashboard](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_dashboard-1.png)
