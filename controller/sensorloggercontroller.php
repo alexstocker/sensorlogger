@@ -469,8 +469,9 @@ class SensorLoggerController extends Controller {
 	 * @return string
 	 */
 	protected function getChartData($id) {
+		$limit = $this->request->getParam('limit') ?: 1000;
 		$device = SensorDevices::getDevice($this->userId,$id,$this->connection);
-		$logs = SensorLogs::getLogsByUuId($this->userId,$device->getUuid(),$this->connection);
+		$logs = SensorLogs::getLogsByUuId($this->userId,$device->getUuid(),$this->connection,$limit);
 		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userId,$device->getId(),$this->connection);
 		if(is_array($dataTypes) && !empty($dataTypes)) {
 			$logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
