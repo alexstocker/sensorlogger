@@ -156,14 +156,48 @@ h2.widget-header a span.icon {
 	vertical-align: sub !important;
 }
 
+
+
 .column{
-	width:31%;
-	min-width: 240px;
 	margin-right:.5%;
 	margin-left: .5%;
 	background:#fff;
 	float:left;
 }
+
+@media only screen and (min-width: 320px) {
+	.column {
+		width:100%;
+	}
+
+}
+
+@media only screen and (min-width: 480px) {
+	.column {
+		width:100%;
+	}
+
+}
+
+@media only screen and (min-width: 768px) {
+	.column {
+		width:100%;
+	}
+
+}
+
+@media only screen and (min-width: 1024px) {
+	.column {
+		width:49%;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	.column {
+		width:31%;
+	}
+}
+
 .column .dragbox{
 	margin:5px 2px 17px;
 	background:#fff;
