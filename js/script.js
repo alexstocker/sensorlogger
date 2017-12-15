@@ -139,6 +139,20 @@
 			});
 		});
 
+		appContentWrapper.on('click','a.log-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteLog/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Record deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Record not deleted. Please try again.'));
+				}
+			});
+		});
+
 
 		sidebar.on('click','.icon-close',function(e) {
 			sidebar.hide();
@@ -745,6 +759,8 @@
 			]
 		}
 		var plot = $.jqplot($(plotArea).attr('id'),drawableLines,{
+
+			height: 240,
 			axes: {
 				xaxis:{
 					//label:"x axis",

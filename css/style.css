@@ -134,16 +134,18 @@ table th, table td {
 	padding: 15px;
 }
 
+
 .dashboard-widget .section {
 	text-align: right;
 	padding-top: 10px;
 	margin-bottom: 10px;
+	background-color: #eee;
 }
 
 .dashboard-widget .section.list,
 .dashboard-widget .section.chart {
 	max-height: 300px;
-	overflow: scroll;
+	overflow-x: auto;
 }
 
 .dashboard-widget .section h3 {
@@ -198,9 +200,8 @@ h2.widget-header a span.icon {
 	}
 }
 
-.column .dragbox{
+.column .dragbox {
 	margin:5px 2px 17px;
-	background:#fff;
 	position: relative;
 	border:1px solid #eee;
 	-moz-border-radius:5px;

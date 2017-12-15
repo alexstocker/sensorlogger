@@ -1,6 +1,7 @@
-<div class="content-wrapper">
+
 <table id="sensorLogsTable" style="width: 100%;">
 	<thead>
+	<th></th>
 	<th id="id"><span class="th-header">#</span></th>
 	<th id="id"><span class="th-header">UUID</span></th>
 	<th id="temperature"><span class="th-header">°C</span></th>
@@ -11,7 +12,14 @@
 <?php foreach($_['logs'] as $log){ ?>
 	<?php $valueString = ''; ?>
 
-	<tr>
+	<tr data-id="log-row<?php p($log->getId()); ?>" data-type="dir" class="logEdit">
+		<td class="td-data">
+			<a href="#" class="log-delete" title="<?php p($l->t('Delete Record')); ?>">
+				<span class="icon icon-delete"
+					  data-id="<?php p($log->getId()); ?>">
+				</span>
+			</a>
+		</td>
 		<td class="td-data"><?php p($log->getId()); ?></td>
 		<td class="td-data"><?php p($log->getDeviceUuid()); ?></td>
 		<?php if(sizeof($log->getData()) > 0) { ?>
@@ -37,4 +45,3 @@
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
 	</div>
 <?php } ?>
-</div>

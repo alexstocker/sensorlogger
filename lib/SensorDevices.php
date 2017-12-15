@@ -72,6 +72,12 @@ class SensorDevices extends Mapper {
 		return $data;
 	}
 
+	/**
+	 * @param $userId
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
 	public static function isDeletable($userId, $id, IDBConnection $db) {
         /** @var Device $device */
         $device = SensorDevices::getDevice($userId, (int)$id, $db);
@@ -82,6 +88,12 @@ class SensorDevices extends Mapper {
         }
     }
 
+	/**
+	 * @param $userId
+	 * @param $uuid
+	 * @param IDBConnection $db
+	 * @return mixed|static
+	 */
 	public static function getDeviceByUuid($userId, $uuid, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
@@ -100,6 +112,12 @@ class SensorDevices extends Mapper {
 		return $data;
 	}
 
+	/**
+	 * @param $userId
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return Device
+	 */
 	public static function getDeviceDetails($userId, $id, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
@@ -116,7 +134,14 @@ class SensorDevices extends Mapper {
 		$device = Device::fromRow($data);
 		return $device;
 	}
-	
+
+	/**
+	 * @param $id
+	 * @param $field
+	 * @param $value
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
 	public static function updateDevice($id,$field,$value, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->update('sensorlogger_devices')
@@ -126,7 +151,12 @@ class SensorDevices extends Mapper {
 			return true;
 		}
 	}
-	
+
+	/**
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
 	public static function deleteDevice($id, IDBConnection $db) {
 		$sql = 'DELETE FROM `*PREFIX*sensorlogger_devices` WHERE *PREFIX*sensorlogger_devices.id = ?';
 		$stmt = $db->prepare($sql);
@@ -136,6 +166,12 @@ class SensorDevices extends Mapper {
 		}
 	}
 
+	/**
+	 * @param $userId
+	 * @param $array
+	 * @param IDBConnection $db
+	 * @return int|string
+	 */
 	public static function insertDevice($userId, $array, IDBConnection $db) {
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
 		$stmt = $db->prepare($sql);
