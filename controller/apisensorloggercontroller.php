@@ -107,13 +107,15 @@ class ApiSensorLoggerController extends ApiController {
 			$deviceId = $array['deviceId'];
 			$dataJson = json_encode($array['data']);
 
-			$sql = 'INSERT INTO `*PREFIX*sensorlogger_logs` (created_at,user_id,device_uuid,`data`) VALUES(?,?,?,?)';
-			$stmt = $this->db->prepare($sql);
-			$stmt->bindParam(1, $array['date']);
-			$stmt->bindParam(2, $this->userSession->getUser()->getUID());
-			$stmt->bindParam(3, $deviceId);
-			$stmt->bindParam(4, $dataJson);
-			$stmt->execute();
+			$query = $this->db->getQueryBuilder();
+			$query->insert('sensorlogger_logs')
+                ->values([
+                    'created_at' => $query->createNamedParameter($array['date']),
+                    'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                    'device_uuid' => $query->createNamedParameter($deviceId),
+                    'data' => $query->createNamedParameter($dataJson)
+                ])
+                ->execute();
 		}
 		return true;
 	}
@@ -139,15 +141,17 @@ class ApiSensorLoggerController extends ApiController {
 
 			$dataJson = json_encode($array);
 
-			$sql = 'INSERT INTO `*PREFIX*sensorlogger_logs` (temperature,humidity,created_at,user_id,device_uuid,`data`) VALUES(?,?,?,?,?,?)';
-			$stmt = $this->db->prepare($sql);
-			$stmt->bindParam(1, $array['temperature']);
-			$stmt->bindParam(2, $array['humidity']);
-			$stmt->bindParam(3, $array['date']);
-			$stmt->bindParam(4, $this->userSession->getUser()->getUID());
-			$stmt->bindParam(5, $deviceId);
-			$stmt->bindParam(6, $dataJson);
-			$stmt->execute();
+            $query = $this->db->getQueryBuilder();
+            $query->insert('sensorlogger_logs')
+                ->values([
+                    'temperature' => $query->createNamedParameter($array['temperature']),
+                    'humidity' => $query->createNamedParameter($array['humidity']),
+                    'created_at' => $query->createNamedParameter($array['date']),
+                    'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                    'device_uuid' => $query->createNamedParameter($deviceId),
+                    'data' => $query->createNamedParameter($dataJson)
+                ])
+                ->execute();
 		}
 		return true;
 	}
