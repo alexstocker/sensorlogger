@@ -209,7 +209,12 @@ class ApiSensorLoggerController extends ApiController {
 						$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
 					}
 				}
-				return $this->requestResponse(true,Http::STATUS_OK,'Device successfully registered');
+				$deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$lastInsertId,$this->db);
+				return $this->requestResponse(
+				    true,
+                    Http::STATUS_OK,
+                    'Device successfully registered',
+                    $deviceDataTypes);
 			}
 		} else if(!empty($paramErrors)){
 			$messages = [];

@@ -1,4 +1,12 @@
 <?php
+
+use OCA\SensorLogger;
+
+$application = new SensorLogger\Application();
+
+
+//$application->registerRoutes();
+
 return array(
 	'routes' => array(
 		array('name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'),
@@ -20,6 +28,7 @@ return array(
 		array('name' => 'sensorlogger#dataTypeList', 'url' => 'dataTypeList', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deviceChart', 'url' => 'deviceChart/{id}', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#chartData', 'url' => 'chartData/{id}', 'verb' => 'GET'),
+        array('name' => 'sensorlogger#chartDataLastLog', 'url' => 'lastLog/{id}', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#sharingIn', 'url' => 'sharingIn', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#sharingOut', 'url' => 'sharingOut', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#sharedLink', 'url' => 'sharedLink', 'verb' => 'GET'),

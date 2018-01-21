@@ -1,6 +1,7 @@
 <?php
 script('sensorlogger', array(
 	'script',
+    'app',
 	'jquery.poshytip.min',
 	'jquery-editable-poshytip.min',
 	'jquery.jqplot.min',
@@ -62,7 +63,6 @@ vendor_script('select2/select2');
 					<div class="dialogContainer"></div>
 				</div>
 			</div>
-
 			<div class="footer">
 				<a id="save-btn" class="icon-save" style="display:none;">
 					<span class="icon icon-save" ></span>

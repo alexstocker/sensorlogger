@@ -19,8 +19,7 @@
  *
  */
 
-namespace OCA\SensorLogger\AppInfo;
-
+namespace OCA\SensorLogger;
 
 use OCA\SensorLogger\Controller\ApiSensorLoggerController;
 use OCA\SensorLogger\Controller\SensorLoggerController;
@@ -53,7 +52,7 @@ class Application extends App {
 				$server->getAppManager()
 			);
 		});
-/*
+
 		$container->registerService('apisensorloggercontroller', function (IContainer $c) use ($server) {
 			return new ApiSensorLoggerController(
 				$c->query('AppName'),
@@ -67,7 +66,7 @@ class Application extends App {
 				$server->getUserSession()
 			);
 		});
-*/
+
 
 		/**
 		 * Core
@@ -75,6 +74,8 @@ class Application extends App {
 		$container->registerService('L10N', function (IContainer $c) {
 			return $c->query('ServerContainer')->getL10N($c->query('AppName'));
 		});
+
+        $container->registerCapability('OCA\SensorLogger\Capabilities');
 	}
 
 

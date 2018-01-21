@@ -19,7 +19,7 @@
  *
  */
 
-namespace OCA\SensorLogger\AppInfo;
+namespace OCA\SensorLogger;
 
 use OCA\SensorLogger\SensorLogs;
 use OCP\AppFramework\App;
@@ -28,6 +28,7 @@ use OCP\Util;
 require_once __DIR__ . '/autoload.php';
 
 \OCP\App::registerAdmin('sensorlogger', 'admin');
+
 
 \OC::$server->getNavigationManager()->add(function () {
 	$urlGenerator = \OC::$server->getURLGenerator();
@@ -40,3 +41,6 @@ require_once __DIR__ . '/autoload.php';
 		'name' => $l->t('SensorLogger'),
 	];
 });
+
+
+//\OCP\Util::connectHook('\OCP\Config', 'js', '\OCA\Files\App', 'extendJsConfig');

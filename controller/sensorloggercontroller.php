@@ -565,6 +565,15 @@ class SensorLoggerController extends Controller {
 		return $this->getChartData($id);
 	}
 
+    /**
+     * @NoAdminRequired
+     * @param int $id
+     * @return string
+     */
+    public function chartDataLastLog($id) {
+        return $this->getChartDataLastLog($id);
+    }
+
 	/**
 	 * @NoAdminRequired
 	 */
@@ -643,16 +652,62 @@ class SensorLoggerController extends Controller {
 	 * @param int $id
 	 * @return string
 	 */
-	protected function getChartData($id) {
-		$limit = $this->request->getParam('limit') ?: 1000;
-		$device = SensorDevices::getDevice($this->userSession->getUser()->getUID(),$id,$this->connection);
-		$logs = SensorLogs::getLogsByUuId($this->userSession->getUser()->getUID(),$device->getUuid(),$this->connection,$limit);
-		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$device->getId(),$this->connection);
-		if(is_array($dataTypes) && !empty($dataTypes)) {
-			$logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
-		}
-		return $this->returnJSON($logs);
-	}
+    protected function getChartData($id) {
+        $limit = $this->request->getParam('limit') ?: 1000;
+        $offset = $this->request->getParam('offset') ?: 0;
+
+        $device = SensorDevices::getDevice(
+            $this->userSession->getUser()->getUID(),
+            $id,
+            $this->connection
+        );
+
+        $logs = SensorLogs::getLogsByUuId(
+            $this->userSession->getUser()->getUID(),
+            $device->getUuid(),
+            $this->connection,
+            $limit,
+            $offset
+        );
+
+        $dataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+            $this->userSession->getUser()->getUID(),
+            $device->getId(),
+            $this->connection
+        );
+
+        if(is_array($dataTypes) && !empty($dataTypes)) {
+            $logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
+        }
+        return $this->returnJSON($logs);
+    }
+
+    protected function getChartDataLastLog($id) {
+        $device = SensorDevices::getDevice(
+            $this->userSession->getUser()->getUID(),
+            $id,
+            $this->connection
+        );
+
+        $logs = SensorLogs::getLogsByUuId(
+            $this->userSession->getUser()->getUID(),
+            $device->getUuid(),
+            $this->connection,
+            $this->request->getParam('limit') ?: 1,
+            $this->request->getParam('offset') ?: 0
+        );
+
+        $dataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+            $this->userSession->getUser()->getUID(),
+            $device->getId(),
+            $this->connection
+        );
+
+        if(is_array($dataTypes) && !empty($dataTypes)) {
+            $logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
+        }
+        return $this->returnJSON($logs);
+    }
 
 	/**
 	 * @param int $id

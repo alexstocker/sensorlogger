@@ -1,30 +1,30 @@
 <?php
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/createlog/';
+	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/createlog/';
 
 	$humidity = mt_rand (1.00*10, 99.99*10) / 10;
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
 	$co2 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "6e643ee8-0f9f-11e7-93ae-92361f002671",
+	$array = array("deviceId" => "6e643ee8-0f9f-11e7-93ae-92361f002675",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(array(
-						"dataTypeId" => 1,
+						"dataTypeId" => 7,
 						"value" => $temperature
 						),
 						array(
-							"dataTypeId" => 2,
+							"dataTypeId" => 8,
 							"value" => $humidity
 						),
 						array(
-							"dataTypeId" => 3,
+							"dataTypeId" => 9,
 							"value" => $co2,
 						)
 					));
 
 	$data_json = json_encode($array);
 
-	$username = 'test';
-	$token = 'HTFQO-WCNSR-UDEVJ-EPLYE';
+	$username = 'admin';
+	$token = 'RWGFF-KMZUC-NFOQD-CMXCC';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

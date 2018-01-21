@@ -22,7 +22,6 @@
 		var deviceGroupList = $('#deviceGroupList');
 		var dataTypeList = $('#dataTypeList');
 		var appContentWrapper = $('#app-content-wrapper');
-		var notification = $("#notification");
 
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
@@ -312,6 +311,9 @@
 					var data = {"limit":1280};
 					plotArea = chartContainer;
 					loadChart(chartContainer,id,dataUrl,data);
+				}
+				if(type === "realTimeChart") {
+                    new OCA.SensorLogger.Widgets($('#widget-wrapper'));
 				}
 			});
 		};
@@ -812,7 +814,6 @@
 		var t = 10000;
 		var n = 20;
 
-console.log(drawableLines[0].length);
 		//console.log(plotArea);
 
 

@@ -76,12 +76,14 @@ class SensorLogs {
 		return $logs;
 	}
 
-	/**
-	 * @param $userId
-	 * @param $uuId
-	 * @param IDBConnection $db
-	 * @return array
-	 */
+    /**
+     * @param $userId
+     * @param $uuId
+     * @param IDBConnection $db
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
 	public static function getLogsByUuId($userId, $uuId, IDBConnection $db, $limit = 1000, $offset = 0) {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id','device_uuid','humidity','temperature','data','created_at'))
