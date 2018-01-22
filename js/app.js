@@ -257,7 +257,6 @@
 
                     var doUpdate = function() {
 
-
                         if(data.length > n-1){
                             data.shift();
                         }
@@ -326,6 +325,11 @@
 
                                     plot1.series[0].data = data;
                                     options.axes.xaxis.min = data[0][0];
+
+                                    if(data[0][0] > data[data.length-1][0]) {
+                                        options.axes.xaxis.min = x - (n-1)*t;
+                                    }
+
                                     options.axes.xaxis.max = data[data.length-1][0];
                                     plot1 = $.jqplot (plotAreaId, [data],options);
                                     setTimeout(doUpdate, t);
