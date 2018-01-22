@@ -49,6 +49,29 @@
 			});
 		},
 		Widget: function (widgetContainer) {
+
+            var startBtn = $('<button/>', {
+                'text': 'Start'
+            });
+
+            var timeOutDd = $('<select/>', {
+                'class':'realtimechart-timeout',
+            });
+            timeOutDd
+                .append('<option value="1">1 sec.</option>')
+                .append('<option value="5" selected>5 sec.</option>')
+                .append('<option value="10">10 sec.</option>')
+                .append('<option value="30">30 sec.</option>')
+                .append('<option value="60">60 sec.</option>');
+
+            var dataTypeDd = $('<select/>', {
+                'class':'realtimechart-datatype'
+            });
+
+            var liveIndicator = $('<div/>', {
+                "class":"pulse"
+            });
+
     		if(widgetContainer.data('widget-type') === 'chart') {
 
 			} else if (widgetContainer.data('widget-type') === 'list') {
@@ -56,6 +79,83 @@
 			} else if (widgetContainer.data('widget-type') === 'last') {
 
             } else if (widgetContainer.data('widget-type') === 'realTimeLast') {
+                var realTimeContainer = widgetContainer.find('.realTimeLast');
+                if(!$('#realTimeLast-'+widgetContainer.data('id'))
+                        .hasOwnProperty('length')) {
+
+                    var realTimeLastId = 'realTimeLast-'+widgetContainer.data('id');
+                    var realTimeLast = $('<div/>', {
+                        'id': realTimeLastId
+                    });
+
+                    var dataElement = $('<h3/>');
+
+                    realTimeContainer.append(realTimeLast);
+                    realTimeContainer.prepend(timeOutDd);
+                    realTimeContainer.prev('h2').prepend(liveIndicator);
+
+
+                    var doAjax = function () {
+                        var t = timeOutDd[0].options[timeOutDd[0].selectedIndex].value * 1000;
+
+                        $.ajax({
+                            url: 'lastLog/' + widgetContainer.data('id'),
+                            data: {'limit': 1},
+                            type: 'GET',
+                            success: function (response) {
+                                if (response) {
+                                    if (response.dataTypes) {
+
+                                        realTimeLast.empty();
+
+                                        var logData = response.logs[0].data;
+                                        var dataTypes = response.dataTypes;
+
+                                        var dataTypeElement = $('<small/>');
+
+                                        for (var typeKey in dataTypes) {
+                                            var dataTypeId = dataTypes[typeKey].id;
+                                            for (var logKey in logData) {
+                                                var logDataTypeId = logData[logKey].dataTypeId;
+
+                                                if(parseInt(dataTypeId) === parseInt(logDataTypeId)) {
+                                                    var dataElem = dataElement
+                                                        .clone()
+                                                        .text(logData[logKey].value+' '+dataTypes[typeKey].short);
+
+                                                    var dataTypeElem = dataTypeElement
+                                                        .clone()
+                                                        .text(dataTypes[typeKey].description);
+
+                                                    dataElem.appendTo(realTimeLast);
+                                                    dataTypeElem.appendTo(realTimeLast);
+                                                }
+
+                                            }
+
+                                        }
+
+                                    } else {
+
+                                        realTimeLast.empty();
+                                        var date = dataElement.clone().text(response[0].createdAt);
+                                        var humidity = dataElement.clone().text(response[0].humidity+' % r.F.');
+                                        var temperature = dataElement.clone().text(response[0].temperature+ ' °C');
+
+                                        temperature.appendTo(realTimeLast);
+                                        humidity.appendTo(realTimeLast);
+                                        date.appendTo(realTimeLast);
+
+                                    }
+                                    setTimeout(doAjax, t);
+                                }
+                            }
+                        });
+                    };
+
+                    doAjax();
+
+                }
 
             } else if (widgetContainer.data('widget-type') === 'realTimeChart') {
                 var chartContainer = widgetContainer.find('.chartcontainer');
@@ -70,10 +170,7 @@
                     var plotArea = $('<div/>', {
                         'id': plotAreaId
                     });
-                    //console.log(widgetContainer.data('widget-type') );
-                    var startBtn = $('<button/>', {
-                        'text': 'Start'
-                    });
+
                     startBtn.click(function(){
                         t = timeOutDd[0].options[timeOutDd[0].selectedIndex].value * 1000;
                         serie = dataTypeDd[0].options[dataTypeDd[0].selectedIndex].value;
@@ -83,21 +180,8 @@
                         $('#realTimeChartDataType-'+widgetContainer.data('id')).hide();
                     });
 
-                    var timeOutDd = $('<select/>', {
-                        'id': 'realTimeChartTimeOut-'+widgetContainer.data('id'),
-                        'class':'realtimechart-timeout',
-                    });
-                    timeOutDd
-                        .append('<option value="1">1 sec.</option>')
-                        .append('<option value="5" selected>5 sec.</option>')
-                        .append('<option value="10">10 sec.</option>')
-                        .append('<option value="30">30 sec.</option>')
-                        .append('<option value="60">60 sec.</option>');
-
-                    var dataTypeDd = $('<select/>', {
-                        'id': 'realTimeChartDataType-'+widgetContainer.data('id'),
-                        'class':'realtimechart-datatype'
-                    });
+                    timeOutDd.attr('id','realTimeChartTimeOut-'+widgetContainer.data('id'));
+                    dataTypeDd.attr('id','realTimeChartDataType-'+widgetContainer.data('id'));
 
                     chartContainer.append(plotArea);
                     chartContainer.append(timeOutDd);
@@ -152,11 +236,9 @@
                         type: 'GET',
                         async: 'false',
                         success: function(response) {
-                            //console.log(response);
                             if(response) {
                                 if(response.dataTypes) {
                                     for(var dataType in response.dataTypes) {
-                                        //console.log(response.dataTypes[dataType].id);
                                         dataTypeDd
                                             .append('<option value="'+response.dataTypes[dataType].id+'">'+response.dataTypes[dataType].description+'</option>');
                                     }
@@ -166,79 +248,15 @@
                                         .append('<option value="humidity">Humidity</option>');
                                 }
                                 dataTypeDd.insertAfter(plotArea);
-                                /*
-                                for (var log in response) {
-                                    console.log(response[log]);
-
-                                    var time = response[log].createdAt.split(/[- :]/);
-                                    var x = new Date(time[0], time[1]-1, time[2], time[3], time[4], time[5]).getTime();
-
-                                    var y = response[log].temperature;
-
-                                    if(y < options.axes.yaxis.min) {
-                                        options.axes.yaxis.min = y;
-                                    }
-                                    if(y > options.axes.yaxis.max) {
-                                        options.axes.yaxis.max = y;
-                                    }
-
-                                    data.push([x,y])
-                                }
-                                */
-                                //if (plot1) {
-                                //    plot1.destroy();
-                                //}
-                                //plot1.series[0].data = data;
-                                //options.axes.xaxis.min = data[0][0];
-                                //options.axes.xaxis.max = data[data.length-1][0];
-                                //plot1 = $.jqplot (plotAreaId, [data],options);
-                                //setTimeout(doUpdate, t);
-
-                                /*
-                                var time = response[0].createdAt.split(/[- :]/);
-                                var x = new Date(time[0], time[1]-1, time[2], time[3], time[4], time[5]).getTime();
-
-                                var y = response[0].temperature;
-
-                                if(y < options.axes.yaxis.min) {
-                                    options.axes.yaxis.min = y;
-                                }
-                                if(y > options.axes.yaxis.max) {
-                                    options.axes.yaxis.max = y;
-                                }
-                                */
-
-                                //var x = (new Date()).getTime();
-                                //console.log(date);
-
-                                /*
-                                data.push([x,y]);
-                                if (plot1) {
-                                    plot1.destroy();
-                                }
-                                plot1.series[0].data = data;
-                                options.axes.xaxis.min = data[0][0];
-                                options.axes.xaxis.max = data[data.length-1][0];
-                                plot1 = $.jqplot (plotAreaId, [data],options);
-                                setTimeout(doUpdate, t);
-                                */
                             }
                         }
                     });
-
-
-
 
                     var plot1 = $.jqplot(plotAreaId, [data], options);
                     plot1.series[0].data = data;
 
                     var doUpdate = function() {
 
-                        /*
-                        var selected = timeOutDd.children('option').filter(function() {
-                            return $(this).val(); //To select Blue
-                        }).prop('selected', true);
-                        */
 
                         if(data.length > n-1){
                             data.shift();
@@ -279,17 +297,11 @@
                                             options.axes.yaxis.max = y;
                                         }
 
-
-
                                         data.push([x,y]);
                                         if (plot1) {
                                             plot1.destroy();
                                         }
 
-                                        //console.log(x+' '+y);
-
-                                        //x = response.createdAt;
-                                        //y = response.temperature;
                                     } else {
                                         time = response[0].createdAt.split(/[- :]/);
                                         x = new Date(time[0], time[1]-1, time[2], time[3], time[4], time[5]).getTime();
@@ -322,13 +334,8 @@
                         });
                     }
                 }
-
-
-
             } else {
-                console.log('EHLO');
 			}
-			//return widgetContainer;
         }
 	};
 
@@ -357,28 +364,21 @@
 
 			var urlParams = OC.Util.History.parseUrlQuery();
 			var deviceActions = new OCA.SensorLogger.DeviceActions();
-			//deviceActions.registerDefaultActions();
-			//deviceActions.merge(window.DeviceActions);
-			//deviceActions.merge(OCA.SensorLogger.deviceActions);
 
 			this.devices = OCA.SensorLogger.Devices;
 
 			this.deviceList = new OCA.SensorLogger.DeviceList(
 				$('#app-content-devices'), {
 					scrollContainer: $('#app-content-wrapper'),
-					//dragOptions: dragOptions,
-					//folderDropOptions: folderDropOptions,
 					deviceActions: deviceActions,
 					allowLegacyActions: true,
 					scrollTo: urlParams.scrollto,
-					//devicesClient: OC.SensorLogger.getClient(),
 					sorting: {
 						mode: $('#defaultDeviceSorting').val(),
 						direction: $('#defaultDeviceSortingDirection').val()
 					}
 				}
 			);
-			//this.devices.initialize();
 		}
 
 	}

@@ -35,10 +35,6 @@ class App {
 		return self::$navigationManager;
 	}
 
-	public static function getsomeManager() {
-	    //
-    }
-
 
 
 }

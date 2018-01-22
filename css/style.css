@@ -241,3 +241,29 @@ h2.widget-header a span.icon {
 	background-position:-269px center;
 	padding-top:1px;
 }
+
+
+@keyframes pulse {
+	0% {
+		transform: scale(1, 1);
+	}
+
+	50% {
+		transform: scale(1.4, 1.4);
+	}
+
+	100% {
+		transform: scale(1, 1);
+	}
+}
+
+.pulse {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: red;
+	cursor: pointer;
+	/* box-shadow: 0 0 0 rgba(204,169,44, 0.4); */
+	animation: pulse 2s infinite;
+}

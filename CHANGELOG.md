@@ -1,5 +1,9 @@
 # SensorLogger
 ### (0.0.6) UNRELEASED
+  * Started to rebuild script.js #11, added RealTime Chart widget
+  * Updated insertExtendedLog and insertLog to use QueryBuilder
+  * Added SensorLogs::deleteLogById and deleteLog controller action #37'
+  * Added dashboard widgets column media styles
   * Create ISSUE_TEMPLATE.md
   * Add CONTRIBUTING.md
   * Added CODE_OF_CONDUCT.md
@@ -42,3 +46,4 @@
  * chart view
 
 -- Alexander Stocker
+-- alexstocker
