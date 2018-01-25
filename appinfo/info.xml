@@ -7,35 +7,19 @@
     <description><![CDATA[
         SensorLogger for nextcloud enables users to log data provided by sensor devices
         like humidity, temperature, air quality (voc) or any other type of data send.
-
-        INSTALL: https://github.com/alexstocker/sensorlogger/wiki/Install
-
-        API: https://github.com/alexstocker/sensorlogger/wiki/API-Calls
-
-        SAMPLE USAGE PHP CURL: https://github.com/alexstocker/sensorlogger/tree/master-nc/tests/curl
-        SAMPLE USAGE PYTHON: https://github.com/alexstocker/sensordata
-
-        Please report bugs, issues and feature requests to
-
-        ISSUES: https://github.com/alexstocker/sensorlogger/issues
-
-        Any contributions are welcome!
     ]]></description>
     <licence>agpl</licence>
     <author mail="sensorlogger@html5live.at" homepage="https://www.html5live.at">HTML5Live</author>
-    <version>0.0.5</version>
+    <version>0.0.5.1</version>
     <namespace>SensorLogger</namespace>
     <category>tools</category>
+    <website>https://www.html5live.at/sensorlogger/</website>
     <bugs>https://github.com/alexstocker/sensorlogger/issues</bugs>
-    <repository>https://github.com/alexstocker/sensorlogger</repository>
+    <repository type="git">https://github.com/alexstocker/sensorlogger.git</repository>
     <documentation>
+        <admin>https://github.com/alexstocker/sensorlogger/wiki/Install</admin>
+        <developer>https://github.com/alexstocker/sensorlogger/wiki/API-Calls</developer>
         <user>https://github.com/alexstocker/sensorlogger/wiki</user>
     </documentation>
     <screenshot>https://www.html5live.at/wp-content/uploads/2017/04/sensorlogger-1.png</screenshot>
-    <dependencies>
-        <php min-version="5.6" />
-        <owncloud min-version="9.2"/>
-        <nextcloud min-version="10" max-version="12"/>
-        <database min-version="5.5">mysql</database>
-    </dependencies>
 </info>
