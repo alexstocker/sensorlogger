@@ -21,5 +21,11 @@
 	curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$response  = curl_exec($ch);
+	if($response === false){
+		echo('Error: ' . curl_error($ch));
+	}
+	else{
+        	echo('Operation successful');
+	}
 	curl_close($ch);
 ?>
