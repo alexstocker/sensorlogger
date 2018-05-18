@@ -15,7 +15,9 @@ class Widgets {
 	const WIDGET_TYPES = [
 		'list' => 'Data list',
 		'chart' => 'Chart',
-		'last'	=> 'Current data'
+		'last'	=> 'Current data',
+        'realTimeLast' => 'Live - Current Data',
+        'realTimeChart' => 'Live - Chart'
 		];
 
 	protected $deviceId;
@@ -52,11 +54,19 @@ class Widgets {
 		$log = '';
 		switch ($config->widget_type) {
 			case 'last':
+            case 'realTimeLast':
 				$log = SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $connection);
 				break;
 			case 'chart':
 				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection);
 				break;
+            case 'realTimeChart':
+                if(!$config->limit && !$config->offset) {
+                    $config->limit = 100;
+                    $config->offset = 0;
+                }
+                $log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection,$config->limit,$config->offset);
+                break;
 			case 'list':
 				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection,10);
 				break;
@@ -96,6 +106,7 @@ class Widgets {
 		$widget->setType($config->widget_type);
 		$widget->setLog($log);
 		$widget->setName($device->getName());
+		$widget->setDisplayName(self::WIDGET_TYPES[$config->widget_type]);
 		return $widget;
 	}
 }

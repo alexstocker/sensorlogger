@@ -66,7 +66,7 @@
 				altText: action.altText || ''
 			};
 			if (_.isUndefined(action.displayName)) {
-				actionSpec.displayName = t('files', name);
+				actionSpec.displayName = t('device', name);
 			}
 			if (_.isFunction(action.render)) {
 				actionSpec.render = action.render;
@@ -267,7 +267,7 @@
 					var mountType = context.$device.attr('data-mounttype');
 					var deleteTitle = t('sensorlogger', 'Delete');
 					if (mountType === 'shared-root') {
-						deleteTitle = t('files', 'Unshare');
+						deleteTitle = t('sensorlogger', 'Unshare');
 					}
 					return deleteTitle;
 				},

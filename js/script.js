@@ -8,8 +8,6 @@
  * @copyright ELExG 2017
  */
 
-
-
 (function ($, OC) {
 
 	$(function () {
@@ -22,7 +20,6 @@
 		var deviceGroupList = $('#deviceGroupList');
 		var dataTypeList = $('#dataTypeList');
 		var appContentWrapper = $('#app-content-wrapper');
-		var notification = $("#notification");
 
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
@@ -89,7 +86,6 @@
 
 		});
 
-
 		appContentWrapper.on('click','.deviceChart',function (e) {
 			sidebar.hide();
 			saveBtn.hide();
@@ -135,6 +131,20 @@
 					OC.Notification.showTemporary(t('sensorlogger', 'Device deleted'));
 				} else {
                     OC.Notification.showTemporary(t('sensorlogger', 'Device NOT deleted'));
+				}
+			});
+		});
+
+		appContentWrapper.on('click','a.log-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteLog/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Record deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Record not deleted. Please try again.'));
 				}
 			});
 		});
@@ -299,6 +309,12 @@
 					plotArea = chartContainer;
 					loadChart(chartContainer,id,dataUrl,data);
 				}
+				if(type === "realTimeChart") {
+                    new OCA.SensorLogger.Widgets($('#widget-wrapper'));
+				}
+                if(type === "realTimeLast") {
+                    new OCA.SensorLogger.Widgets($('#widget-wrapper'));
+                }
 			});
 		};
 
@@ -533,7 +549,7 @@
 							}
 						)
 					});
-					//console.log(serieslabel);
+
 					for (var i = 0; i < lines.length; i++) {
 						dataLines[i] = [];
 						$.each(data.logs, function (index, item) {
@@ -550,7 +566,7 @@
 						if(plotArea.parent().hasClass('widget')) {
 							clonedPlotArea.attr('id', 'chart-' + i).appendTo(plotArea.parent());
 						} else {
-							clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper');
+							clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper .content-wrapper');
 						}
 
 					}
@@ -745,6 +761,8 @@
 			]
 		}
 		var plot = $.jqplot($(plotArea).attr('id'),drawableLines,{
+
+			height: 240,
 			axes: {
 				xaxis:{
 					//label:"x axis",
@@ -790,8 +808,9 @@
 		$('a#zoom_reset').click(function() { plot.resetZoom() });
 	};
 
-
-
+    /**
+	 * @deprecated
+     */
 	function doUpdate() {
 		var t = 10000;
 		var n = 20;
@@ -804,24 +823,11 @@
 		var y1 = getRandomInt(1,100);
 		var x = new Date();
 
-	//	console.log(x.toLocaleTimeString());
-
 		drawableLines[0].push([x.toLocaleTimeString(),y]);
 		drawableLines[1].push([x.toLocaleTimeString(),y1]);
 		if (plotRealTimeChart) {
 			$(plotArea).empty();
 		}
-
-		//console.log(plotChart);
-
-		//plotChart.series[0].data = data;
-		//il problema è che adesso i valori su y delle ticks non sono più statici
-		//e cambiano ad ogni aggiornamento, quindi cambia la logica sottostante
-		// devo intervenire sui valori all'interno di options.
-		//options.axes.xaxis.min = data[0][0];
-		//options.axes.xaxis.max = data[data.length-1][0];
-		//plotChart = $.jqplot (plotArea, [data]);
-		//console.log(drawableLines);
 		plotRealTimeChart(plotArea,drawableLines);
 		setTimeout(doUpdate, t);
 	}

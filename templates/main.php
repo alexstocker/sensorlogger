@@ -1,6 +1,7 @@
 <?php
 script('sensorlogger', array(
 	'script',
+    'app',
 	'jquery.poshytip.min',
 	'jquery-editable-poshytip.min',
 	'jquery.jqplot.min',
@@ -20,10 +21,10 @@ style('sensorlogger', 'jquery-editable');
 //\OC_Util::addScript('sensorlogger','app');
 //\OC_Util::addScript('sensorlogger','navigation');
 //\OC_Util::addScript('sensorlogger','deviceactions');
+vendor_style('select2/select2');
+vendor_script('select2/select2');
 
-\OCP\Util::addScript('core','../core/vendor/select2/select2');
-\OCP\Util::addStyle('core','../core/vendor/select2/select2');
-\OCP\Util::addScript('select2-toggleselect');
+
 ?>
 <div id="app">
 	<div id="app-navigation">
@@ -62,7 +63,6 @@ style('sensorlogger', 'jquery-editable');
 					<div class="dialogContainer"></div>
 				</div>
 			</div>
-
 			<div class="footer">
 				<a id="save-btn" class="icon-save" style="display:none;">
 					<span class="icon icon-save" ></span>

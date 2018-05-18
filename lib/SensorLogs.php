@@ -2,11 +2,7 @@
 
 namespace OCA\SensorLogger;
 
-use OCP\AppFramework\Controller;
-use OCP\IConfig;
-use \OCP\IDb;
 use OCP\IDBConnection;
-use OCP\IL10N;
 
 /**
  * Class SensorLogs
@@ -80,12 +76,14 @@ class SensorLogs {
 		return $logs;
 	}
 
-	/**
-	 * @param $userId
-	 * @param $uuId
-	 * @param IDBConnection $db
-	 * @return array
-	 */
+    /**
+     * @param $userId
+     * @param $uuId
+     * @param IDBConnection $db
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
 	public static function getLogsByUuId($userId, $uuId, IDBConnection $db, $limit = 1000, $offset = 0) {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id','device_uuid','humidity','temperature','data','created_at'))
@@ -108,13 +106,21 @@ class SensorLogs {
 		}
 		return $logs;
 	}
-	
-	/*
-	public function getUserValue($key, $userId) {
-		return $this->config->getUserValue($userId, $this->appName, $key);
+
+	/**
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return \Doctrine\DBAL\Driver\Statement|int
+	 */
+	public static function deleteLogById($id, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->delete('sensorlogger_logs')
+			//->where('id = :log_id')
+			//->setParameter([':log_id' => ''])
+			->where('id = :log_id')
+			->setParameters([
+				':log_id' => $id
+			]);
+		return $query->execute();
 	}
-	public function setUserValue($key, $userId, $value) {
-		$this->config->setUserValue($userId, $this->appName, $key, $value);
-	}
-	*/
 }

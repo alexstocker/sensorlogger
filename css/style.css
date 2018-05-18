@@ -10,6 +10,10 @@
 	word-wrap: break-word;
 }
 
+#app-content div.content-wrapper {
+	overflow-x: auto;
+}
+
 #app-sidebar div.content-wrapper .body {
 	bottom: 65px;
 	left: 0;
@@ -105,6 +109,7 @@ span.center {
 
 #app-content-wrapper .widget-wrapper {
 	margin-top: 44px;
+	width: 100%;
 }
 
 #app-content-wrapper #controls .actions {
@@ -130,15 +135,18 @@ table th, table td {
 	padding: 15px;
 }
 
+
 .dashboard-widget .section {
 	text-align: right;
 	padding-top: 10px;
 	margin-bottom: 10px;
+	background-color: #eee;
 }
 
-.dashboard-widget .section.list {
+.dashboard-widget .section.list,
+.dashboard-widget .section.chart {
 	max-height: 300px;
-	overflow: scroll;
+	overflow-x: auto;
 }
 
 .dashboard-widget .section h3 {
@@ -151,18 +159,51 @@ h2.widget-header a span.icon {
 	vertical-align: sub !important;
 }
 
+
+
 .column{
-	width:31%;
-	min-width: 240px;
 	margin-right:.5%;
 	margin-left: .5%;
 	background:#fff;
 	float:left;
 }
-.column .dragbox{
+
+@media only screen and (min-width: 320px) {
+	.column {
+		width:100%;
+	}
+
+}
+
+@media only screen and (min-width: 480px) {
+	.column {
+		width:100%;
+	}
+
+}
+
+@media only screen and (min-width: 768px) {
+	.column {
+		width:100%;
+	}
+
+}
+
+@media only screen and (min-width: 1024px) {
+	.column {
+		width:49%;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	.column {
+		width:31%;
+	}
+}
+
+.column .dragbox {
 	margin:5px 2px 17px;
-	background:#fff;
-	position:"relative";
+	position: relative;
 	border:1px solid #eee;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
@@ -200,4 +241,30 @@ h2.widget-header a span.icon {
 {
 	background-position:-269px center;
 	padding-top:1px;
+}
+
+
+@keyframes pulse {
+	0% {
+		transform: scale(1, 1);
+	}
+
+	50% {
+		transform: scale(1.4, 1.4);
+	}
+
+	100% {
+		transform: scale(1, 1);
+	}
+}
+
+.pulse {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: red;
+	cursor: pointer;
+	/* box-shadow: 0 0 0 rgba(204,169,44, 0.4); */
+	animation: pulse 2s infinite;
 }

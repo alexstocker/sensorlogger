@@ -1,10 +1,15 @@
 <?php $widgets = $_['widgets']; ?>
 <?php if($widgets) { ?>
 	<?php foreach ($widgets as $widget) { ?>
-
+<?php //var_dump($widget) ?>
 		<div id="column-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="column">
-			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="widget dashboard-widget dragbox" data-id="<?php p($widget->getDeviceId()); ?>" data-widget-type="<?php p($widget->getType()); ?>">
-				<h2 class="widget-header ui-widget-header"><?php p($widget->getName()); ?>
+			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"
+                 class="widget dashboard-widget dragbox"
+                 data-id="<?php p($widget->getDeviceId()); ?>"
+                 data-widget-type="<?php p($widget->getType()); ?>">
+				<h2 class="widget-header ui-widget-header">
+                    <?php p($widget->getName()); ?>
+                    <small><?php p($widget->getDisplayName()); ?></small>
 					<?php if($widget->getType() === 'chart') { ?>
 						<a href="#" id="zoom_reset" title="<?php p($l->t('Reset Chart')); ?>" class="reset opIcons">
 							<span class="icon icon-reset-white"></span>
@@ -97,6 +102,17 @@
 
 						</div>
 					<?php } ?>
+
+                    <?php if($widget->getType() === 'realTimeChart') { ?>
+                        <?php //var_dump($widget); ?>
+                        <div class="widget widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
+                            <?php //var_dump($widget)//$device = $_['device'] ?>
+                            <div id="widget-realTimePlotArea-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="chartcontainer" data-id="<?php p($widget->getDeviceId()); ?>"></div>
+                        </div>
+                        <div>
+
+                        </div>
+                    <?php } ?>
 				</div>
 			</div>
 		</div>
