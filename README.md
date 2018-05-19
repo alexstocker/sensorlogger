@@ -1,10 +1,12 @@
 # Sensor Logger
 
-Latest Version: [0.0.5nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.5nc)
+Latest Version: [0.0.6nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.6nc)
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
-![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_nc_dashboard.png)
+![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_nc_dashboard_001.png)
+
+![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_nc_dashboard_002.png)
 
 ![SensorLogger Chart](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_nc_chart.png)
 
@@ -17,6 +19,3 @@ Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 ![SensorLogger Devices](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_devices-1.png)
 
 ![SensorLogger Device details](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails_edit.png)
-
-## Changelog
-- Fixed Issue #27 initial reported by @gsantner

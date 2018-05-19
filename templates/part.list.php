@@ -41,7 +41,7 @@
 	<div id="emptycontent" class="">
 		<div class="icon-info"></div>
 		<h2>No Sensor data</h2>
-		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki"
+		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Configuration#list"
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
 	</div>
 <?php } ?>

@@ -1,5 +1,17 @@
 # SensorLogger
-### (0.0.5nc) UNRELEASED
+### (0.0.6nc) UNRELEASED
+  * Nextcloud 13 support
+  * Added SensorLogs::deleteLogById and deleteLog controller action #37'
+  * Added dashboard widgets column media styles
+  * Create ISSUE_TEMPLATE.md
+  * Add CONTRIBUTING.md
+  * Added CODE_OF_CONDUCT.md
+  * Updated README
+  
+### (0.0.5.1nc) RELEASED
+  * Updated to support nextcloud 13 suggested by @e-alfred issue #42
+  * Fixed Issue #27 initial reported by @gsantner
+### (0.0.5nc) RELEASED
   * Added DeleteDevice action, added Chart zooming ability, added Error some error codes, updated test/curl examples
   * Fixed Issue #27
   * Updated info description
@@ -35,3 +47,4 @@
  * chart view
 
 -- Alexander Stocker
+-- alexstocker

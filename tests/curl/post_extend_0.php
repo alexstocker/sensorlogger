@@ -8,7 +8,7 @@
 	$nh3 = mt_rand (1*10, 500*10) / 10;
 	$ch4 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "491d52c3-d9fd-501b-14b9-6e0263b003ba",
+	$array = array("deviceId" => "a150502d-efa1-59c8-8554-1867a5d462d3",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(
 						array(
