@@ -1,5 +1,9 @@
 # SensorLogger
-### (0.0.6) UNRELEASED
+### (0.0.6) RELEASED
+  * Added SensorLogs::deleteLogById and deleteLog controller action #37'
+  * Added dashboard widgets column media styles
+  * Added timeoffset calculation for realtime charts
+  * Added RealTime Data widget
   * Started to rebuild script.js #11, added RealTime Chart widget
   * Updated insertExtendedLog and insertLog to use QueryBuilder
   * Added SensorLogs::deleteLogById and deleteLog controller action #37'

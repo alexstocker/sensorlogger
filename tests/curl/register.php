@@ -1,5 +1,5 @@
 <?php
-	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
 
     $registerArray = [
         '_route' => 'sensorlogger.apisensorlogger.registerDevice',
@@ -29,8 +29,8 @@
 
     $data_json = json_encode($registerArray);
 
-	$username = 'admin';
-	$token = 'RWGFF-KMZUC-NFOQD-CMXCC';
+	$username = 'test';
+	$token = 'GOETJ-QOSIY-WCIZI-ZAJTL';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

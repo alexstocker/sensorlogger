@@ -1,12 +1,12 @@
 # Sensor Logger
 
 ### Latest Versions
-- owncloud [0.0.5](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.5)
-- nextcloud [0.0.5nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.5nc)
+- owncloud [0.0.6](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.6)
+- nextcloud [0.0.6nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.6nc)
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
-![SensorLogger Dashboard](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_dashboard-1.png)
+![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_oc_dashboard_widget_livedata_001.png)
 
 ![SensorLogger Chart](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_0.png)
 

@@ -5,7 +5,7 @@
     <description>SensorLogger for ownCloud enables users to log data provided by sensor devices</description>
     <licence>AGPL</licence>
     <author>Alexander Stocker</author>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <namespace>SensorLogger</namespace>
     <category>tools</category>
     <ocsid>174814</ocsid>
@@ -25,7 +25,7 @@
     <website>https://www.html5live.at/sensorlogger/</website>
     <summary>Log data from any type of sensor and visualize it</summary>
 
-    <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_dashboard-1.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_oc_dashboard_widget_livedata_001.png</screenshot>
 
     <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_0.png</screenshot>
 
@@ -40,7 +40,7 @@
     <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails_edit.png</screenshot>
 
     <dependencies>
-        <owncloud min-version="9.0" max-version="10.0"/>
+        <owncloud min-version="9" max-version="10"/>
         <database>mysql</database>
     </dependencies>
 </info>

@@ -54,8 +54,14 @@ vendor_script('select2/select2');
 				<div class="systemTagsInfoView"></div>
 			</div>
 			<ul class="tabHeaders">
-				<li class="tabHeader selected" data-tabid="shareTabView" data-tabindex="2">
-					<a href="#">Teilen</a>
+				<li class="tabHeader selected" data-tabid="shareTabView" data-tabindex="0">
+					<a href="#">Share</a>
+				</li>
+				<li class="tabHeader" data-tabid="activityTabView" data-tabindex="1">
+					<a href="#">Activities</a>
+				</li>
+				<li class="tabHeader" data-tabid="notificationsTabView" data-tabindex="1">
+					<a href="#">Notifications</a>
 				</li>
 			</ul>
 			<div id="tabsContainer">
