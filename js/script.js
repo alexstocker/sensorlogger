@@ -198,13 +198,18 @@
 				var sidebarTitle = sidebar.find('.title');
 
 				var widgetTypeSource = [];
+                var widgetOptionSource = [];
 				for (var key in response.widgetTypes) {
+                    var types = response.widgetTypes;
 					widgetTypeSource.push({
 							value : key,
-							text: response.widgetTypes[key],
+							text: response.widgetTypes[key].displayName,
 							id : key
 						}
 					);
+					if(response.widgetTypes[key].options) {
+                        widgetOptionSource[key] = types[key].options;
+					}
 				}
 
 				var deviceSource = [];
