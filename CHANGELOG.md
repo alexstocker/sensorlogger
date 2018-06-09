@@ -1,4 +1,7 @@
 # SensorLogger
+### (0.0.7) UNRELEASED
+
+# SensorLogger
 ### (0.0.6) RELEASED
   * Added SensorLogs::deleteLogById and deleteLog controller action #37'
   * Added dashboard widgets column media styles
@@ -51,3 +54,4 @@
 
 -- Alexander Stocker
 -- alexstocker
+-- Ozzie Isaacs

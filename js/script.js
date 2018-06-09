@@ -323,13 +323,95 @@
 				return;
 			}
 
-			if(sidebar.is(':visible')) {
-				sidebar.hide();
-				saveBtn.hide();
-				return;
-			}
+            var id = $(this).data('id');
 
-			var id = $(this).data('id');
+            var sidebarFooter = sidebar.find('.footer');
+
+            var wipeOutDevicetest = $('<a/>', {
+                'id':'wipeout',
+                'href': '#',
+                'data-type': 'text',
+                'data-field': 'wipeout',
+                'data-pk': id,
+                'data-url': wipeOutUrl,
+                'data-title': 'response.name',
+                'text': 'wipeOut'
+			});
+
+            //wipeOutDevice.text('wipeOut');
+
+            //console.log(sidebarFooter);
+
+            //sidebarFooter.append(wipeOutDevice);
+
+            if(sidebar.is(':visible')) {
+                sidebar.hide();
+                saveBtn.hide();
+                return;
+            }
+
+            var wipeOutUrl = OC.generateUrl('/apps/sensorlogger/wipeOutDevice');
+
+            var wipeOutDevice = $('#wipeout-btn').show();
+            wipeOutDevice.attr('title','Wipe out device!');
+
+            var wipeOutDeviceConfirm = $('<button/>',{
+                "text": t('sensorlogger', 'Yes')
+            });
+
+            var wipeOutDeviceCancel = $('<button/>',{
+                "text": t('sensorlogger', 'No')
+            });
+
+            $(wipeOutDevice).on('click',function(e){
+                $(".confirm-container").remove();
+            	var confirmContainer = $('<div/>',{
+            		"class": "confirm-container",
+					"text": t('sensorlogger', 'Are you sure?')
+				}).append(wipeOutDeviceConfirm).append(wipeOutDeviceCancel);
+                wipeOutDevice.hide().parent().append(confirmContainer);
+
+                var wipeOutCall = function(id){
+                	var deviceTr = $('table#sensorDevicesTable tr[data-id='+id+']');
+                    var spinner = $('<div class="icon icon-loading">');
+                    confirmContainer.parent().append(spinner);
+                    console.log(confirmContainer);
+                    confirmContainer.remove();
+                    $.post(wipeOutUrl, {'device_id':id} )
+                        .success(function (response) {
+                        	if(response.success) {
+                                deviceTr.remove();
+                                sidebar.hide();
+                                spinner.remove();
+                                $(".confirm-container").remove();
+                                OC.Notification.showTemporary(t('sensorlogger', 'Wiped out your device completely!'));
+							} else {
+                                wipeOutDevice.show();
+                                $(".confirm-container").remove();
+                                spinner.remove();
+                                OC.Notification.showTemporary(t('sensorlogger', 'Could not wipe out your device!'));
+							}
+
+                        })
+						.error(function(response) {
+                            wipeOutDevice.show();
+                            $(".confirm-container").remove();
+                            spinner.remove();
+                            OC.Notification.showTemporary(t('sensorlogger', 'Could not wipe out your device!'));
+						});
+                };
+
+
+                wipeOutDeviceCancel.on('click', function(e) {
+                    confirmContainer.remove();
+                    wipeOutDevice.show();
+				});
+                wipeOutDeviceConfirm.on('click', function(e) {
+                    wipeOutCall(id);
+				});
+
+			});
+
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+id);
 			$.post(url).success(function (response) {
 				$.fn.editable.defaults.mode = 'inline';
@@ -464,6 +546,8 @@
 				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 
 				sidebar.find('.bodyDetails').remove();
+
+
 
 				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.deviceDetails.uuid);
 				var group = bodyDetailsContainer.clone().append(groupSelect);

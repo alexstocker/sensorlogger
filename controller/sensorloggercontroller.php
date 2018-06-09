@@ -156,7 +156,7 @@ class SensorLoggerController extends Controller {
 
 	protected function getNavigationItems() {
 
-		App::getNavigationManager()->add(
+    		App::getNavigationManager()->add(
 			[
 				'id' => 'showDashboard',
 				'appName' => 'sensorlogger',
@@ -436,6 +436,24 @@ class SensorLoggerController extends Controller {
         }
         return $this->returnJSON(array('success' => false));
 	}
+
+    /**
+     * @NoAdminRequired
+     * @return DataResponse
+     */
+	public function wipeOutDevice() {
+	    if($this->request->getParam('device_id') && $this->userSession->getUser()->getUID()) {
+            if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
+                try {
+                    SensorDevices::deleteDevice((int)$id, $this->connection);
+                    DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
+                    return $this->returnJSON(array('success' => true));
+                } catch (Exception $e) {}
+            }
+        }
+
+        return $this->returnJSON(array('success' => false));
+    }
 
 	/**
 	 * @NoAdminRequired

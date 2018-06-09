@@ -73,6 +73,9 @@ vendor_script('select2/select2');
 				<a id="save-btn" class="icon-save" style="display:none;">
 					<span class="icon icon-save" ></span>
 				</a>
+                <a id="wipeout-btn" class="icon-wipeout" style="display:none;">
+                    <span class="icon icon-wipeout"></span>
+                </a>
 				<a class="icon-delete handler" style="display:none;">
 					<span class="icon icon-delete"></span>
 				</a>
