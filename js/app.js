@@ -72,6 +72,7 @@
                 "class":"pulse"
             });
 
+            //console.log(widgetContainer.data('widget-type'));
     		if(widgetContainer.data('widget-type') === 'chart') {
 
 			} else if (widgetContainer.data('widget-type') === 'list') {
@@ -338,8 +339,88 @@
                         });
                     }
                 }
-            } else {
-			}
+            } else if(widgetContainer.data('widget-type') === 'max_values_24h') {
+                realTimeContainer = widgetContainer.find('.max_values_24h');
+                if(!$('#max_values_24h-'+widgetContainer.data('id'))
+                        .hasOwnProperty('length')) {
+
+                    realTimeLastId = 'max_values_24h-'+widgetContainer.data('id');
+                    realTimeLast = $('<div/>', {
+                        'id': realTimeLastId
+                    });
+
+                    dataElement = $('<h3/>');
+
+                    realTimeContainer.append(realTimeLast);
+                    realTimeContainer.prepend(timeOutDd);
+                    realTimeContainer.prev('h2').prepend(liveIndicator);
+
+
+                    doAjax = function () {
+                        var t = timeOutDd[0].options[timeOutDd[0].selectedIndex].value * 1000;
+
+                        $.ajax({
+                            url: 'maxLog/' + widgetContainer.data('id')+'/24',
+                            data: {'limit': 1},
+                            type: 'GET',
+                            success: function (response) {
+                                if (response) {
+                                    if (response.dataTypes && response.logs !== null) {
+                                        realTimeLast.empty();
+
+                                        var logData = response.logs.data;
+                                        var dataTypes = response.dataTypes;
+
+                                        var dataTypeElement = $('<small/>');
+
+                                        for (var typeKey in dataTypes) {
+                                            var dataTypeId = dataTypes[typeKey].id;
+                                            for (var logKey in logData) {
+                                                var logDataTypeId = logData[logKey].dataTypeId;
+
+                                                if(parseInt(dataTypeId) === parseInt(logDataTypeId)) {
+                                                    var dataElem = dataElement
+                                                        .clone()
+                                                        .text(logData[logKey].value+' '+dataTypes[typeKey].short);
+
+                                                    var dataTypeElem = dataTypeElement
+                                                        .clone()
+                                                        .text(dataTypes[typeKey].description);
+
+                                                    dataElem.appendTo(realTimeLast);
+                                                    dataTypeElem.appendTo(realTimeLast);
+                                                }
+
+                                            }
+
+                                        }
+
+                                    } else if(response.humidity && response.temperature) {
+                                        //console.log(response);
+                                        realTimeLast.empty();
+                                        //var date = dataElement.clone().text(response[0].createdAt);
+                                        var humidity = dataElement.clone().text(response.humidity+' % r.F.');
+                                        var temperature = dataElement.clone().text(response.temperature+ ' °C');
+
+                                        temperature.appendTo(realTimeLast);
+                                        humidity.appendTo(realTimeLast);
+                                        //date.appendTo(realTimeLast);
+
+                                    } else {
+
+                                    }
+                                    setTimeout(doAjax, t);
+                                }
+                            }
+                        });
+                    };
+
+                    doAjax();
+
+                }
+			} else {
+
+            }
         }
 	};
 

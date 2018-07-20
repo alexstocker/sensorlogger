@@ -27,6 +27,7 @@ use OCA\SensorLogger\App;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
 use OCA\SensorLogger\DeviceTypes;
+use OCA\SensorLogger\iWidget;
 use OCA\SensorLogger\SensorDevices;
 use OCA\SensorLogger\SensorGroups;
 use OCA\SensorLogger\SensorLogs;
@@ -95,6 +96,8 @@ class SensorLoggerController extends Controller {
 	 */
 	protected $appManager;
 
+	protected $widgets;
+
 	/**
 	 * SensorLoggerController constructor.
 	 *
@@ -110,6 +113,7 @@ class SensorLoggerController extends Controller {
 	 * @param IAppManager $appManager
 	 */
 	public function __construct($AppName,
+									Widgets $widgets,
 									IRequest $request,
 									IURLGenerator $urlGenerator,
 									INavigationManager $navigationManager,
@@ -128,6 +132,7 @@ class SensorLoggerController extends Controller {
 		$this->eventDispatcher = $eventDispatcherInterface;
 		$this->userSession = $userSession;
 		$this->appManager = $appManager;
+		$this->widgets = $widgets;
 	}
 
 	/**
@@ -156,7 +161,7 @@ class SensorLoggerController extends Controller {
 
 	protected function getNavigationItems() {
 
-    		App::getNavigationManager()->add(
+		App::getNavigationManager()->add(
 			[
 				'id' => 'showDashboard',
 				'appName' => 'sensorlogger',
@@ -340,9 +345,12 @@ class SensorLoggerController extends Controller {
 	protected function getWidgets(){
 		$devices = SensorDevices::getDevices($this->userSession->getUser()->getUID(),$this->connection);
 		$widgets = [];
-		foreach ($devices as $device) {
-			foreach(Widgets::WIDGET_TYPES as $key => $value) {
 
+		$availableWidgets = new Widgets();
+		$widgetTypes = $availableWidgets->getWidgetTypes();
+		foreach ($devices as $device) {
+			//foreach(Widgets::WIDGET_TYPES as $key => $value) {
+            foreach($widgetTypes as $key => $value) {
 				$widgetConfig = json_decode($this->getUserValue(
 					'widget-'.$key.'-'.$device->getId(),
 					$this->userSession->getUser()->getUID()));
@@ -350,8 +358,16 @@ class SensorLoggerController extends Controller {
 				if($widgetConfig === null) {
 					continue;
 				}
-				$buildWidget = Widgets::build($this->userSession->getUser()->getUID(), $device, $widgetConfig, $this->connection, $this->config);
-				$widgets[] = $buildWidget;
+
+				$customWidget = $availableWidgets->buildUserWidget(
+				    $this->userSession->getUser()->getUID(),
+                    $device,
+                    $widgetConfig,
+                    $this->connection,
+                    $this->config);
+
+				//$buildWidget = Widgets::build($this->userSession->getUser()->getUID(), $device, $widgetConfig, $this->connection, $this->config);
+				$widgets[] = $customWidget;
 			}
 		}
 		return $widgets;
@@ -380,7 +396,9 @@ class SensorLoggerController extends Controller {
 	 * @return DataResponse
 	 */
 	public function getWidgetTypes() {
-		$widgetTypes = Widgets::WIDGET_TYPES;
+		//$widgetTypes = Widgets::WIDGET_TYPES;
+		$widgets = new Widgets();
+        $widgetTypes = $widgets->getWidgetTypes();
 		$devices = SensorDevices::getDevices($this->userSession->getUser()->getUID(),$this->connection);
 		return $this->returnJSON(array('widgetTypes' => $widgetTypes, 'devices' => $devices));
 	}
@@ -443,6 +461,7 @@ class SensorLoggerController extends Controller {
      */
 	public function wipeOutDevice() {
 	    if($this->request->getParam('device_id') && $this->userSession->getUser()->getUID()) {
+	        $id = $this->request->getParam('device_id');
             if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
                 try {
                     SensorDevices::deleteDevice((int)$id, $this->connection);
@@ -451,7 +470,6 @@ class SensorLoggerController extends Controller {
                 } catch (Exception $e) {}
             }
         }
-
         return $this->returnJSON(array('success' => false));
     }
 
@@ -590,6 +608,37 @@ class SensorLoggerController extends Controller {
      */
     public function chartDataLastLog($id) {
         return $this->getChartDataLastLog($id);
+    }
+
+    /**
+     * @NoAdminRequired
+     * @param integer $id
+     * @param integer $param
+     */
+    public function maxLastLog($id, $param) {
+        if(is_int($id) && (is_int($param) && $param !== 0)) {
+
+            $device = SensorDevices::getDevice(
+                $this->userSession->getUser()->getUID(),
+                $id,
+                $this->connection
+            );
+
+            $widget = new Widgets\MaxValues24hWidget();
+            $logs = $widget->widgetData($this->userSession->getUser()->getUID(),$device, $this->connection);
+
+            $dataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+                $this->userSession->getUser()->getUID(),
+                $device->getId(),
+                $this->connection
+            );
+
+            if(is_array($dataTypes) && !empty($dataTypes)) {
+                $logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
+            }
+            return $this->returnJSON($logs);
+
+        }
     }
 
 	/**

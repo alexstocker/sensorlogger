@@ -16,6 +16,7 @@ class Widget extends Entity implements \JsonSerializable {
 	protected $log;
 	protected $name;
 	protected $displayName;
+	protected $templateName = 'default';
 
 	public function __construct() {
 		$this->addType('deviceId', 'integer');
@@ -33,9 +34,15 @@ class Widget extends Entity implements \JsonSerializable {
 			'type' => $this->type,
 			'log' => $this->log,
 			'name' => $this->name,
-            'displayName' => $this->displayName
+            'displayName' => $this->displayName,
+            'templateName' => $this->templateName
 		];
 	}
+
+    public function widgetTemplateName()
+    {
+        return $this->templateName;
+    }
 
 	/**
 	 * @return mixed

@@ -1,4 +1,5 @@
-{ "translations": {
+{
+    "translations": {
     "Reset Chart": "zurücksetzen",
     "Delete Widget": "löschen",
     "Dashboard": "Startseite",
@@ -7,5 +8,6 @@
     "Device Types": "Typen",
     "Device Groups": "Gruppen",
     "Data Types": "Datentypen"
-},"pluralForm" :"nplurals=2; plural=(n != 1);"
+    },
+    "pluralForm" :"nplurals=2; plural=(n != 1);"
 }

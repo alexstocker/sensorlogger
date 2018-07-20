@@ -375,9 +375,9 @@
                 	var deviceTr = $('table#sensorDevicesTable tr[data-id='+id+']');
                     var spinner = $('<div class="icon icon-loading">');
                     confirmContainer.parent().append(spinner);
-                    console.log(confirmContainer);
+                    //console.log(confirmContainer);
                     confirmContainer.remove();
-                    $.post(wipeOutUrl, {'device_id':id} )
+                    $.post( wipeOutUrl, {'device_id':id} )
                         .success(function (response) {
                         	if(response.success) {
                                 deviceTr.remove();
@@ -391,7 +391,6 @@
                                 spinner.remove();
                                 OC.Notification.showTemporary(t('sensorlogger', 'Could not wipe out your device!'));
 							}
-
                         })
 						.error(function(response) {
                             wipeOutDevice.show();
@@ -546,8 +545,6 @@
 				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 
 				sidebar.find('.bodyDetails').remove();
-
-
 
 				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.deviceDetails.uuid);
 				var group = bodyDetailsContainer.clone().append(groupSelect);

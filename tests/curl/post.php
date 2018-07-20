@@ -10,8 +10,8 @@
 					"date" => date('Y-m-d H:i:s'));
 	$data_json = json_encode($array);
 
-	$username = 'test';
-	$token = 'GOETJ-QOSIY-WCIZI-ZAJTL';
+	$username = 'admin';
+	$token = 'RWGFF-KMZUC-NFOQD-CMXCC';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
