@@ -455,6 +455,24 @@ class SensorLoggerController extends Controller {
         return $this->returnJSON(array('success' => false));
 	}
 
+    /**
+     * @NoAdminRequired
+     * @return DataResponse
+     */
+	public function wipeOutDevice() {
+	    if($this->request->getParam('device_id') && $this->userSession->getUser()->getUID()) {
+	        $id = $this->request->getParam('device_id');
+            if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
+                try {
+                    SensorDevices::deleteDevice((int)$id, $this->connection);
+                    DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
+                    return $this->returnJSON(array('success' => true));
+                } catch (Exception $e) {}
+            }
+        }
+        return $this->returnJSON(array('success' => false));
+    }
+
 	/**
 	 * @NoAdminRequired
 	 * @param $id
@@ -590,6 +608,37 @@ class SensorLoggerController extends Controller {
      */
     public function chartDataLastLog($id) {
         return $this->getChartDataLastLog($id);
+    }
+
+    /**
+     * @NoAdminRequired
+     * @param integer $id
+     * @param integer $param
+     */
+    public function maxLastLog($id, $param) {
+        if(is_int($id) && (is_int($param) && $param !== 0)) {
+
+            $device = SensorDevices::getDevice(
+                $this->userSession->getUser()->getUID(),
+                $id,
+                $this->connection
+            );
+
+            $widget = new Widgets\MaxValues24hWidget();
+            $logs = $widget->widgetData($this->userSession->getUser()->getUID(),$device, $this->connection);
+
+            $dataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+                $this->userSession->getUser()->getUID(),
+                $device->getId(),
+                $this->connection
+            );
+
+            if(is_array($dataTypes) && !empty($dataTypes)) {
+                $logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
+            }
+            return $this->returnJSON($logs);
+
+        }
     }
 
 	/**

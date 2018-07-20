@@ -22,6 +22,8 @@
 				</h2>
 
 				<div class="section <?php p($widget->getType()); ?>">
+                    <?php //var_dump($widget); ?>
+                    <?php //print_unescaped($this->inc('widgets/'.$widget->widgetTemplateName(), array('widget' => $widget))); ?>
 					<?php if($widget->getType() === 'last') { ?>
 						<?php if($widget->getLog()) { ?>
 							<?php if(is_array($widget->getLog()->getData()) && !empty($widget->getLog()->getData())) { ?>

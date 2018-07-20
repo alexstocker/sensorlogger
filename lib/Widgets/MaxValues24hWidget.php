@@ -3,6 +3,7 @@
 namespace OCA\SensorLogger\Widgets;
 
 use OC\DB\Connection;
+use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
 use OCA\SensorLogger\Log;
 use OCA\SensorLogger\LogExtended;
@@ -14,24 +15,28 @@ class MaxValues24hWidget extends Widget implements iWidget
     protected $identifier = 'max_values_24h';
     protected $displayName = '24h max Values';
     protected $templateName = 'maxValues24h';
+    private $userId;
+    private $connection;
 
-    function widgetIdentifier()
+    public function widgetIdentifier()
     {
         return $this->identifier;
     }
 
-    function widgetDisplayName()
+    public function widgetDisplayName()
     {
         return $this->displayName;
     }
 
-    function widgetTemplateName()
+    public function widgetTemplateName()
     {
         return $this->templateName;
     }
 
-    function widgetData($userId, Device $device, Connection $connection)
+    public function widgetData($userId, Device $device, Connection $connection)
     {
+        $this->userId = $userId;
+        $this->connection = $connection;
         $logs = $this->getLogsByDeviceId($userId, $device->getUuid(), $connection);
 
         /** @var Log $log */
@@ -42,71 +47,89 @@ class MaxValues24hWidget extends Widget implements iWidget
                 return $this->recentLog($logs, 'max');
             }
         }
-
-
         //return $this->getLogsByDeviceId($userId, $device->getUuid(), $connection);
     }
 
     protected function recentLog($logs, $filter, $extended = false) {
-        if($logs) {
-            if($extended) {
-
-            }
+        if(!$logs || empty($logs)) {
+            return false;
         }
 
         switch ($filter) {
             case 'max':
                 if($extended) {
-                    $recCountArray = array();
+                    $maxLog = new Log();
 
-                    $prevKey = null;
-                    $prevDataTypeId = null;
-                    $prevDataValue = null;
+                    $maxLogArray = [];
                     /** @var Log $log */
                     foreach ($logs as $logKey => $log) {
                         /** @var LogExtended $extend_log */
                         foreach ($log->getData() as $extend_log) {
-
-                            if(!is_null($prevKey) && !is_null($prevDataTypeId) && !is_null($prevDataValue)) {
-                                if($prevDataTypeId === $extend_log->getDataTypeId() &&
-                                $prevDataValue < $extend_log->getValue()) {
-                                    unset($recCountArray[$prevKey]);
-                                    $recCountArray[$logKey][$extend_log->getValue()];
-                                }
+                            if(!isset($maxLogArray[$extend_log->getDataTypeId()])) {
+                                $dataType = DataTypes::getDataTypeById($this->userId, $extend_log->getDataTypeId(), $this->connection);
+                                $maxLogArray[$extend_log->getDataTypeId()] = [
+                                    'value' => $extend_log->getValue(),
+                                    'type' => $dataType->getType(),
+                                    'short' => $dataType->getShort(),
+                                    'dataTypeId' => $dataType->getId()
+                                ];
+                                $maxLog->setData(json_encode($maxLogArray));
                             } else {
-                                $recCountArray[$logKey][$extend_log->getDataTypeId()] = $extend_log->getValue();
-
-                                $prevKey = $logKey;
-                                $prevDataTypeId = $extend_log->getDataTypeId();
-                                $prevDataValue = $extend_log->getValue();
+                                if($maxLogArray[$extend_log->getDataTypeId()]['value'] < $extend_log->getValue()) {
+                                    $dataType = DataTypes::getDataTypeById($this->userId, $extend_log->getDataTypeId(), $this->connection);
+                                    $maxLogArray[$extend_log->getDataTypeId()] = [
+                                        'value' => $extend_log->getValue(),
+                                        'type' => $dataType->getType(),
+                                        'short' => $dataType->getShort(),
+                                        'dataTypeId' => $dataType->getId()
+                                    ];
+                                    $maxLog->setData(json_encode($maxLogArray));
+                                }
                             }
                         }
 
                     }
+                    //$log = $maxLog;
 
-                    $maxCount = max($recCountArray);
+                    return $maxLog;
                 } else {
-                    $log = array_filter($logs,'filter'.ucfirst($filter));
+
+                    $humidityMaxLogKey = null;
+                    $humidityMaxValue = null;
+                    $temperatureMaxLogKey = null;
+                    $temperatureMaxValue = null;
+                    foreach($logs as $logKey => $log) {
+                        if($humidityMaxValue === null && $temperatureMaxValue === null) {
+                            $humidityMaxValue = $log->getHumidity();
+                            $humidityMaxLogKey = $logKey;
+                            $temperatureMaxValue = $log->getTemperature();
+                            $temperatureMaxLogKey = $logKey;
+                        } else {
+
+                            if($log->getHumidity() > $humidityMaxValue) {
+                                $humidityMaxValue = $log->getHumidity();
+                                $humidityMaxLogKey = $logKey;
+                            }
+
+                            if($log->getTemperature() > $temperatureMaxValue) {
+                                $temperatureMaxValue = $log->getTemperature();
+                                $temperatureMaxLogKey = $logKey;
+                            }
+
+
+                        }
+                    }
+
+                    $log = new Log();
+                    $log->setHumidity($humidityMaxValue);
+                    $log->setTemperature($temperatureMaxValue);
+
+                    return $log;
                 }
                 break;
             default:
                 break;
         }
-
-    }
-
-    protected function filterMax($array) {
-
-        if($array) {
-
-        }
-    }
-
-    public function filterMaxExtended($array) {
-        if($array) {
-            return $array;
-        }
-        return false;
     }
 
     /**
@@ -121,7 +144,7 @@ class MaxValues24hWidget extends Widget implements iWidget
             ->from('sensorlogger_logs')
             ->where('user_id = "'.$userId.'"')
             ->andWhere('device_uuid = "'.$deviceUuid.'"')
-            ->andWhere('created_at >= now() - INTERVAL 180 DAY');
+            ->andWhere('created_at >= now() - INTERVAL 1 DAY');
         $result = $query->execute();
 
         $data = $result->fetchAll();

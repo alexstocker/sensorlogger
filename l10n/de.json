@@ -1,5 +1,13 @@
-{ "translations": {
+{
+    "translations": {
     "Reset Chart": "zurücksetzen",
-    "Delete Widget": "löschen"
-},"pluralForm" :"nplurals=2; plural=(n != 1);"
+    "Delete Widget": "löschen",
+    "Dashboard": "Startseite",
+    "List": "Logs",
+    "Devices": "Sensoren",
+    "Device Types": "Typen",
+    "Device Groups": "Gruppen",
+    "Data Types": "Datentypen"
+    },
+    "pluralForm" :"nplurals=2; plural=(n != 1);"
 }

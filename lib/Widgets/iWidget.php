@@ -9,9 +9,9 @@ use OCA\SensorLogger\Device;
 interface iWidget
 {
 
-    function widgetIdentifier();
-    function widgetDisplayName();
-    function widgetTemplateName();
-    function widgetData($userId, Device $device, Connection $connection);
+    public function widgetIdentifier();
+    public function widgetDisplayName();
+    public function widgetTemplateName();
+    public function widgetData($userId, Device $device, Connection $connection);
 
 }

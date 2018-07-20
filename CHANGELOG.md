@@ -1,4 +1,8 @@
 # SensorLogger
+### (0.0.7) UNRELEASED
+  * Add wipeout icon set #49
+
+# SensorLogger
 ### (0.0.6) RELEASED
   * Added SensorLogs::deleteLogById and deleteLog controller action #37'
   * Added dashboard widgets column media styles
