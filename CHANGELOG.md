@@ -1,8 +1,8 @@
 # SensorLogger
 ### (0.0.7) UNRELEASED
-  * Add wipeout icon set #49
+  * Added new Dashboard widget 24h Max Values #40 suggested by @ei-ke
+  * Adding ClassFinder, MaxValues24hWidget, Widget Interface
 
-# SensorLogger
 ### (0.0.6) RELEASED
   * Added SensorLogs::deleteLogById and deleteLog controller action #37'
   * Added dashboard widgets column media styles
@@ -52,6 +52,3 @@
 
  * dashboard widget (list and last)
  * chart view
-
--- Alexander Stocker
--- alexstocker
