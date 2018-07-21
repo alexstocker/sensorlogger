@@ -7,8 +7,8 @@
                  data-id="<?php p($widget->getDeviceId()); ?>"
                  data-widget-type="<?php p($widget->getType()); ?>">
 				<h2 class="widget-header ui-widget-header">
-                    <?php p($widget->getName()); ?>
-                    <small><?php p($widget->getDisplayName()); ?></small>
+                    <?php p($widget->getName()); ?> -
+                    <small><?php p($l->t('Widget '.$widget->getDisplayName())); ?></small>
 					<?php if($widget->getType() === 'chart') { ?>
 						<a href="#" id="zoom_reset" title="<?php p($l->t('Reset Chart')); ?>" class="reset opIcons">
 							<span class="icon icon-reset-white"></span>
@@ -46,7 +46,6 @@
 									</p>
 							</div>
 						<?php } ?>
-					<?php  ?>
 					<?php } else if ($widget->getType() === 'list') { ?>
 						<?php if($widget->getLog()) { ?>
 							<table style="width: 100%;">
@@ -93,6 +92,7 @@
 						<?php } ?>
 					<?php  ?>
 					<?php } else if($widget->getType() === 'chart') { ?>
+
 						<?php //var_dump($widget); ?>
 						<div class="widget widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
 							<?php //var_dump($widget)//$device = $_['device'] ?>
@@ -101,8 +101,8 @@
 						<div>
 
 						</div>
-					<?php  ?>
                     <?php } else if($widget->getType() === 'realTimeChart') { ?>
+
                         <?php //var_dump($widget); ?>
                         <div class="widget widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
                             <?php //var_dump($widget)//$device = $_['device'] ?>

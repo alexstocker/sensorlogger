@@ -201,7 +201,7 @@
 				for (var key in response.widgetTypes) {
 					widgetTypeSource.push({
 							value : key,
-							text: response.widgetTypes[key],
+							text: response.widgetTypes[key].displayName,
 							id : key
 						}
 					);

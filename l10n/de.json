@@ -7,7 +7,9 @@
     "Devices": "Sensoren",
     "Device Types": "Typen",
     "Device Groups": "Gruppen",
-    "Data Types": "Datentypen"
+    "Data Types": "Datentypen",
+        "Widget Live - Current Data": "Aktuelle Werte",
+        "Widget 24h max Values": "24h Maximum"
     },
     "pluralForm" :"nplurals=2; plural=(n != 1);"
 }
