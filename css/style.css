@@ -72,6 +72,10 @@ span.center {
 	left: 8px;
 }
 
+#app-sidebar div.content-wrapper div.footer .icon-loading {
+	position: initial;
+}
+
 #app-sidebar div.content-wrapper div.footer .icon-save .icon {
 	background-image: url('../img/save.svg');
 	background-size: 100% 100%;
@@ -88,6 +92,15 @@ span.center {
 	background-image: url('../img/reset.svg');
 	background-size: 100% 100%;
 	left: 30px;
+}
+
+.icon.icon-wipeout {
+	background-image: url('../img/icon-erase.svg');
+}
+
+.icon.icon-wipeout:hover,
+.icon.icon-wipeout:focus {
+	background-image: url('../img/icon-erase-hover.svg');
 }
 
 .icon.icon-datalist {

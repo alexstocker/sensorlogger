@@ -546,8 +546,6 @@
 
 				sidebar.find('.bodyDetails').remove();
 
-
-
 				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.deviceDetails.uuid);
 				var group = bodyDetailsContainer.clone().append(groupSelect);
 				var groupParent = bodyDetailsContainer.clone().append(groupParentSelect);
