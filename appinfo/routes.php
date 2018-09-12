@@ -47,6 +47,11 @@ return array(
 			'verb' => 'POST',
 			//'requirements' => array('path' => '.+'),
 		),
+        array(
+            'name' => 'apisensorlogger#ownTracks',
+            'url' => '/api/v1/owntracks/',
+            'verb' => 'POST',
+        ),
 		array(
 			'name' => 'apisensorlogger#registerDevice',
 			'url' => '/api/v1/registerdevice/',

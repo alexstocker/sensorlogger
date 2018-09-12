@@ -92,6 +92,50 @@ class ApiSensorLoggerController extends ApiController {
 		}
 	}
 
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     * @CORS
+     */
+	public function ownTracks() {
+
+        $data = $this->request->getParams();
+
+        if (array_key_exists('acc', $data)) $accuracy = intval($data['acc']);
+        if (array_key_exists('alt', $data)) $altitude = intval($data['alt']);
+        if (array_key_exists('batt', $data)) $battery_level = intval($data['batt']);
+        if (array_key_exists('cog', $data)) $heading = intval($data['cog']);
+        if (array_key_exists('desc', $data)) $description = strval($data['desc']);
+        if (array_key_exists('event', $data)) $event = strval($data['event']);
+        if (array_key_exists('lat', $data)) $latitude = floatval($data['lat']);
+        if (array_key_exists('lon', $data)) $longitude = floatval($data['lon']);
+        if (array_key_exists('rad', $data)) $radius = intval($data['rad']);
+        if (array_key_exists('t', $data)) $trig = strval($data['t']);
+        if (array_key_exists('tid', $data)) $tracker_id = strval($data['tid']);
+        if (array_key_exists('tst', $data)) $epoch = intval($data['tst']);
+        if (array_key_exists('vac', $data)) $vertical_accuracy = intval($data['vac']);
+        if (array_key_exists('vel', $data)) $velocity = intval($data['vel']);
+        if (array_key_exists('p', $data)) $pressure = floatval($data['p']);
+        if (array_key_exists('conn', $data)) $connection = strval($data['conn']);
+
+        if(!isset($data['date']) || empty($data['date'])) {
+            $data['date'] = date('Y-m-d H:i:s');
+        }
+
+        $deviceId = $data['tid'];
+        $dataJson = json_encode($data);
+
+        $query = $this->db->getQueryBuilder();
+        $query->insert('sensorlogger_logs')
+            ->values([
+                'created_at' => $query->createNamedParameter($data['date']),
+                'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                'device_uuid' => $query->createNamedParameter($deviceId),
+                'data' => $query->createNamedParameter($dataJson)
+            ])
+            ->execute();
+    }
+
 	/**
 	 * @param $array
 	 * @return bool

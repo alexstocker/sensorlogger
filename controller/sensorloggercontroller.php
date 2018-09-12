@@ -612,8 +612,9 @@ class SensorLoggerController extends Controller {
 
     /**
      * @NoAdminRequired
-     * @param integer $id
-     * @param integer $param
+     * @param $id
+     * @param $param
+     * @return DataResponse
      */
     public function maxLastLog($id, $param) {
         if(is_int($id) && (is_int($param) && $param !== 0)) {
