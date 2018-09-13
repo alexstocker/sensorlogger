@@ -10,7 +10,7 @@
     ]]></description>
     <licence>agpl</licence>
     <author mail="sensorlogger@html5live.at" homepage="https://www.html5live.at">HTML5Live</author>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
     <namespace>SensorLogger</namespace>
     <category>tools</category>
     <website>https://www.html5live.at/sensorlogger/</website>
@@ -24,7 +24,7 @@
     <screenshot>https://www.html5live.at/wp-content/uploads/2017/04/sensorlogger-1.png</screenshot>
     <dependencies>
         <php min-version="5.6" />
-        <nextcloud min-version="10" max-version="13"/>
+        <nextcloud min-version="12" max-version="14"/>
         <database min-version="5.5">mysql</database>
     </dependencies>
 </info>

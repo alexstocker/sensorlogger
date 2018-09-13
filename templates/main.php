@@ -26,7 +26,7 @@ vendor_script('select2/select2');
 
 
 ?>
-<div id="app">
+
 	<div id="app-navigation">
 		<?php print_unescaped($this->inc('part.navigation')); ?>
 		<?php print_unescaped($this->inc('part.settings')); ?>
@@ -77,4 +77,4 @@ vendor_script('select2/select2');
 
 		</div>
 	</div>
-</div>
+

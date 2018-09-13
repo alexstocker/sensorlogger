@@ -56,7 +56,7 @@ function genUniquID() {
 	$data_json = json_encode($registerArray);
 
 	$username = 'admin';
-	$token = 'TkiWL-W24dt-mpQog-nwj4a-WisDQ';
+	$token = 'bNPab-Sc8ZG-nkWJr-FyFBL-dawg3';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
