@@ -1,7 +1,10 @@
 # SensorLogger
-### (0.0.6nc) UNRELEASED
+### (0,0.7nc) RELEASED 
+  * Updated to support Nextcloud 14 and fixed dashboard sidebar display problem #53
+
+### (0.0.6nc) RELEASED
   * Nextcloud 13 support
-  * Added SensorLogs::deleteLogById and deleteLog controller action #37'
+  * Added SensorLogs::deleteLogById and deleteLog controller action #37
   * Added dashboard widgets column media styles
   * Create ISSUE_TEMPLATE.md
   * Add CONTRIBUTING.md
