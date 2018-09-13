@@ -1,6 +1,6 @@
 # Sensor Logger
 
-Latest Version: [0.0.6nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.6nc)
+Latest Version: [0.0.7nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.7nc)
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
