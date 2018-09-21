@@ -12,7 +12,7 @@
 		<td class="td-data"><?php p($deviceType['id']); ?></td>
 		<td class="td-data"><?php p($deviceType['device_type_name']); ?></td>
 		<td class="td-data"><?php p($deviceType['uuid']); ?></td>
-		<td class="td-data">Show devices</td>
+		<td class="td-data"></td>
 	</tr>
 <?php } ?>
 	</tbody>

@@ -1,11 +1,11 @@
 <?php
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/getdevicedatatypes/';
+	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/getdevicedatatypes/';
 
-	$array = array("deviceId" => "4aa62764-59d1-1e21-b103-7161475fce8c");
+	$array = array("deviceId" => "6e643ee8-0f9f-11e7-93ae-92361f002672");
 	$data_json = json_encode($array);
 
-	$username = 'test';
-	$token = 'KXUSU-QSDOK-KBPSC-XMZRA';
+	$username = 'admin';
+	$token = 'PDCEW-PNUQL-DEBSF-JKBTP';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

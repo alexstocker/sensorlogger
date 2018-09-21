@@ -10,13 +10,14 @@
 	</thead>
 	<tbody>
 <?php foreach($_['dataTypes'] as $dataType){ ?>
+    <?php //var_dump($dataType); ?>
 	<tr>
-		<td class="td-data"><?php p($dataType['id']); ?></td>
-		<td class="td-data"><?php p($dataType['description']); ?></td>
-		<td class="td-data"><?php p($dataType['type']); ?></td>
-		<td class="td-data"><?php p($dataType['short']); ?></td>
+		<td class="td-data"><?php p($dataType->getId()); ?></td>
+		<td class="td-data"><?php p($dataType->getDescription()); ?></td>
+		<td class="td-data"><?php p($dataType->getType()); ?></td>
+		<td class="td-data"><?php p($dataType->getShort()); ?></td>
 		<td class="td-data"></td>
-		<td class="td-data">Show devices</td>
+		<td class="td-data"></td>
 	</tr>
 <?php } ?>
 	</tbody>

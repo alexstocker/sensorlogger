@@ -70,6 +70,7 @@ class SensorLogs {
 		if($data) {
 			foreach($data as $log) {
 				$logModel = Log::fromRow($log);
+
 				$logs[] = $logModel;
 			}
 		}
@@ -115,12 +116,20 @@ class SensorLogs {
 	public static function deleteLogById($id, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->delete('sensorlogger_logs')
-			//->where('id = :log_id')
-			//->setParameter([':log_id' => ''])
 			->where('id = :log_id')
 			->setParameters([
 				':log_id' => $id
 			]);
 		return $query->execute();
 	}
+
+    public static function deleteLogsByUuid($uuid, IDBConnection $db) {
+        $query = $db->getQueryBuilder();
+        $query->delete('sensorlogger_logs')
+            ->where('device_uuid = :uuid')
+            ->setParameters([
+                ':uuid' => $uuid
+            ]);
+        return $query->execute();
+    }
 }

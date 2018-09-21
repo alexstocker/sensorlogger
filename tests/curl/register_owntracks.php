@@ -17,46 +17,47 @@ function genUniquID() {
 	$registerArray = [
 		'_route' => 'sensorlogger.apisensorlogger.registerDevice',
 		'deviceId' => genUniquID(),
-		'deviceName' => 'Some Default Name',
-		'deviceType' => 'Some Device Type',
-		'deviceGroup' => 'Some Device Group',
-		'deviceParentGroup' => 'Some Parent Group',
-		'deviceDataTypes' => [[
-			'type' => 'CO',
-			'description' => 'Carbon monoxide',
-			'unit' => 'ppm'
+		'deviceName' => 'Wiko Getaway',
+		'deviceType' => 'Mobile Fon',
+		'deviceGroup' => 'GPS',
+		'deviceParentGroup' => 'Wearables',
+		'deviceDataTypes' => [
+		    [
+			'type' => 'lat',
+			'description' => 'Location latitude',
+			'unit' => 'deg'
 		],
 		[
-			'type' => 'CO2',
-			'description' => 'Carbon dioxide',
-			'unit' => 'ppm'
+			'type' => 'lon',
+			'description' => 'Location longitude',
+			'unit' => 'deg'
 		],
 		[
-			'type' => 'C2H6OH',
-			'description' => 'Ethanol',
-			'unit' => 'ppm'
+			'type' => 'acc',
+			'description' => 'Accuracy',
+			'unit' => 'm'
 		],
 		[
-			'type' => 'H',
-			'description' => 'Hydrogen',
-			'unit' => 'ppm'
+			'type' => 'batt',
+			'description' => 'Battery Level',
+			'unit' => 'prc'
 		],
 		[
-			'type' => 'NH3',
-			'description' => 'Ammonia',
-			'unit' => 'ppm'
+			'type' => 'alt',
+			'description' => 'Altitude',
+			'unit' => 'm'
 		],
 		[
-			'type' => 'CH4',
-			'description' => 'Methan',
-			'unit' => 'ppm'
+			'type' => 'rad',
+			'description' => 'Radius',
+			'unit' => 'm'
 		]]
 	];
 
 	$data_json = json_encode($registerArray);
 
-	$username = 'test';
-	$token = 'SEBOB-SJYKD-FDJFI-FNYAZ';
+	$username = 'admin';
+	$token = 'PDCEW-PNUQL-DEBSF-JKBTP';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

@@ -9,7 +9,10 @@ use OC\Share\Share;
 use OCA\SensorLogger\DataType;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Error;
+use OCA\SensorLogger\Log;
+use OCA\SensorLogger\LogOwntrack;
 use OCA\SensorLogger\SensorDevices;
+use OCA\SensorLogger\SensorLogs;
 use OCP\API;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
@@ -97,43 +100,98 @@ class ApiSensorLoggerController extends ApiController {
      * @NoCSRFRequired
      * @CORS
      */
-	public function ownTracks() {
+    public function ownTracks() {
 
         $data = $this->request->getParams();
+        $dataTypes = [];
+        if (array_key_exists('acc', $data)) {
+            $accuracy = intval($data['acc']);
 
-        if (array_key_exists('acc', $data)) $accuracy = intval($data['acc']);
-        if (array_key_exists('alt', $data)) $altitude = intval($data['alt']);
+            $data['data'][] = [ 'dataTypeId' => null, 'value' => $accuracy];
+            $dataTypes[] = ['description' => 'Accuracy', 'type' => 'acc', 'short' => 'm'];
+        }
+        if (array_key_exists('alt', $data)) {
+            $altitude = intval($data['alt']);
+            $data['data'][] = [ 'dataTypeId' => null, 'value' => $altitude];
+            $dataTypes[] = [
+                'type' => 'alt',
+                'description' => 'Altitude',
+                'unit' => 'm'
+            ];
+        }
         if (array_key_exists('batt', $data)) $battery_level = intval($data['batt']);
         if (array_key_exists('cog', $data)) $heading = intval($data['cog']);
         if (array_key_exists('desc', $data)) $description = strval($data['desc']);
         if (array_key_exists('event', $data)) $event = strval($data['event']);
-        if (array_key_exists('lat', $data)) $latitude = floatval($data['lat']);
-        if (array_key_exists('lon', $data)) $longitude = floatval($data['lon']);
+        if (array_key_exists('lat', $data)) {
+            $latitude = floatval($data['lat']);
+            $data['data'][] = [ 'dataTypeId' => null, 'value' => $latitude];
+            $datTypes[] = [
+                'type' => 'lat',
+                'description' => 'Location latitude',
+                'unit' => 'deg'
+            ];
+        }
+        if (array_key_exists('lon', $data)) {
+            $longitude = floatval($data['lon']);
+            $data['data'][] = [ 'dataTypeId' => null, 'value' => $longitude];
+            $dataTypes[] = [
+                'type' => 'lon',
+                'description' => 'Location longitude',
+                'unit' => 'deg'
+            ];
+        }
         if (array_key_exists('rad', $data)) $radius = intval($data['rad']);
         if (array_key_exists('t', $data)) $trig = strval($data['t']);
         if (array_key_exists('tid', $data)) $tracker_id = strval($data['tid']);
-        if (array_key_exists('tst', $data)) $epoch = intval($data['tst']);
+        if (array_key_exists('tst', $data)) {
+            $epoch = intval($data['tst']);
+            $date = gmdate("Y-m-d H:i:s", $epoch);
+        } else {
+            $date = null;
+        }
         if (array_key_exists('vac', $data)) $vertical_accuracy = intval($data['vac']);
         if (array_key_exists('vel', $data)) $velocity = intval($data['vel']);
         if (array_key_exists('p', $data)) $pressure = floatval($data['p']);
         if (array_key_exists('conn', $data)) $connection = strval($data['conn']);
 
-        if(!isset($data['date']) || empty($data['date'])) {
-            $data['date'] = date('Y-m-d H:i:s');
+        $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$deviceId,$this->db);
+// print_r($availableDataTypes);
+// die();
+        foreach ($dataTypes as $dataType) {
+            foreach ($deviceDataTypes as $deviceDataType) {
+                if($dataType !== $deviceDataType->getType()) {
+                    continue;
+                }
+
+            }
+
         }
 
-        $deviceId = $data['tid'];
-        $dataJson = json_encode($data);
+        $data['deviceId'] = $data['tid'];
+        $data['device_uuid'] = $data['tid'];
 
-        $query = $this->db->getQueryBuilder();
-        $query->insert('sensorlogger_logs')
-            ->values([
-                'created_at' => $query->createNamedParameter($data['date']),
-                'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
-                'device_uuid' => $query->createNamedParameter($deviceId),
-                'data' => $query->createNamedParameter($dataJson)
-            ])
-            ->execute();
+        if(!isset($data['date']) || empty($data['date'])) {
+            $data['date'] = $date ?: date('Y-m-d H:i:s');
+
+        }
+
+        /** @var DataType $deviceDataType */
+        foreach($deviceDataTypes as $deviceDataType) {
+
+            if(!array_key_exists($deviceDataType->getType(), $data)){
+                continue;
+            }
+            $data['data'][] = [
+                'dataTypeId' => $deviceDataType->id,
+                'value' => $data[$deviceDataType->getType()]
+            ];
+        }
+
+
+        if(isset($data['data'])) {
+            $this->insertExtendedLog($data);
+        }
     }
 
 	/**
@@ -141,7 +199,9 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return bool
 	 */
 	protected function insertExtendedLog($array) {
-		$registered = $this->checkRegisteredDevice($array);
+
+	    $registered = $this->checkRegisteredDevice($array);
+
 		if($registered) {
 
 			if(!isset($array['date']) || empty($array['date'])) {

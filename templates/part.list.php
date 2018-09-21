@@ -10,8 +10,6 @@
 	</thead>
 	<tbody id ="logList">
 <?php foreach($_['logs'] as $log){ ?>
-	<?php $valueString = ''; ?>
-
 	<tr data-id="log-row<?php p($log->getId()); ?>" data-type="dir" class="logEdit">
 		<td class="td-data">
 			<a href="#" class="log-delete" title="<?php p($l->t('Delete Record')); ?>">
@@ -22,11 +20,12 @@
 		</td>
 		<td class="td-data"><?php p($log->getId()); ?></td>
 		<td class="td-data"><?php p($log->getDeviceUuid()); ?></td>
+
 		<?php if(sizeof($log->getData()) > 0) { ?>
 			<?php foreach($log->getData() as $lg) { ?>
 				<?php $valueString .= $lg->getValue().' '; ?>
 			<?php } ?>
-			<td class="td-data" colspan="2">Multi Value Sensor <small>(<?php p($valueString); ?>)</small></td>
+			<td class="td-data" colspan="2">Multi Value Sensor <small>(<?php p(substr($valueString,0,15).'...'); ?>)</small></td>
 		<?php } else { ?>
 		<td class="td-data"><?php p($log->getTemperature()); ?></td>
 		<td class="td-data"><?php p($log->getHumidity()); ?></td>

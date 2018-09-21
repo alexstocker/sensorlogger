@@ -29,7 +29,7 @@ class Log extends Entity implements \JsonSerializable {
 			'temperature' => $this->temperature,
 			'humidity' => $this->humidity,
 			'data' => $this->data,
-			'createdAt' => $this->createdAt,
+			'createdAt' => $this->createdAt
 		];
 	}
 

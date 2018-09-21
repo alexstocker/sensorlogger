@@ -24,6 +24,7 @@ namespace OCA\SensorLogger\Controller;
 use OC\OCS\Exception;
 use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\App;
+use OCA\SensorLogger\DataType;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
 use OCA\SensorLogger\DeviceTypes;
@@ -462,12 +463,20 @@ class SensorLoggerController extends Controller {
 	public function wipeOutDevice() {
 	    if($this->request->getParam('device_id') && $this->userSession->getUser()->getUID()) {
 	        $id = $this->request->getParam('device_id');
-            if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
+	        $device = SensorDevices::getDevice($this->userSession->getUser()->getUID(), (int)$id, $this->connection);
+
+	        if(!$this->deleteLogsByDevice($device)){
+                return $this->returnJSON(['errors' => 'Could not delete Logs for Device #'.$id]);
+            }
+
+	        if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
                 try {
                     SensorDevices::deleteDevice((int)$id, $this->connection);
                     DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
                     return $this->returnJSON(array('success' => true));
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+
+                }
             }
         }
         return $this->returnJSON(array('success' => false));
@@ -485,6 +494,19 @@ class SensorLoggerController extends Controller {
 		} catch (Exception $e) {}
 		return $this->returnJSON(array('success' => false));
 	}
+
+    /**
+     * @param Device $device
+     * @return bool
+     */
+	protected function deleteLogsByDevice($device) {
+        try {
+            SensorLogs::deleteLogsByUuid($device->getUuid(), $this->connection);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 
 	/**
 	 * @NoAdminRequired

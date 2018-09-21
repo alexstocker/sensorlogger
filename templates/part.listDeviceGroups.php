@@ -12,7 +12,7 @@
 		<td class="td-data"><?php p($deviceGroup['id']); ?></td>
 		<td class="td-data"><?php p($deviceGroup['device_group_name']); ?></td>
 		<td class="td-data"></td>
-		<td class="td-data">Show devices</td>
+		<td class="td-data"></td>
 	</tr>
 <?php } ?>
 	</tbody>

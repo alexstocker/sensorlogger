@@ -19,9 +19,11 @@ class DataTypes {
 			->where('user_id = "'.$userId.'"')
 			->orderBy('id', 'DESC');
 		$query->setMaxResults(100);
-		$result = $query->execute();
-
-		$data = $result->fetchAll();
+        $results = $query->execute();
+        $data = [];
+        foreach($results->fetchAll() as $result) {
+            $data[] = DataType::fromRow($result);
+        }
 
 		return $data;
 	}

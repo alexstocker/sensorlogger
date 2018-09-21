@@ -4,7 +4,7 @@ namespace OCA\SensorLogger;
 
 use OCP\AppFramework\Db\Entity;
 
-class LogExtended extends Entity implements \JsonSerializable {
+class LogExtended extends \OC\Log implements \JsonSerializable {
 
 	protected $dataTypeId;
 	protected $value;
@@ -12,6 +12,23 @@ class LogExtended extends Entity implements \JsonSerializable {
 	public $description;
 	public $type;
 	public $short;
+
+    public function __construct($data)
+    {
+        parent::__construct();
+
+        $this->dataTypeId = $data->dataTypeId;
+        $this->value = $data->value;
+        $this->short = $data->short;
+        $this->type = $data->type;
+    }
+
+    public function jsonSerialize() {
+        return [
+            'dataTypeId' => $this->dataTypeId,
+            'value' => $this->value
+        ];
+    }
 
 	/**
 	 * @param mixed $short
@@ -53,27 +70,6 @@ class LogExtended extends Entity implements \JsonSerializable {
 	 */
 	public function setType($type) {
 		$this->type = $type;
-	}
-
-	/**
-	 * LogExtended constructor.
-	 *
-	 * @param $data
-	 */
-	public function __construct($data) {
-			$this->addType('dataTypeId', 'integer');
-			$this->addType('value', 'float');
-			$this->dataTypeId = $data->dataTypeId;
-			$this->value = $data->value;
-			$this->short = $data->short;
-			$this->type = $data->type;
-	}
-
-	public function jsonSerialize() {
-		return [
-			'dataTypeId' => $this->dataTypeId,
-			'value' => $this->value
-		];
 	}
 
 	/**
