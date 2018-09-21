@@ -1,6 +1,11 @@
 # SensorLogger
 ### (0.0.7) UNRELEASED
+  * WipeOut Device #49
+  * Fixed missing device.displayName in widget config dropdown
+  * Updated CHANGELOG
   * Added new Dashboard widget 24h Max Values #40 suggested by @ei-ke
+  * Added new Dashboard widget 24h Max Values
+  * Add wipeout icon set #49
   * Adding ClassFinder, MaxValues24hWidget, Widget Interface
 
 ### (0.0.6) RELEASED
