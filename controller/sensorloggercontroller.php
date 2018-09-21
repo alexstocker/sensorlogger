@@ -456,12 +456,31 @@ class SensorLoggerController extends Controller {
 	}
 
     /**
+     * @param Device $device
+     * @return bool
+     */
+    protected function deleteLogsByDevice($device) {
+        try {
+            SensorLogs::deleteLogsByUuid($device->getUuid(), $this->connection);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * @NoAdminRequired
      * @return DataResponse
      */
 	public function wipeOutDevice() {
 	    if($this->request->getParam('device_id') && $this->userSession->getUser()->getUID()) {
 	        $id = $this->request->getParam('device_id');
+            $device = SensorDevices::getDevice($this->userSession->getUser()->getUID(), (int)$id, $this->connection);
+
+            if(!$this->deleteLogsByDevice($device)){
+                return $this->returnJSON(['errors' => 'Could not delete Logs for Device #'.$id]);
+            }
+
             if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
                 try {
                     SensorDevices::deleteDevice((int)$id, $this->connection);

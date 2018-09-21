@@ -123,4 +123,19 @@ class SensorLogs {
 			]);
 		return $query->execute();
 	}
+
+    /**
+     * @param $uuid
+     * @param IDBConnection $db
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
+    public static function deleteLogsByUuid($uuid, IDBConnection $db) {
+        $query = $db->getQueryBuilder();
+        $query->delete('sensorlogger_logs')
+            ->where('device_uuid = :uuid')
+            ->setParameters([
+                ':uuid' => $uuid
+            ]);
+        return $query->execute();
+    }
 }
