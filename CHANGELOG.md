@@ -1,5 +1,5 @@
 # SensorLogger
-### (0.0.7) UNRELEASED
+### 0.0.7 RELEASED
   * WipeOut Device #49
   * Fixed missing device.displayName in widget config dropdown
   * Updated CHANGELOG
@@ -8,7 +8,7 @@
   * Add wipeout icon set #49
   * Adding ClassFinder, MaxValues24hWidget, Widget Interface
 
-### (0.0.6) RELEASED
+### 0.0.6 RELEASED
   * Added SensorLogs::deleteLogById and deleteLog controller action #37'
   * Added dashboard widgets column media styles
   * Added timeoffset calculation for realtime charts

@@ -4,7 +4,7 @@
 	$humidity = mt_rand (1.00*10, 99.99*10) / 10;
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
 
-	$array = array("deviceId" => "666666-fe8c-11e6-bc64-92361f002671",
+	$array = array("deviceId" => "101010-fe8c-11e6-bc64-92361f002671",
 					"temperature" => $temperature,
 					"humidity" => $humidity,
 					"date" => date('Y-m-d H:i:s'));

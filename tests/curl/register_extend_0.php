@@ -12,15 +12,15 @@ function genUniquID() {
 	return $uuid;
 }
 
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
 
 	$registerArray = [
 		'_route' => 'sensorlogger.apisensorlogger.registerDevice',
 		'deviceId' => genUniquID(),
-		'deviceName' => 'Some Default Name',
-		'deviceType' => 'Some Device Type',
-		'deviceGroup' => 'Some Device Group',
-		'deviceParentGroup' => 'Some Parent Group',
+		'deviceName' => 'voc001',
+		'deviceType' => 'Air Quality',
+		'deviceGroup' => 'Pool House',
+		'deviceParentGroup' => 'Home',
 		'deviceDataTypes' => [[
 			'type' => 'CO',
 			'description' => 'Carbon monoxide',
@@ -55,8 +55,8 @@ function genUniquID() {
 
 	$data_json = json_encode($registerArray);
 
-	$username = 'test';
-	$token = 'GOETJ-QOSIY-WCIZI-ZAJTL';
+	$username = 'admin';
+	$token = 'RWGFF-KMZUC-NFOQD-CMXCC';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

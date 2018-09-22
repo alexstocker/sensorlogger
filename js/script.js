@@ -13,6 +13,7 @@
 	$(function () {
 		var sidebar = $('#app-sidebar');
 		var saveBtn = $('#save-btn');
+		var wipeOutBtn = $('#wipeout-btn');
 		var showList = $('#showList');
 		var showDashboard = $('#showDashboard');
 		var deviceList = $('#deviceList');
@@ -153,6 +154,7 @@
 		sidebar.on('click','.icon-close',function(e) {
 			sidebar.hide();
 			saveBtn.hide();
+			wipeOutBtn.hide();
 		});
 
 		$(document.body).on('click','.actions',function(e) {
@@ -261,6 +263,7 @@
 
 				sidebarBody.append(widgetType);
 				sidebarBody.append(device);
+                wipeOutBtn.hide();
 
 				sidebarTitle.empty().append('Dashboard widget');
 
