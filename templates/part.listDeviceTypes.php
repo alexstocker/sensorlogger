@@ -11,7 +11,7 @@
 	<tr>
 		<td class="td-data"><?php p($deviceType['id']); ?></td>
 		<td class="td-data"><?php p($deviceType['device_type_name']); ?></td>
-		<td class="td-data"></td>
+		<td class="td-data"><?php p($deviceType['uuid']); ?></td>
 		<td class="td-data">Show devices</td>
 	</tr>
 <?php } ?>
@@ -22,7 +22,7 @@
 	<div id="emptycontent" class="">
 		<div class="icon-info"></div>
 		<h2>No Device types registered</h2>
-		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Configuration#device-types"
+		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki"
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
 	</div>
 <?php } ?>

@@ -2,6 +2,10 @@
 
 namespace OCA\SensorLogger;
 
+use OCA\SensorLogger\Utils\ClassFinder;
+use OCA\SensorLogger\Widgets\AggregateDataWidget;
+use OCA\SensorLogger\Widgets\iWidget;
+use OCA\SensorLogger\Widgets\MaxValues24hWidget;
 use OCP\IConfig;
 use OCP\IDBConnection;
 
@@ -29,14 +33,78 @@ class Widgets {
 	 */
 	public function __construct($deviceId = null) {
 		$this->deviceId = $deviceId;
+
+        ClassFinder::customClassLoader(dirname(__FILE__).DIRECTORY_SEPARATOR.'Widgets');
 	}
 
 	/**
 	 * @return array
 	 */
 	public function getWidgetTypes(){
-		return Widgets::WIDGET_TYPES;
+
+        //ClassFinder::customClassLoader(dirname(__FILE__).DIRECTORY_SEPARATOR.'Widgets');
+        $widgetClasses = [];
+
+        foreach (get_declared_classes() as $className) {
+            if (in_array('OCA\SensorLogger\Widgets\iWidget', class_implements($className, true))) {
+                $widgetClasses[] = $className;
+            }
+        }
+
+        $availableWidgets = Widgets::WIDGET_TYPES;
+
+        foreach (Widgets::WIDGET_TYPES as $widgetKey => $widgetValue) {
+            $availableWidgets[$widgetKey] = [
+                'displayName' => $widgetValue
+            ];
+        }
+
+        foreach ($widgetClasses as $widgetClass) {
+            $newWidget = new $widgetClass();
+            $availableWidgets[$newWidget->widgetIdentifier()] = [
+                'displayName' => $newWidget->widgetDisplayName(),
+            ];
+        }
+
+		return $availableWidgets;
 	}
+
+    /**
+     * @param $config
+     * @param Device $device
+     * @return Widget
+     */
+	public function buildUserWidget($userId,
+                    $device,
+                    $widgetConfig,
+                    $connection,
+                    $config) {
+
+	    if($widgetConfig) {
+            if($widgetConfig->widget_type) {
+                $widgetClass = str_replace(' ','',ucwords(str_replace('_',' ',$widgetConfig->widget_type)));
+
+                $nameSpaced = 'OCA\\SensorLogger\\Widgets\\'.$widgetClass.'Widget';
+                if(class_exists($nameSpaced)) {
+                    /** @var Widget|MaxValues24hWidget $customWidget */
+                    $customWidget = new $nameSpaced;
+                    $customWidget->setDisplayName($customWidget->widgetDisplayName());
+                    $customWidget->setDeviceId($device->getId());
+                    $customWidget->setType($widgetConfig->widget_type);
+                    $customWidget->setLog(
+                        $customWidget->widgetData($userId, $device, $connection)
+                    );
+                    $customWidget->setName($device->getName());
+                    return $customWidget;
+
+                } else {
+                    return self::build($userId, $device, $widgetConfig, $connection, $config);
+                }
+
+            }
+        }
+
+    }
 
 	/**
 	 * @param string $userId

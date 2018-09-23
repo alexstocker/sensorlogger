@@ -1,5 +1,4 @@
-<div class="content-wrapper">
-	<table id="sensorDevicesTable" style="width: 100%;">
+<table id="sensorDevicesTable" style="width: 100%;">
 	<thead>
 	<th id="headerId"><span class="th-header">#</span></th>
 	<th id="headerUuid"><span class="th-header">UUID</span></th>
@@ -30,4 +29,4 @@
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
 	</div>
 <?php } ?>
-</div>
+

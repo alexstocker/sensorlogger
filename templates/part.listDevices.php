@@ -38,7 +38,7 @@
 	<div id="emptycontent" class="">
 		<div class="icon-info"></div>
 		<h2>No Devices registered</h2>
-		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Configuration#devices"
+		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki"
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
 	</div>
 <?php } ?>
