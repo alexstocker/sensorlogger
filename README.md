@@ -1,21 +1,20 @@
 # Sensor Logger
 
-Latest Version: [0.0.6nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.6nc)
+### Latest SensorLogger Versions for nextcloud
+- [0.0.8nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.8nc)
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
-![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_nc_dashboard_001.png)
+![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_oc_dashboard_widget_livedata_001.png)
 
-![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_nc_dashboard_002.png)
+![SensorLogger Chart](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_0.png)
 
-![SensorLogger Chart](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_nc_chart.png)
+![SensorLogger Chart1](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_1.png)
 
-![SensorLogger List](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_nc_list.png)
+![SensorLogger Chart2](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_2.png)
 
-![SensorLogger Devices](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_nc_devices.png)
+![SensorLogger List](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_list-1.png)
 
-![SensorLogger List](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_list-1.png)
+![SensorLogger Devices](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_devices-1.png)
 
-![SensorLogger Devices](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_devices-1.png)
-
-![SensorLogger Device details](https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails_edit.png)
+![SensorLogger Device details](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails_edit.png)
