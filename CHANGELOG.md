@@ -1,4 +1,7 @@
 # SensorLogger
+### 0.0.8 RELEASED
+  * Syncronisation Release to close gap between SensorLogger vor Owncloud and Nextcloud
+
 ### 0.0.7 RELEASED
   * WipeOut Device #49
   * Fixed missing device.displayName in widget config dropdown
