@@ -713,7 +713,7 @@
 
 			drawableLines = [];
 			if(dataLines.length < 1) {
-				$.each(data, function (index, item) {
+				$.each(data.logs, function (index, item) {
 					line1.push([item.createdAt, parseFloat(item.temperature)])
 					line2.push([item.createdAt, parseFloat(item.humidity)])
 				});
