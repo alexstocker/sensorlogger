@@ -1,3 +1,4 @@
+#app-sidebar .sidebarInfoTitle,
 #app-sidebar div.content-wrapper .title {
 	background-color: #f5f5f5;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.24);
@@ -48,6 +49,7 @@ span.center {
 	right: 0;
 }
 
+#app-sidebar .bodyElement,
 #app-sidebar div.content-wrapper .body .bodyDetails {
 	border-bottom: 1px dotted;
 	height: 46px;
@@ -64,6 +66,16 @@ span.center {
 	display: inline-block;
 	cursor: pointer;
 	vertical-align: middle;
+}
+
+#content .icon-close
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 15px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	opacity: .5;
 }
 
 #app-sidebar div.content-wrapper div.footer .icon {

@@ -1,5 +1,5 @@
 <div id="controls">
-	<div class="actions creatable">
+	<div class="actions widgets create">
 		<a href="#" class="button new" data-original-title="" title="">
 			<span class="icon icon-add"></span>
 			<span class="hidden-visually">Neu</span>

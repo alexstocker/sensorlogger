@@ -2,17 +2,17 @@
 
 use OCA\SensorLogger;
 
-$application = new SensorLogger\Application();
-
-
+//$application = new SensorLogger\Application();
 //$application->registerRoutes();
 
-return array(
-	'routes' => array(
+return [
+	'routes' => [
 		array('name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#getWidgetTypes', 'url' => 'widgetTypeList', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#createWidget', 'url' => 'saveWidget', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deleteWidget', 'url' => 'deleteWidget/{id}', 'verb' => 'POST'),
+        array('name' => 'sensorlogger#editWidget', 'url' => 'editWidget/{id}', 'verb' => 'POST'),
+        array('name' => 'sensorlogger#saveWidget', 'url' => 'saveWidget/{id}', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deleteDevice', 'url' => 'deleteDevice/{id}', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#wipeOutDevice', 'url' => 'wipeOutDevice', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deleteLog', 'url' => 'deleteLog/{id}', 'verb' => 'POST'),
@@ -84,6 +84,5 @@ return array(
 			'url' => '/api/v1/shares/{id}/delete',
 			'verb' => 'DELETE'
 		)
-
-	)
-);
+	]
+];
