@@ -1,4 +1,7 @@
 # SensorLogger
+### 0.0.9nc RELEASED
+  * Updated to support Nextcloud 15 #64
+
 ### 0.0.8nc RELEASED
   * Added 24hMaxValues widget, Widget Interface, wipeOut Device
   * Catch up to SensorLogger for Owncloud 0.0.7
