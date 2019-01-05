@@ -640,7 +640,7 @@
 							var xaxis = item.createdAt;
 							var ydata = item.data[i];
 
-							if (ydata && ydata.value) {
+							if (ydata && 'value' in ydata) {
 								ydata = ydata.value;
 								dataLines[i].push([xaxis, parseFloat(ydata)])
 							}
