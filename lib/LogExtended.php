@@ -65,8 +65,6 @@ class LogExtended extends Entity implements \JsonSerializable {
 			$this->addType('value', 'float');
 			$this->dataTypeId = $data->dataTypeId;
 			$this->value = $data->value;
-			$this->short = $data->short;
-			$this->type = $data->type;
 	}
 
 	public function jsonSerialize() {
