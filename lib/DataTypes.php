@@ -81,7 +81,7 @@ class DataTypes {
 			->leftJoin('sddt','sensorlogger_data_types','sdt', 'sdt.id = sddt.data_type_id')
 			->where('sddt.user_id = "'.$userId.'"')
 			->andWhere('sddt.device_id = "'.$deviceId.'" ')
-			->orderBy('sddt.id', 'ASC');
+			->orderBy('sddt.data_type_id', 'ASC');
 		$query->setMaxResults(100);
 		$result = $query->execute();
 
