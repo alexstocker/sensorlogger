@@ -1,4 +1,8 @@
 # SensorLogger
+
+### 0.0.9 RELEASED
+  * Fixed min-version property due semver
+
 ### 0.0.8 RELEASED
   * Syncronisation Release to close gap between SensorLogger vor Owncloud and Nextcloud
 
