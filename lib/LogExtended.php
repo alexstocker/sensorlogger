@@ -13,6 +13,21 @@ class LogExtended extends Entity implements \JsonSerializable {
 	public $type;
 	public $short;
 
+    /**
+     * LogExtended constructor.
+     *
+     * @param $data
+     */
+    public function __construct($data) {
+        $this->addType('dataTypeId', 'integer');
+        $this->addType('value', 'float');
+        $this->addType('short', 'string');
+        $this->addType('type', 'string');
+        $this->addType('description', 'string');
+        $this->dataTypeId = $data->dataTypeId;
+        $this->value = $data->value;
+    }
+
 	/**
 	 * @param mixed $short
 	 */
@@ -53,20 +68,6 @@ class LogExtended extends Entity implements \JsonSerializable {
 	 */
 	public function setType($type) {
 		$this->type = $type;
-	}
-
-	/**
-	 * LogExtended constructor.
-	 *
-	 * @param $data
-	 */
-	public function __construct($data) {
-			$this->addType('dataTypeId', 'integer');
-			$this->addType('value', 'float');
-			$this->dataTypeId = $data->dataTypeId;
-			$this->value = $data->value;
-			$this->short = $data->short;
-			$this->type = $data->type;
 	}
 
 	public function jsonSerialize() {
