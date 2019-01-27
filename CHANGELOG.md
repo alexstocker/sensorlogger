@@ -1,5 +1,10 @@
 # SensorLogger
 
+### 0.1.0 UNRELEASED
+  * Added some more data validation #69 @vitoller
+
+### 0.0.10 UNRELEASED
+
 ### 0.0.9 RELEASED
   * Fixed min-version property due semver
 
