@@ -5,7 +5,7 @@
     <description>SensorLogger for ownCloud enables users to log data provided by sensor devices</description>
     <licence>AGPL</licence>
     <author>Alexander Stocker</author>
-    <version>0.0.9</version>
+    <version>0.1.0</version>
     <namespace>SensorLogger</namespace>
     <category>tools</category>
     <ocsid>174814</ocsid>
