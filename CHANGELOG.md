@@ -1,4 +1,9 @@
 # SensorLogger
+### 0.1.0nc UNRELEASED
+  * Added some more data validation #69 @vitoller
+
+### 0.0.10nc UNRELEASED
+
 ### 0.0.9nc RELEASED
   * Updated to support Nextcloud 15 #64
 
