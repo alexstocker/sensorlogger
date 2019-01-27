@@ -3,8 +3,6 @@
 namespace OCA\SensorLogger;
 
 use OCA\SensorLogger\Utils\ClassFinder;
-use OCA\SensorLogger\Widgets\AggregateDataWidget;
-use OCA\SensorLogger\Widgets\iWidget;
 use OCA\SensorLogger\Widgets\MaxValues24hWidget;
 use OCP\IConfig;
 use OCP\IDBConnection;
@@ -70,9 +68,12 @@ class Widgets {
 	}
 
     /**
+     * @param $userId
+     * @param $device
+     * @param $widgetConfig
+     * @param $connection
      * @param $config
-     * @param Device $device
-     * @return Widget
+     * @return Widget|MaxValues24hWidget
      */
 	public function buildUserWidget($userId,
                     $device,
