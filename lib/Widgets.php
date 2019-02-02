@@ -175,8 +175,7 @@ class Widgets {
 		$widget->setType($config->widget_type);
 		$widget->setLog($log);
 		$widget->setName($device->getName());
-		$widget->setDisplayName($config->name ?: self::WIDGET_TYPES[$config->widget_type]);
-		$widget->setOptions([]);
+		$widget->setDisplayName(self::WIDGET_TYPES[$config->widget_type]);
 		return $widget;
 	}
 }

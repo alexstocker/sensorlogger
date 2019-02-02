@@ -1,4 +1,33 @@
 # SensorLogger
+
+### 28.01.2019 (JB)
+  * php-Seite apisensorloggercontroller.php:
+	* registerDevice: Code-Optimierung (returnvalue !== null, params)
+	* Aenderung der InsertX-Strategie: bisher insert into -> getId, jetzt select -> getId oder insert into getId
+	* checkRegisteredDevice: Code-Optimierung (select id, return value: id)
+	* insertExtendedLog: Bugfix (return false bei Fehler)
+	* insertDevice: Bugfix (return value nur int, -1 bei Fehler, ansonsten id)
+	* methode getDeviceTypes eingefuegt
+	* alle Abfragen mit is_int durch is_numeric ausgetauscht
+	
+  * php-Seite DeviceTypes.php:
+	* methoden getDeviceTypeById, getDeviceTypeByName und getDeviceTypesByDeviceId hinzugefuegt
+	* Aenderung der Methode insertDeviceType (Pruefung auf Existenz)
+	
+  * php-Seite routes.php:
+	* array-Element getDeviceTypes eingefuegt
+
+  * php-Seite part.listDeviceTypes.php:
+	* <?php p($deviceType['uuid']); ?> entfernt
+	
+  * neue PHP-Seite Devices eingefuehrt (Alternative zu SensorDevices):
+	* Methoden liefern Id als Integer oder Array als DB-Fields
+  
+### 24.01.2019 (JB)
+  * Limit 1000 -> 100: getChartData in getChartData (sensorloggercontroller.php)
+  * UUID -> Name: Device->GetUuid() -> Device->GetName() in <h3> (part.chart.php)
+  
+
 ### 0.0.9 RELEASED
   * Fixed min-version property due semver
 

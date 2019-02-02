@@ -17,3 +17,4 @@
 	$response  = curl_exec($ch);
 	echo $response;
 	curl_close($ch);
+?>

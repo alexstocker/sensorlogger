@@ -739,7 +739,7 @@ class SensorLoggerController extends Controller {
 	 * @return string
 	 */
     protected function getChartData($id) {
-        $limit = $this->request->getParam('limit') ?: 1000;
+        $limit = $this->request->getParam('limit') ?: 100;
         $offset = $this->request->getParam('offset') ?: 0;
 
         $device = SensorDevices::getDevice(

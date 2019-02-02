@@ -100,7 +100,6 @@
 			});
 		});
 
-
 		appContentWrapper.on('click','.deviceListData',function (e) {
 			sidebar.hide();
 			saveBtn.hide();
@@ -110,7 +109,6 @@
 				appContentWrapper.empty().append(response);
 			});
 		});
-
 
 		appContentWrapper.on('click','a.widget-delete',function (e) {
 			var id = $(e.target).data('id');
@@ -154,9 +152,9 @@
 
 
 		sidebar.on('click','.icon-close',function(e) {
-			//sidebar.hide();
-			//saveBtn.hide();
-			//wipeOutBtn.hide();
+			sidebar.hide();
+			saveBtn.hide();
+			wipeOutBtn.hide();
 		});
 
 		$(document.body).on('click','.actions',function(e) {
@@ -165,8 +163,7 @@
 		});
 
 		var sidebarWidgets = function (e) {
-			/*
-		    var saveWidget = OC.generateUrl('/apps/sensorlogger/saveWidget');
+			var saveWidget = OC.generateUrl('/apps/sensorlogger/saveWidget');
 
 			saveBtn.click(function() {
 				$('.editable').editable('submit', {
@@ -271,7 +268,6 @@
 				sidebarTitle.empty().append('Dashboard widget');
 
 			})
-		    */
 		};
 
 		var dashboardWidgets = function (e) {
@@ -417,7 +413,7 @@
 				});
 
 			});
-/*
+
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+id);
 			$.post(url).success(function (response) {
 				$.fn.editable.defaults.mode = 'inline';
@@ -613,7 +609,6 @@
 				});
 				sidebar.show();
 			});
-			*/
 		});
 		dashboardWidgets();
 	});

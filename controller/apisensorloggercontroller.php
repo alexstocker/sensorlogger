@@ -8,8 +8,11 @@ use OC\OCS\Result;
 use OC\Share\Share;
 use OCA\SensorLogger\DataType;
 use OCA\SensorLogger\DataTypes;
+use OCA\SensorLogger\Devices;
+use OCA\SensorLogger\DeviceTypes;
 use OCA\SensorLogger\Error;
 use OCA\SensorLogger\SensorDevices;
+use OCA\SensorLogger\SensorGroups;
 use OCP\API;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
@@ -98,25 +101,25 @@ class ApiSensorLoggerController extends ApiController {
 	 */
 	protected function insertExtendedLog($array) {
 		$registered = $this->checkRegisteredDevice($array);
-		if($registered) {
+		if ($registered <= 0) 
+			return false;
 
-			if(!isset($array['date']) || empty($array['date'])) {
-				$array['date'] = date('Y-m-d H:i:s');
-			}
-
-			$deviceId = $array['deviceId'];
-			$dataJson = json_encode($array['data']);
-
-			$query = $this->db->getQueryBuilder();
-			$query->insert('sensorlogger_logs')
-                ->values([
-                    'created_at' => $query->createNamedParameter($array['date']),
-                    'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
-                    'device_uuid' => $query->createNamedParameter($deviceId),
-                    'data' => $query->createNamedParameter($dataJson)
-                ])
-                ->execute();
+		if(!isset($array['date']) || empty($array['date'])) {
+			$array['date'] = date('Y-m-d H:i:s');
 		}
+
+		$deviceId = $array['deviceId'];
+		$dataJson = json_encode($array['data']);
+
+		$query = $this->db->getQueryBuilder();
+		$query->insert('sensorlogger_logs')
+			->values([
+				'created_at' => $query->createNamedParameter($array['date']),
+				'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+				'device_uuid' => $query->createNamedParameter($deviceId),
+				'data' => $query->createNamedParameter($dataJson)
+			])
+			->execute();
 		return true;
 	}
 
@@ -126,8 +129,8 @@ class ApiSensorLoggerController extends ApiController {
 	 */
 	protected function insertLog($array){
 		$registered = $this->checkRegisteredDevice($array);
-		if(isset($array['deviceId'])) {
-			if(!$registered) {
+		if (isset($array['deviceId'])) {
+			if ($registered <= 0) {
 				$registered = $this->insertDevice($array);
 			}
 		}
@@ -136,7 +139,7 @@ class ApiSensorLoggerController extends ApiController {
 			$array['date'] = date('Y-m-d H:i:s');
 		}
 
-		if($registered || !isset($array['deviceId'])) {
+		if($registered > 0 || !isset($array['deviceId'])) {
 			$deviceId = $array['deviceId'] ?: null;
 
 			$dataJson = json_encode($array);
@@ -166,67 +169,65 @@ class ApiSensorLoggerController extends ApiController {
 	public function registerDevice() {
 		$params = $this->request->getParams();
 		$paramErrors = $this->checkRequestParams($params);
-		if((!$this->checkRegisteredDevice($this->request->getParams()) &&
-			$this->checkRegisteredDevice($this->request->getParams()) !== null) &&
-			empty($paramErrors)) {
-
-			$lastInsertId = $this->insertDevice($this->request->getParams());
-			if(is_int($lastInsertId)) {
-				$deviceTypeId = $this->insertDeviceType($this->request->getParams());
-				if(is_int($deviceTypeId)) {
-					try {
-						SensorDevices::updateDevice($lastInsertId,'type_id',(string)$deviceTypeId,$this->db);
-					} catch (\Exception $e) {}
-				}
-				$deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
-				if(is_int($deviceGroupId)) {
-					try {
-						SensorDevices::updateDevice($lastInsertId,'group_id',$deviceGroupId,$this->db);
-					} catch (\Exception $e) {}
-				}
-				$deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
-				if(is_int($deviceGroupParentId)) {
-					try {
-						SensorDevices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
-					} catch (\Exception $e) {
-					}
-				}
-
-				foreach($params['deviceDataTypes'] as $key => $array){
-					$availableDataTypes = DataTypes::getDataTypesByUserId($this->userSession->getUser()->getUID(),$this->db);
-					/** @var DataType $availableDataType */
-					foreach($availableDataTypes as $availableDataType) {
-						if($availableDataType->getShort() === $array['unit'] && $availableDataType->getType() === $array['type']) {
-							$dataTypeId = $availableDataType->getId();
-							if(is_int($dataTypeId)) {
-								$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
-							}
-							continue 2;
-						}
-					}
-					$dataTypeId = $this->insertDataTypes($array);
-					if(is_int($dataTypeId)) {
-						$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
-					}
-				}
-				$deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$lastInsertId,$this->db);
-				return $this->requestResponse(
-				    true,
-                    Http::STATUS_OK,
-                    'Device successfully registered',
-                    $deviceDataTypes);
-			}
-		} else if(!empty($paramErrors)){
+		if (!empty($paramErrors)) {
 			$messages = [];
 			foreach($paramErrors as $error => $paramError) {
 				$messages[] = $paramError;
 			}
 			return $this->requestResponse(false,Error::MISSING_PARAM,implode(',',$messages));
-		} else {
-			return $this->requestResponse(false,Error::DEVICE_EXISTS,'Device already exists!');
+		}
+		
+		// Test
+		$registered = this->checkRegisteredDevice($params);
+		if (is_numeric($registered) && $registered > 0)
+			return $this->requestResponse(false, Error::DEVICE_EXISTS,'Device already exists (id: '.$registered.')!');
+		
+		$lastInsertId = $this->insertDevice($params);
+		if ($lastInsertId <= 0)
+			return $this->requestResponse(false, Error::UNKNOWN,'RegisterDevice failed due UNKNOWN reason. Sorry.');
+			
+		$deviceTypeId = $this->insertDeviceType($params);
+		if ($deviceTypeId > 0) {
+			try {
+				SensorDevices::updateDevice($lastInsertId,'type_id',(string)$deviceTypeId,$this->db);
+			} catch (\Exception $e) {}
+		}
+		$deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
+		if(is_numeric($deviceGroupId)) {
+			try {
+				SensorDevices::updateDevice($lastInsertId,'group_id',$deviceGroupId,$this->db);
+			} catch (\Exception $e) {}
+		}
+		$deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
+		if(is_numeric($deviceGroupParentId)) {
+			try {
+				SensorDevices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
+			} catch (\Exception $e) {}
 		}
 
-		return $this->requestResponse(false,Error::UNKNOWN,'RegisterDevice failed due UNKNOWN reason. Sorry.');
+		foreach($params['deviceDataTypes'] as $key => $array){
+			$availableDataTypes = DataTypes::getDataTypesByUserId($this->userSession->getUser()->getUID(),$this->db);
+			/** @var DataType $availableDataType */
+			foreach($availableDataTypes as $availableDataType) {
+				if($availableDataType->getShort() === $array['unit'] && $availableDataType->getType() === $array['type']) {
+					$dataTypeId = $availableDataType->getId();
+					if(is_numeric($dataTypeId)) {
+						$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
+					}
+					continue 2;
+				}
+			}
+			$dataTypeId = $this->insertDataTypes($array);
+			if(is_numeric($dataTypeId)) {
+				$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
+			}
+		}
+		$deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$lastInsertId,$this->db);
+		return $this->requestResponse(
+			true,
+			Http::STATUS_OK,
+			'Device successfully registered',
+			$deviceDataTypes);
 	}
 
 	/**
@@ -267,14 +268,8 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return int
 	 */
 	protected function insertDeviceType($array) {
-		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_types` (`user_id`,`device_type_name`) VALUES(?,?)';
-		$stmt = $this->db->prepare($sql);
-		$stmt->bindParam(1, $this->userSession->getUser()->getUID());
-		$stmt->bindParam(2, $array['deviceType']);
-		if($stmt->execute()){
-			return (int)$this->db->lastInsertId();
-		}
-		return false;
+		return DeviceTypes::insertDeviceType($this->userSession->getUser()->getUID(), 
+			$array['deviceType'], $this->db);
 	}
 
 	/**
@@ -282,6 +277,7 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return int
 	 */
 	protected function insertDeviceGroup($string) {
+/*		
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';
 		$stmt = $this->db->prepare($sql);
 		$stmt->bindParam(1, $this->userSession->getUser()->getUID());
@@ -290,6 +286,9 @@ class ApiSensorLoggerController extends ApiController {
 			return (int)$this->db->lastInsertId();
 		}
 		return false;
+*/		
+		return SensorGroups::insertSensorGroup($this->userSession->getUser()->getUID(), 
+			$string, $this->db);
 	}
 
 	/**
@@ -325,7 +324,7 @@ class ApiSensorLoggerController extends ApiController {
 		if($stmt->execute()){
 			return (int)$this->db->lastInsertId();
 		}
-		return false;
+		return 0;
 	}
 
 	/**
@@ -364,58 +363,27 @@ class ApiSensorLoggerController extends ApiController {
 
 	/**
 	 * @param $params
-	 * @return bool;
+	 * @return int;
 	 */
 	protected function checkRegisteredDevice($params) {
-		if(isset($params['deviceId'])) {
-			$deviceId = $params["deviceId"];
-			$query = $this->db->getQueryBuilder();
-			$query->select('*')
-				->from('sensorlogger_devices')
-				->where('uuid = "'.$deviceId.'" ');
-			$query->setMaxResults(1);
-			$result = $query->execute();
-
-			$data = $result->fetchAll();
-
-			if(count($data) < 1) {
-				return false;
-			} else {
-				return true;
-			}
-		}
-		return false;
+		if (!isset($params['deviceId'])) 
+			return -1;
+		
+		return Devices::getDeviceIdByUuid($this->userSession->getUser()->getUID(),
+			$params["deviceId"], $this->db);
 	}
 
 	/**
 	 * @param array $array
-	 * @return int|string
+	 * @return int
 	 */
 	protected function insertDevice($array) {
-		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
-		$stmt = $this->db->prepare($sql);
 
-		if(isset($array['deviceId'])) {
-			if(!isset($array['deviceName'])) {
-				$array['deviceName'] = 'Default device';
-			}
-
-			if(!isset($array['deviceTypeId'])) {
-				$array['deviceTypeId'] = 0;
-			}
-
-			$stmt->bindParam(1, $array['deviceId']);
-			$stmt->bindParam(2, $array['deviceName']);
-			$stmt->bindParam(3, $array['deviceTypeId']);
-			$stmt->bindParam(4, $this->userSession->getUser()->getUID());
-
-			if($stmt->execute()){
-				return (int)$this->db->lastInsertId();
-			}
-		} else {
-			return 'Missing device ID';
-		}
-		return false;
+		if (isset($array['deviceId']))
+			return Devices::insertDevice($this->userSession->getUser()->getUID(),
+				$array['deviceId'], $array['deviceName'], $array['deviceTypeId'], $this->db);
+		
+		return -1;
 	}
 
 	/**
@@ -429,6 +397,18 @@ class ApiSensorLoggerController extends ApiController {
 		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$device->getId(),$this->db);
 		//return json_encode($dataTypes);
 		return $this->returnJSON($dataTypes);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @CORS
+	 */
+	public function getDeviceTypes(){
+		$params = $this->request->getParams();
+		$device = SensorDevices::getDeviceByUuid($this->userSession->getUser()->getUID(),$params['deviceId'],$this->db);
+		$devTypes = DeviceTypes::getDeviceTypesByDeviceId($this->userSession->getUser()->getUID(),$device->getId(),$this->db);
+		return $this->returnJSON($devTypes);
 	}
 
 	/**

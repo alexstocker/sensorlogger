@@ -17,15 +17,12 @@ class Widget extends Entity implements \JsonSerializable {
 	protected $name;
 	protected $displayName;
 	protected $templateName = 'default';
-	protected $options = [];
 
 	public function __construct() {
 		$this->addType('deviceId', 'integer');
 		$this->addType('type', 'string');
 		$this->addType('log', 'string');
 		$this->addType('name', 'string');
-		//$this->addType('sortOrder', 'integer');
-		//$this->addType('options', '')
 	}
 
 	/**
@@ -38,8 +35,7 @@ class Widget extends Entity implements \JsonSerializable {
 			'log' => $this->log,
 			'name' => $this->name,
             'displayName' => $this->displayName,
-            'templateName' => $this->templateName,
-            'options' => $this->options
+            'templateName' => $this->templateName
 		];
 	}
 
@@ -118,21 +114,5 @@ class Widget extends Entity implements \JsonSerializable {
     public function getDisplayName()
     {
         return $this->displayName;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
     }
 }
