@@ -481,7 +481,7 @@
 									function() {
 										return this.text.localeCompare(term)===0;
 									}).length===0) {
-								return {id:'create_'+term, text:term};
+								return {id:'create_'+term, text:'Create '+term, data:term};
 							}
 						}
 					}
@@ -510,7 +510,7 @@
 									function() {
 										return this.text.localeCompare(term)===0;
 									}).length===0) {
-								return {id:'create_'+term, text:term};
+								return {id:'create_'+term, text:'Create '+term, data:term};
 							}
 						}
 					}
@@ -537,9 +537,11 @@
 						createSearchChoice: function(term, data) {
 							if ($(data).filter(
 									function() {
-										return this.text.localeCompare(term)===0;
-									}).length===0) {
-								return {id:'create_'+term, text:term};
+										return this.text.localeCompare(term) === 0;
+									}).length === 0 ) {
+								return {
+									id:'create_'+term, text:'Create '+term, data:term
+								};
 							}
 						}
 					}
@@ -550,10 +552,53 @@
 
 				sidebar.find('.bodyDetails').remove();
 
-				var uuid = bodyDetailsContainer.clone().append('UUID: '+response.deviceDetails.uuid);
-				var group = bodyDetailsContainer.clone().append(groupSelect);
-				var groupParent = bodyDetailsContainer.clone().append(groupParentSelect);
-				var type = bodyDetailsContainer.clone().append(typeSelect);
+				var uuidLabel = $('<label/>', {
+					'class':'unique-id'
+				}).text('Device Unique Id');
+				var uuidContentSpan = $('<span/>', {
+					'class':'unique-id-content'
+				}).text(response.deviceDetails.uuid);
+
+
+				var groupLabel = $('<label/>', {
+					'class':'group'
+				}).text('Device Group');
+				var groupContentSpan = $('<span/>', {
+					'class':'group-content'
+				}).append(groupSelect);
+
+				var parentGroupLabel = $('<label/>', {
+					'class':'parent-group'
+				}).text('Device Parent Group');
+				var parentGroupContentSpan = $('<span/>', {
+					'class':'parent-group-content'
+				}).append(groupParentSelect);
+
+				var typeLabel = $('<label/>', {
+					'class':'type'
+				}).text('Device Type');
+				var typeContentSpan = $('<span/>', {
+					'class':'type-content'
+				}).append(typeSelect);
+
+				var uuid = bodyDetailsContainer
+					.clone()
+					.append(uuidLabel)
+					.append(uuidContentSpan);
+
+				var group = bodyDetailsContainer
+					.clone()
+					.append(groupLabel)
+					.append(groupContentSpan);
+
+				var groupParent = bodyDetailsContainer
+					.clone()
+					.append(parentGroupLabel)
+					.append(parentGroupContentSpan);
+				var type = bodyDetailsContainer
+					.clone()
+					.append(typeLabel)
+					.append(typeContentSpan);
 
 				sidebarTitle.empty().append(title);
 				sidebarBody.append(uuid);
@@ -565,12 +610,12 @@
 					var string = e.object.id,
 						substring = "create_";
 					if(string.includes(substring)) {
-						$.post(createDeviceTypeUrl, {'device_id':id,'device_type_name':e.object.text} )
+						$.post(createDeviceTypeUrl, {'device_id':id,'device_type_name':e.object.data} )
 							.success(function (response) {
 								$(e.target).val(response.deviceTypeId);
 								typeSource.push({
 									value: response.deviceTypeId,
-									text: e.object.text,
+									text: e.object.data,
 									id : response.deviceTypeId
 								})
 							});
@@ -581,12 +626,12 @@
 					var string = e.object.id,
 						substring = "create_";
 					if(string.includes(substring)) {
-						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.text} )
+						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.data} )
 							.success(function (response) {
 								$(e.target).val(response.deviceGroupId);
 								groupSource.push({
 									value: response.deviceGroupId,
-									text: e.object.text,
+									text: e.object.data,
 									id : response.deviceGroupId
 								})
 							});
@@ -597,12 +642,12 @@
 					var string = e.object.id,
 						substring = "create_";
 					if(string.includes(substring)) {
-						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.text} )
+						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.data} )
 							.success(function (response) {
 								$(e.target).val(response.deviceGroupId);
 								groupSource.push({
 									value: response.deviceGroupId,
-									text: e.object.text,
+									text: e.object.data,
 									id : response.deviceGroupId
 								})
 							});

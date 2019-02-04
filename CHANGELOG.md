@@ -1,6 +1,11 @@
 # SensorLogger
 ### 0.1.0nc UNRELEASED
   * Added some more data validation #69 @vitoller
+  * Modified registerDevice set deviceType optional
+  * Modified registerDevice set deviceGroup optional
+  * Modified registerDevice set deviceParentGroup optional 
+  * Modified Device Sidebar content by adding some Labels
+  * Modified Device Sidebar Select boxes by making the ability to create on the fly more visible
 
 ### 0.0.10nc UNRELEASED
 

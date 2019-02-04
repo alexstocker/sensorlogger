@@ -226,30 +226,42 @@ class ApiSensorLoggerController extends ApiController {
             $params = $this->request->getParams();
 			$lastInsertId = $this->insertDevice($this->request->getParams());
 			if(is_int($lastInsertId)) {
-				$deviceTypeId = $this->insertDeviceType($this->request->getParams());
-				if(is_int($deviceTypeId)) {
-					try {
-						SensorDevices::updateDevice($lastInsertId,'type_id',(string)$deviceTypeId,$this->db);
-					} catch (\Exception $e) {
-					    $this->errors[] = $e->getMessage();
+
+			    /** Insert option param deviceType */
+			    if(isset($params['deviceType'])) {
+                    $deviceTypeId = $this->insertDeviceType($params['deviceType']);
+                    if (is_int($deviceTypeId)) {
+                        try {
+                            SensorDevices::updateDevice($lastInsertId, 'type_id', (string)$deviceTypeId, $this->db);
+                        } catch (\Exception $e) {
+                            $this->errors[] = $e->getMessage();
+                        }
                     }
-				}
-				$deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
-				if(is_int($deviceGroupId)) {
-					try {
-						SensorDevices::updateDevice($lastInsertId,'group_id',$deviceGroupId,$this->db);
-					} catch (\Exception $e) {
-                        $this->errors[] = $e->getMessage();
+                }
+
+                /** Insert option param deviceGroup */
+			    if(isset($params['deviceGroup'])) {
+                    $deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
+                    if (is_int($deviceGroupId)) {
+                        try {
+                            SensorDevices::updateDevice($lastInsertId, 'group_id', $deviceGroupId, $this->db);
+                        } catch (\Exception $e) {
+                            $this->errors[] = $e->getMessage();
+                        }
                     }
-				}
-				$deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
-				if(is_int($deviceGroupParentId)) {
-					try {
-						SensorDevices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
-					} catch (\Exception $e) {
-                        $this->errors[] = $e->getMessage();
-					}
-				}
+                }
+
+                /** Insert option param deviceParentGroup */
+			    if($params['deviceParentGroup']) {
+                    $deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
+                    if(is_int($deviceGroupParentId)) {
+                        try {
+                            SensorDevices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
+                        } catch (\Exception $e) {
+                            $this->errors[] = $e->getMessage();
+                        }
+                    }
+                }
 
 				foreach($params['deviceDataTypes'] as $key => $array){
 					$availableDataTypes = DataTypes::getDataTypesByUserId($this->userSession->getUser()->getUID(),$this->db);
@@ -388,15 +400,17 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return bool|JSONResponse
 	 */
 	protected function checkRequestParams($params) {
+	    /*
 		if(!isset($params['deviceType']) || empty($params['deviceType'])) {
-			$this->errors[] = 'Param deviceType missing!';
+			$this->errors[] = 'Param deviceType missing';
 		}
 		if(!isset($params['deviceGroup']) || empty($params['deviceGroup'])) {
-			$this->errors[] = 'Param deviceGroup missing!';
+			$this->errors[] = 'Param deviceGroup missing';
 		}
 		if(!isset($params['deviceParentGroup']) || empty($params['deviceParentGroup'])) {
-			$this->errors[] = 'Param deviceParentGroup missing!';
+			$this->errors[] = 'Param deviceParentGroup missing';
 		}
+	    */
 		if(!isset($params['deviceDataTypes']) || empty($params['deviceDataTypes'])) {
 			$this->errors[] = 'Param deviceDataTypes missing!';
 		}
