@@ -455,6 +455,18 @@ class SensorLoggerController extends Controller {
         return $this->returnJSON(array('success' => false));
 	}
 
+	public function deleteDataType($id) {
+
+    }
+
+    public function deleteDeviceGroup($id) {
+
+    }
+
+    public function deleteDeviceType($id) {
+
+    }
+
     /**
      * @param Device $device
      * @return bool

@@ -50,12 +50,19 @@ span.center {
 
 #app-sidebar div.content-wrapper .body .bodyDetails {
 	border-bottom: 1px dotted;
-	height: 46px;
+	/* height: 46px; */
 	padding: 9px 20px 9px 55px;
 	position: relative;
 	text-shadow: 0 1px 0 white;
 	border-top: none;
 	margin-bottom: 0px;
+}
+
+.bodyDetails > .unique-id,
+.bodyDetails > .group,
+.bodyDetails > .parent-group,
+.bodyDetails > .type {
+	display: block;
 }
 
 #content .icon {
