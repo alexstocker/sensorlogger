@@ -1,13 +1,16 @@
 # SensorLogger
 
 #### 05.02.2019 (JB)
+  * php-Seite DeviceTypes.php:
+	* SQL-Statements prepared SQL Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+	
   * php-Seite SensorGroups.php:
-    * Methoden deleteDeviceGroupByX[Id/Name] implementiert
+	* Methoden deleteDeviceGroupByX[Id/Name] implementiert
 	* SQL-Statements von QueryBuilder auf prepared SQL Statements geaendert, um SQL-Injektionen zu verhindern
 
 #### 04.02.2019 (JB)
   * php-Seite apisensorloggercontroller.php:
-    * return value function checkRegisteredDevice changed (now true/false again)
+	* return value function checkRegisteredDevice changed (now true/false again)
 	* code at the caller positions adjusted accordingly
 	
 #### 28.01.2019 (JB)
