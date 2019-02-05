@@ -2,17 +2,17 @@
 
 use OCA\SensorLogger;
 
-//$application = new SensorLogger\Application();
+$application = new SensorLogger\Application();
+
+
 //$application->registerRoutes();
 
-return [
-	'routes' => [
+return array(
+	'routes' => array(
 		array('name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#getWidgetTypes', 'url' => 'widgetTypeList', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#createWidget', 'url' => 'saveWidget', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deleteWidget', 'url' => 'deleteWidget/{id}', 'verb' => 'POST'),
-        array('name' => 'sensorlogger#editWidget', 'url' => 'editWidget/{id}', 'verb' => 'POST'),
-        array('name' => 'sensorlogger#saveWidget', 'url' => 'saveWidget/{id}', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deleteDevice', 'url' => 'deleteDevice/{id}', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#wipeOutDevice', 'url' => 'wipeOutDevice', 'verb' => 'POST'),
 		array('name' => 'sensorlogger#deleteLog', 'url' => 'deleteLog/{id}', 'verb' => 'POST'),
@@ -34,7 +34,6 @@ return [
 		array('name' => 'sensorlogger#sharingIn', 'url' => 'sharingIn', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#sharingOut', 'url' => 'sharingOut', 'verb' => 'GET'),
 		array('name' => 'sensorlogger#sharedLink', 'url' => 'sharedLink', 'verb' => 'GET'),
-		
 		array(
 			'name' => 'apisensorlogger#preflighted_cors',
 			'url' => '/api/v1/{path}',
@@ -56,6 +55,12 @@ return [
 		array(
 			'name' => 'apisensorlogger#getDeviceDataTypes',
 			'url' => '/api/v1/getdevicedatatypes/',
+			'verb' => 'POST',
+			//'requirements' => array('path' => '.+'),
+		),
+		array(
+			'name' => 'apisensorlogger#getDeviceTypes',
+			'url' => '/api/v1/getdevicetypes/',
 			'verb' => 'POST',
 			//'requirements' => array('path' => '.+'),
 		),
@@ -84,5 +89,6 @@ return [
 			'url' => '/api/v1/shares/{id}/delete',
 			'verb' => 'DELETE'
 		)
-	]
-];
+
+	)
+);

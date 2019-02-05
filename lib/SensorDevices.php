@@ -81,11 +81,10 @@ class SensorDevices extends Mapper {
 	public static function isDeletable($userId, $id, IDBConnection $db) {
         /** @var Device $device */
         $device = SensorDevices::getDevice($userId, (int)$id, $db);
-        if(SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $db)) {
+        if(SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $db))
             return false;
-        } else {
-            return true;
-        }
+		
+        return true;
     }
 
 	/**
