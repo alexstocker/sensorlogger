@@ -1,8 +1,12 @@
-# Sensor Logger
+# SensorLogger
 
 ### Latest Versions
 - owncloud [0.0.9](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.9)
 - nextcloud [0.0.9nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.9nc)
+
+### Upcomming Versions
+- owncloud 0.1.0
+- nextcloud 0.1.0
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
