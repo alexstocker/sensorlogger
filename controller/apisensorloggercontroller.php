@@ -139,12 +139,22 @@ class ApiSensorLoggerController extends ApiController {
         }
 
         if(isset($params['data']) && empty($this->errors)) {
-            $this->insertExtendedLog($params);
+            if($this->checkRegisteredDataTypes($params) && empty($this->errors)) {
+                $this->insertExtendedLog($params);
+            }
         }
 
         if(!isset($params['data']) && empty($this->errors)) {
             $this->insertLog($params);
         }
+        if(!empty($this->errors)) {
+            return $this->requestResponse(false,Error::NOT_FOUND,implode(',',$this->errors));
+        }
+        return $this->requestResponse(
+            true,
+            Http::STATUS_OK,
+            'Sensor Log successfully stored',
+            $params['data']);
 	}
 
 	/**
@@ -152,8 +162,7 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return bool
 	 */
 	protected function insertExtendedLog($array) {
-		$registered = $this->checkRegisteredDevice($array);
-		if($registered) {
+		if($this->checkRegisteredDevice($array)) {
 
 			if(!isset($array['date']) || empty($array['date'])) {
 				$array['date'] = date('Y-m-d H:i:s');
@@ -219,9 +228,8 @@ class ApiSensorLoggerController extends ApiController {
 	 * @throws \Exception
 	 */
 	public function registerDevice() {
-		$this->checkRequestParams($this->request->getParams());
-		if((!$this->checkRegisteredDevice($this->request->getParams()) &&
-			$this->checkRegisteredDevice($this->request->getParams()) !== null) &&
+		if(!$this->checkRegisteredDevice($this->request->getParams()) &&
+            $this->checkRequestParams($this->request->getParams()) &&
 			empty($this->errors)) {
             $params = $this->request->getParams();
 			$lastInsertId = $this->insertDevice($this->request->getParams());
@@ -400,20 +408,29 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return bool|JSONResponse
 	 */
 	protected function checkRequestParams($params) {
-	    /*
-		if(!isset($params['deviceType']) || empty($params['deviceType'])) {
-			$this->errors[] = 'Param deviceType missing';
-		}
-		if(!isset($params['deviceGroup']) || empty($params['deviceGroup'])) {
-			$this->errors[] = 'Param deviceGroup missing';
-		}
-		if(!isset($params['deviceParentGroup']) || empty($params['deviceParentGroup'])) {
-			$this->errors[] = 'Param deviceParentGroup missing';
-		}
-	    */
+        if(!isset($params['deviceId']) || empty($params['deviceId'])) {
+            $this->errors[] = 'Param deviceId missing';
+        }
 		if(!isset($params['deviceDataTypes']) || empty($params['deviceDataTypes'])) {
 			$this->errors[] = 'Param deviceDataTypes missing!';
 		}
+		if(!empty($params['deviceDataTypes'])) {
+		    foreach ($params['deviceDataTypes'] as $deviceDataType) {
+		        if(!array_key_exists('type',$deviceDataType)) {
+                    $this->errors[] = 'DeviceDataType Param type missing!';
+                }
+                if(!array_key_exists('description',$deviceDataType)) {
+                    $this->errors[] = 'DeviceDataType Param description missing!';
+                }
+                if(!array_key_exists('unit',$deviceDataType)) {
+                    $this->errors[] = 'DeviceDataType Param unit missing!';
+                }
+            }
+        }
+		if(empty($this->errors)) {
+		    return true;
+        }
+		return false;
 	}
 
 	/**
@@ -434,25 +451,43 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return bool;
 	 */
 	protected function checkRegisteredDevice($params) {
-		if(isset($params['deviceId'])) {
-			$deviceId = $params["deviceId"];
-			$query = $this->db->getQueryBuilder();
-			$query->select('*')
-				->from('sensorlogger_devices')
-				->where('uuid = "'.$deviceId.'" ');
-			$query->setMaxResults(1);
-			$result = $query->execute();
+	    if(isset($params['deviceId'])) {
+            $device = SensorDevices::getDeviceByUuid(
+                $this->userSession->getUser()->getUID(),
+                $params['deviceId'],$this->db
+            );
 
-			$data = $result->fetchAll();
-
-			if(count($data) < 1) {
-				return false;
-			} else {
+			if($device) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+	protected function checkRegisteredDataTypes($params) {
+	    if(!isset($params['data'])) {
+	        return false;
+        }
+	    $dataArray = $params['data'];
+        $userDataTypes = DataTypes::getDataTypes($this->userSession->getUser()->getUID(),$this->db);
+
+        foreach ($dataArray as $dataKey => $data) {
+            foreach($userDataTypes as $userDataType) {
+                if((int)$userDataType['id'] === (int)$data['dataTypeId']) {
+                    unset($dataArray[$dataKey]);
+                }
+            }
+        }
+
+        if(!empty($dataArray)) {
+            foreach ($dataArray as $errData) {
+                $this->errors[] = 'dataTypeId #'.$errData['dataTypeId'].
+                    ' for User '.$this->userSession->getUser()->getUID().' unknown';
+            }
+            return false;
+        }
+        return true;
+    }
 
 	/**
 	 * @param array $array

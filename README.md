@@ -1,7 +1,10 @@
-# Sensor Logger
+# SensorLogger
 
-### Latest SensorLogger Versions for nextcloud
+### Latest SensorLogger Version for nextcloud
 - [0.0.9nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.0.9nc)
+
+### Upcoming SensorLogger Version for nextcloud
+- 0.1.0nc
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 

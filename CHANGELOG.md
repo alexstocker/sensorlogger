@@ -1,5 +1,9 @@
 # SensorLogger
 ### 0.1.0nc UNRELEASED
+  * Change Database Scheme set user_id and uuid unique by migration #71
+  * Modified DeviceId to unique for each user #71
+  * Added more data validation on createLog #69
+  * Added Database Migrations replace database.xml #71
   * Added some more data validation #69 @vitoller
   * Modified registerDevice set deviceType optional
   * Modified registerDevice set deviceGroup optional
