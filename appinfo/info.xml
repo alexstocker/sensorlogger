@@ -45,4 +45,5 @@
         <database min-version="5.7">mysql</database>
         <php min-version="7.0" max-version="7.2"/>
     </dependencies>
+    <use-migrations>true</use-migrations>
 </info>

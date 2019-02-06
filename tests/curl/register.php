@@ -1,13 +1,13 @@
 <?php
-	$url = 'http://owncloud.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
 
     $registerArray = [
-        '_route' => 'sensorlogger.apisensorlogger.registerDevice',
-        'deviceId' => '6e643ee8-0f9f-11e7-93ae-92361f002675',
+        //'_route' => 'sensorlogger.apisensorlogger.registerDevice',
+        'deviceId' => 'admin-6e643ee8-0f9f-11e7-93ae-92361f002675',
         'deviceName' => 'Multi data sensor V2',
-        'deviceType' => 'Indoor',
-        'deviceGroup' => 'Wohnzimmer',
-        'deviceParentGroup' => 'Wohnung',
+        //'deviceType' => 'Indoor',
+        //'deviceGroup' => 'Wohnzimmer',
+        //'deviceParentGroup' => 'Wohnung',
         'deviceDataTypes' => [
             [
                 'type' => 'temperature',
@@ -29,8 +29,10 @@
 
     $data_json = json_encode($registerArray);
 
-	$username = 'test';
-	$token = 'GOETJ-QOSIY-WCIZI-ZAJTL';
+	$username = 'admin';
+	$token = 'KJOYX-CUCXV-WMFSC-CVSIB';
+    //$username = 'test';
+    //$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
