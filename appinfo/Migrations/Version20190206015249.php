@@ -9,6 +9,8 @@ use OCP\Migration\ISchemaMigration;
  */
 class Version20190206015249 implements ISchemaMigration {
 
+    /** @var  string */
+    private $prefix;
     /**
      * @param Schema $schema
      * @param array $options

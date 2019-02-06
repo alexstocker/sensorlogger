@@ -1,6 +1,7 @@
 # SensorLogger
 
 ### 0.1.0 UNRELEASED
+  * Added Missing Initial Migration #71
   * Change Database Scheme set user_id and uuid unique by migration #71
   * Modified DeviceId to unique for each user #71
   * Added more data validation on createLog #69
