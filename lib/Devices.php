@@ -141,6 +141,21 @@ class Devices {
 		// Transaction end
 		
 		return $lastId;
-		
+	}
+
+	/**
+	 * @param $userId
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	public static function deleteDevice($userId, $id, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->delete('sensorlogger_devices')
+			->where('user_id = :userId')
+			->andWhere('id = :id')
+			->setParameter(':userId', $userId)
+			->setParameter(':id', $id);
+		return $query->execute();
 	}
 }

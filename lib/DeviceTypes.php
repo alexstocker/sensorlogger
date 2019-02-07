@@ -121,11 +121,38 @@ class DeviceTypes {
 
 	/**
 	 * @param $userId
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	public static function isDeletable($userId, $id, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('id')
+			->from('sensorlogger_devices')
+			->where('user_id = :userId')
+			->andWhere('type_id = :id )')
+			->setParameter(':userId', $userId)
+			->setParameter(':id', $id);
+		if ($query->execute())
+		{
+			$data = $result->fetch();
+			if($data && is_numeric($data['id']) && $data['id'] > 0)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param $userId
 	 * @param $typeId
 	 * @param IDBConnection $db
 	 * @return bool
 	 */
-	public static function deleteDeviceTypeById($userId, $typeId, IDBConnection $db) {
+	public static function deleteDeviceType($userId, $typeId, IDBConnection $db) {
+		// DeviceType nur loeschen, wenn nicht noch in Tabelle Devices enthalten
+		if (!DeviceTypes::isDeletable($userId, $typeId, $db))
+			return false;
+		
 		$query = $db->getQueryBuilder();
 		$query->delete('sensorlogger_device_types')
 			->where('user_id = :userId')

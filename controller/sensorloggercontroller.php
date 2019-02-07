@@ -26,6 +26,7 @@ use OC\Security\CSP\ContentSecurityPolicy;
 use OCA\SensorLogger\App;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
+use OCA\SensorLogger\Devices;
 use OCA\SensorLogger\DeviceTypes;
 use OCA\SensorLogger\iWidget;
 use OCA\SensorLogger\SensorDevices;
@@ -443,16 +444,69 @@ class SensorLoggerController extends Controller {
 	 * @param $id
 	 * @return DataResponse
 	 */
+	public function deleteDataType($id)
+	{
+		$userId = $this->userSession->getUser()->getUID();
+		if (DataTypes::isDeletable($userId, (int)$id, $this->connection)) {
+			try {
+				DataTypes::deleteDataType($userId, (int)$id, $this->connection);
+				return $this->returnJSON(array('success' => true));
+			} catch (Exception $e) {}
+		}
+		return $this->returnJSON(array('success' => false));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @param $id
+	 * @return DataResponse
+	 */
+	public function deleteDeviceGroup($id)
+	{
+		$userId = $this->userSession->getUser()->getUID();
+		if (DeviceGroups::isDeletable($userId, (int)$id, $this->connection)) {
+			try {
+				DeviceGroups::deleteDeviceGroup($userId, (int)$id, $this->connection);
+				return $this->returnJSON(array('success' => true));
+			} catch (Exception $e) {}
+		}
+		return $this->returnJSON(array('success' => false));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @param $id
+	 * @return DataResponse
+	 */
+	public function deleteDeviceType($id)
+	{
+		$userId = $this->userSession->getUser()->getUID();
+		if (DeviceTypes::isDeletable($userId, (int)$id, $this->connection)) {
+			try {
+				DeviceTypes::deleteDeviceType($userId, (int)$id, $this->connection);
+				return $this->returnJSON(array('success' => true));
+			} catch (Exception $e) {}
+		}
+		return $this->returnJSON(array('success' => false));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @param $id
+	 * @return DataResponse
+	 */
 	public function deleteDevice($id)
-    {
-        if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
-            try {
-                SensorDevices::deleteDevice((int)$id, $this->connection);
-                DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
-                return $this->returnJSON(array('success' => true));
-            } catch (Exception $e) {}
-        }
-        return $this->returnJSON(array('success' => false));
+	{
+		$userId = $this->userSession->getUser()->getUID();
+		if (SensorDevices::isDeletable($userId, (int)$id, $this->connection)) {
+			try {
+				Devices::deleteDevice($userId, (int)$id, $this->connection);
+				DataTypes::deleteDeviceDataTypesByDeviceId($userId, (int)$id, $this->connection);
+				//DataGroups::deleteDeviceGroupByDeviceId($userId, (int)$id, $this->connection);
+				return $this->returnJSON(array('success' => true));
+			} catch (Exception $e) {}
+		}
+		return $this->returnJSON(array('success' => false));
 	}
 
     /**
@@ -481,10 +535,11 @@ class SensorLoggerController extends Controller {
                 return $this->returnJSON(['errors' => 'Could not delete Logs for Device #'.$id]);
             }
 
-            if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
+			$userId = $this->userSession->getUser()->getUID();
+            if (SensorDevices::isDeletable($userId, (int)$id, $this->connection)) {
                 try {
-                    SensorDevices::deleteDevice((int)$id, $this->connection);
-                    DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
+                    Devices::deleteDevice($userId, (int)$id, $this->connection);
+                    DataTypes::deleteDeviceDataTypesByDeviceId($userId, (int)$id, $this->connection);
                     return $this->returnJSON(array('success' => true));
                 } catch (Exception $e) {}
             }

@@ -71,7 +71,59 @@ class SensorGroups{
 		return null;
 	}
 
-	# TODO [GH6] Add SensorGroup::delete
+	/**
+	 * @param $userId
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	public static function isDeletable($userId, $id, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('id')
+			->from('sensorlogger_devices')
+			->where('user_id = :userId')
+			->andWhere('( group_id = :gid')
+			->orWhere('group_parent_id = :gpid )')
+			->setParameter(':userId', $userId)
+			->setParameter(':gid', $id)
+			->setParameter(':gpid', $id);
+		if ($query->execute())
+		{
+			$data = $result->fetch();
+			if($data && is_numeric($data['id']) && $data['id'] > 0)
+				return false;
+		}
+		return true;
+	}
+
+	//# TODO [GH6] Add SensorGroup::delete
+	
+	/**
+	 * @param $userId
+	 * @param $groupId
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	public static function deleteDeviceGroup($userId, $groupId, IDBConnection $db) {
+		$DevId = 0;
+		$devGroup = SensorGroups::getDeviceGroupById($userId, $groupId, $db);
+		if (is_numeric($devGroup['id']) && $devGroup['id'] > 0)
+		{
+			$DevId = (int)$devGroup['id'];
+
+			// nur loeschen, wenn DeviceGroup nicht noch in Devices enthalten ist
+			$sql = 'DELETE FROM `*PREFIX*sensorlogger_device_groups` WHERE id = ? AND user_id = ? AND id NOT IN (SELECT id FROM `*PREFIX*sensorlogger_devices` WHERE user_id = ? AND group_id = ? AND group_parent_id = ?)';
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam(1, $DevId);
+			$stmt->bindParam(2, $userId);
+			$stmt->bindParam(3, $userId);
+			$stmt->bindParam(4, $DevId);
+			$stmt->bindParam(5, $DevId);
+			return $stmt->execute();
+		}
+		return false;
+	}
+
 	/**
 	 * @param $userId
 	 * @param $deviceGroupName
@@ -85,32 +137,13 @@ class SensorGroups{
 		{
 			$DevId = (int)$devGroup['id'];
 
-			$sql = 'DELETE FROM `*PREFIX*sensorlogger_device_groups` WHERE id = ? AND user_id = ?';
+			$sql = 'DELETE FROM `*PREFIX*sensorlogger_device_groups` WHERE id = ? AND user_id = ? AND id NOT IN (SELECT id FROM `*PREFIX*sensorlogger_devices` WHERE user_id = ? AND group_id = ? AND group_parent_id = ?)';
 			$stmt = $db->prepare($sql);
 			$stmt->bindParam(1, $DevId);
 			$stmt->bindParam(2, $userId);
-			return $stmt->execute();
-		}
-		return false;
-	}
-	
-	/**
-	 * @param $userId
-	 * @param $groupId
-	 * @param IDBConnection $db
-	 * @return bool
-	 */
-	public static function deleteDeviceGroupById($userId, $groupId, IDBConnection $db) {
-		$DevId = 0;
-		$devGroup = SensorGroups::getDeviceGroupById($userId, $groupId, $db);
-		if (is_numeric($devGroup['id']) && $devGroup['id'] > 0)
-		{
-			$DevId = (int)$devGroup['id'];
-
-			$sql = 'DELETE FROM `*PREFIX*sensorlogger_device_groups` WHERE id = ? AND user_id = ?';
-			$stmt = $db->prepare($sql);
-			$stmt->bindParam(1, $DevId);
-			$stmt->bindParam(2, $userId);
+			$stmt->bindParam(3, $userId);
+			$stmt->bindParam(4, $DevId);
+			$stmt->bindParam(5, $DevId);
 			return $stmt->execute();
 		}
 		return false;

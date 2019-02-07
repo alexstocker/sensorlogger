@@ -174,6 +174,7 @@ class ApiSensorLoggerController extends ApiController {
 	 * @throws \Exception
 	 */
 	public function registerDevice() {
+		$userId = $this->userSession->getUser()->getUID();
 		$params = $this->request->getParams();
 		$paramErrors = $this->checkRequestParams($params);
 		if (!empty($paramErrors)) {
@@ -184,7 +185,7 @@ class ApiSensorLoggerController extends ApiController {
 			return $this->requestResponse(false,Error::MISSING_PARAM,implode(',',$messages));
 		}
 		
-		$registered = this->checkRegisteredDevice($params);
+		$registered = $this->checkRegisteredDevice($params);
 		if ($registered)
 			return $this->requestResponse(false, Error::DEVICE_EXISTS,'Device already exists.');
 		
@@ -212,7 +213,7 @@ class ApiSensorLoggerController extends ApiController {
 		}
 
 		foreach($params['deviceDataTypes'] as $key => $array){
-			$availableDataTypes = DataTypes::getDataTypesByUserId($this->userSession->getUser()->getUID(),$this->db);
+			$availableDataTypes = DataTypes::getDataTypesByUserId($userId, $this->db);
 			/** @var DataType $availableDataType */
 			foreach($availableDataTypes as $availableDataType) {
 				if($availableDataType->getShort() === $array['unit'] && $availableDataType->getType() === $array['type']) {
@@ -228,7 +229,8 @@ class ApiSensorLoggerController extends ApiController {
 				$this->insertDeviceDataTypes($lastInsertId,$dataTypeId);
 			}
 		}
-		$deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$lastInsertId,$this->db);
+		$deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($userId,
+			$lastInsertId,$this->db);
 		return $this->requestResponse(
 			true,
 			Http::STATUS_OK,
@@ -286,7 +288,8 @@ class ApiSensorLoggerController extends ApiController {
 /*		
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';
 		$stmt = $this->db->prepare($sql);
-		$stmt->bindParam(1, $this->userSession->getUser()->getUID());
+		$userId = $this->userSession->getUser()->getUID();
+		$stmt->bindParam(1, $userId);
 		$stmt->bindParam(2, $string);
 		if($stmt->execute()){
 			return (int)$this->db->lastInsertId();
@@ -323,7 +326,8 @@ class ApiSensorLoggerController extends ApiController {
 			$unit = '';
 		}
 
-		$stmt->bindParam(1, $this->userSession->getUser()->getUID());
+		$userId = $this->userSession->getUser()->getUID();
+		$stmt->bindParam(1, $userId);
 		$stmt->bindParam(2, $description);
 		$stmt->bindParam(3, $type);
 		$stmt->bindParam(4, $unit);
@@ -358,10 +362,11 @@ class ApiSensorLoggerController extends ApiController {
 	 * @param int $deviceId
 	 * @param int $dataTypeId
 	 */
-	protected function insertDeviceDataTypes($deviceId,$dataTypeId){
+	protected function insertDeviceDataTypes($deviceId, $dataTypeId){
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_data_types` (`user_id`,`device_id`,`data_type_id`) VALUES(?,?,?)';
 		$stmt = $this->db->prepare($sql);
-		$stmt->bindParam(1, $this->userSession->getUser()->getUID());
+		$userId = $this->userSession->getUser()->getUID();
+		$stmt->bindParam(1, $userId);
 		$stmt->bindParam(2, $deviceId);
 		$stmt->bindParam(3, $dataTypeId);
 		$stmt->execute();
@@ -404,8 +409,9 @@ class ApiSensorLoggerController extends ApiController {
 	 */
 	public function getDeviceDataTypes(){
 		$params = $this->request->getParams();
-		$device = SensorDevices::getDeviceByUuid($this->userSession->getUser()->getUID(),$params['deviceId'],$this->db);
-		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(),$device->getId(),$this->db);
+		$userId = $this->userSession->getUser()->getUID();
+		$device = SensorDevices::getDeviceByUuid($userId,$params['deviceId'],$this->db);
+		$dataTypes = DataTypes::getDeviceDataTypesByDeviceId($userId,$device->getId(),$this->db);
 		//return json_encode($dataTypes);
 		return $this->returnJSON($dataTypes);
 	}

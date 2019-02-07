@@ -1,13 +1,23 @@
 # SensorLogger
 
 #### 07.02.2019 (JB)
+  * Loesch-Symbol in listen device type, device groups, data type implementiert (noch nicht funktionsfaehig)
+  
   * php-Seite DataTypes.php
 	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
 	* deleteDeviceDataTypesByDeviceId deletes data type only if Type in user context
+	* isDeletable implementiert
+	* deleteDataType implementiert (data type nur loeschen, wenn nicht verwendet)
 	
   * php-Seite DeviceTypes.php
 	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
-	* deleteDeviceTypeById deletes device type only if Type in user context
+	* isDeletable implementiert
+	* deleteDeviceType implementiert (device type nur loeschen, wenn nicht verwendet)
+	
+  * php-Seite SensorGroups.php
+	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+	* isDeletable implementiert
+	* deleteDeviceType implementiert (device type nur loeschen, wenn nicht verwendet)
 	
   * php-Seite Devices.php:
 	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern

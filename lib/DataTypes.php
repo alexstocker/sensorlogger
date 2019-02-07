@@ -92,11 +92,54 @@ class DataTypes {
 
 	/**
 	 * @param $userId
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	public static function isDeletable($userId, $id, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->select('id')
+			->from('sensorlogger_device_data_types')
+			->where('user_id = :userId')
+			->andWhere('data_type_id = :id')
+			->setParameter(':userId', $userId)
+			->setParameter(':id', $id);
+		if ($query->execute())
+		{
+			$data = $result->fetch();
+			if($data && is_numeric($data['id']) && $data['id'] > 0)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param $userId
+	 * @param $id
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	// loescht data type mit angegebener id und userId, wenn id nicht in sensorlogger_device_data_typestype_id enthalten ist
+	public static function deleteDataType($userId, $id, IDBConnection $db) {
+		// data types nur loeschen, wenn sie von keinem Sensor mehr verwendet werden
+		if (!DataTypes::isDeletable($userId, $id, $db))
+			return false;
+		
+		$sql = 'DELETE FROM `*PREFIX*sensorlogger_data_types` WHERE user_id = ? AND id = ?';
+		$stmt = $db->prepare($sql);
+		$stmt->bindParam(1, $userId);
+		$stmt->bindParam(2, $id);
+		return $stmt->execute();
+	}
+
+	/**
+	 * @param $userId
 	 * @param $deviceId
 	 * @param IDBConnection $db
 	 * @return bool
 	 */
 	public static function deleteDeviceDataTypesByDeviceId($userId, $deviceId, IDBConnection $db) {
+		// Device-DataType-Beziehungen in dieser Tabelle auf jeden Fall loeschen
 		$query = $db->getQueryBuilder();
 		$query->delete('sensorlogger_device_data_types')
 			->where('user_id = :userId')
@@ -104,5 +147,5 @@ class DataTypes {
 			->setParameter(':userId', $userId)
 			->setParameter(':deviceId', $deviceId);
 		return $query->execute();
-    }
+	}
 }

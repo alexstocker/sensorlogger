@@ -122,6 +122,48 @@
 			});
 		});
 
+		appContentWrapper.on('click','a.datatype-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDataType/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Data Type deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Data Type NOT deleted'));
+				}
+			});
+		});
+
+		appContentWrapper.on('click','a.devicegroup-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDeviceGroup/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Group deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Group NOT deleted'));
+				}
+			});
+		});
+
+		appContentWrapper.on('click','a.devicetype-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDeviceType/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Type deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Type NOT deleted'));
+				}
+			});
+		});
+
 		appContentWrapper.on('click','a.device-delete',function (e) {
 			var id = $(e.target).data('id');
 			var container = $(e.target).closest('tr');

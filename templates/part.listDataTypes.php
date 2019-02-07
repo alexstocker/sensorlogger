@@ -1,6 +1,7 @@
 <div class="content-wrapper">
 <table id="sensorDeviceTypesTable" style="width: 100%;">
 	<thead>
+    <th></th>
 	<th id="id"><span class="th-header">#</span></th>
 	<th id="descprition"><span class="th-header">Description</span></th>
 	<th id="type"><span class="th-header">Data Type</span></th>
@@ -10,7 +11,14 @@
 	</thead>
 	<tbody>
 <?php foreach($_['dataTypes'] as $dataType){ ?>
-	<tr>
+	<tr data-id="<?php p($dataType['id']); ?>" data-type="dir" class="dataTypeEdit">
+        <td class="td-data">
+            <a href="#" class="datatype-delete" title="<?php p($l->t('Delete Data Type')); ?>">
+				<span class="icon icon-delete"
+                      data-id="<?php p($dataType['id']); ?>">
+				</span>
+            </a>
+        </td>
 		<td class="td-data"><?php p($dataType['id']); ?></td>
 		<td class="td-data"><?php p($dataType['description']); ?></td>
 		<td class="td-data"><?php p($dataType['type']); ?></td>
