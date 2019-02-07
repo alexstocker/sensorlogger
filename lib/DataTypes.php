@@ -16,13 +16,12 @@ class DataTypes {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id','description','type','short'))
 			->from('sensorlogger_data_types')
-			->where('user_id = "'.$userId.'"')
-			->orderBy('id', 'DESC');
+			->where('user_id = :userId')
+			->orderBy('id', 'DESC')
+			->setParameter(':userId', $userId);
 		$query->setMaxResults(100);
 		$result = $query->execute();
-
 		$data = $result->fetchAll();
-
 		return $data;
 	}
 
@@ -36,18 +35,17 @@ class DataTypes {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id','description','type','short'))
 			->from('sensorlogger_data_types')
-			->where('user_id = "'.$userId.'"')
-			->andWhere('id = "'.$dataTypeId.'"');
+			->where('user_id = :userId')
+			->andWhere('id = :dataTypeId')
+			->setParameter(':userId', $userId)
+			->setParameter(':dataTypeId', $dataTypeId);
 		$query->setMaxResults(100);
 		$result = $query->execute();
-
 		$data = $result->fetch();
-		
-		if($data) {
-			$data = DataType::fromRow($data);
-		}
+		if($data && is_numeric($data['id']))
+			return DataType::fromRow($data);
 
-		return $data;
+		return null;
 	}
 
 	/**
@@ -59,7 +57,8 @@ class DataTypes {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
 			->from('sensorlogger_data_types')
-			->where('user_id = "'.$userId.'"');
+			->where('user_id = :userId')
+			->setParameter(':userId', $userId);
 		$results = $query->execute();
 		$data = [];
 		foreach($results->fetchAll() as $result) {
@@ -79,23 +78,31 @@ class DataTypes {
 		$query->select(array('sdt.id','sdt.description','sdt.type','sdt.short','sdt.type'))
 			->from('sensorlogger_device_data_types','sddt')
 			->leftJoin('sddt','sensorlogger_data_types','sdt', 'sdt.id = sddt.data_type_id')
-			->where('sddt.user_id = "'.$userId.'"')
-			->andWhere('sddt.device_id = "'.$deviceId.'" ')
-			->orderBy('sddt.id', 'ASC');
+			->where('sddt.user_id = :userId')
+			->andWhere('sddt.device_id = :deviceId')
+			->orderBy('sddt.id', 'ASC')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceId', $deviceId);
 		$query->setMaxResults(100);
 		$result = $query->execute();
-
 		$data = $result->fetchAll();
 
 		return $data;
 	}
 
-	public static function deleteDeviceDataTypesByDeviceId($deviceId, IDBConnection $db) {
-        $sql = 'DELETE FROM `*PREFIX*sensorlogger_device_data_types` WHERE *PREFIX*sensorlogger_device_data_types.device_id = ?';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(1, $deviceId);
-        if($stmt->execute()){
-            return true;
-        }
+	/**
+	 * @param $userId
+	 * @param $deviceId
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	public static function deleteDeviceDataTypesByDeviceId($userId, $deviceId, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->delete('sensorlogger_device_data_types')
+			->where('user_id = :userId')
+			->andWhere('device_id = :deviceId')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceId', $deviceId);
+		return $query->execute();
     }
 }

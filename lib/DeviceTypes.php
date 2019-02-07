@@ -47,7 +47,10 @@ class DeviceTypes {
 			->setParameter(':deviceTypeId', $deviceTypeId);
 		$result = $query->execute();
 		$data = $result->fetch();
-		return $data;
+		if ($data && is_numeric($data['id']))
+			return $data;
+		
+		return null;
 	}
 
 	/**
@@ -115,4 +118,20 @@ class DeviceTypes {
 
 		return -1;
 	}
+
+	/**
+	 * @param $userId
+	 * @param $typeId
+	 * @param IDBConnection $db
+	 * @return bool
+	 */
+	public static function deleteDeviceTypeById($userId, $typeId, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->delete('sensorlogger_device_types')
+			->where('user_id = :userId')
+			->andWhere('id = :typeId')
+			->setParameter(':userId', $userId)
+			->setParameter(':typeId', $typeId);
+		return $query->execute();
+    }
 }

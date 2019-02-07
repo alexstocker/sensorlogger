@@ -1,6 +1,14 @@
 # SensorLogger
 
 #### 07.02.2019 (JB)
+  * php-Seite DataTypes.php
+	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+	* deleteDeviceDataTypesByDeviceId deletes data type only if Type in user context
+	
+  * php-Seite DeviceTypes.php
+	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+	* deleteDeviceTypeById deletes device type only if Type in user context
+	
   * php-Seite Devices.php:
 	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
 

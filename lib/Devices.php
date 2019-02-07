@@ -95,7 +95,7 @@ class Devices {
 			
 		$query->setMaxResults(100);
 		$result = $query->execute();
-		$data = $result->fetchAll();
+		$data = $result->fetch();
 		if ($data && is_numeric($data['sdt.id']))
 			return Device::fromRow($data);
 		
