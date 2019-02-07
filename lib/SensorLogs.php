@@ -138,4 +138,13 @@ class SensorLogs {
             ]);
         return $query->execute();
     }
+	
+	// insert log atomar
+	/*
+	SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+	START TRANSACTION;
+		 insert into
+		 get last id
+	COMMIT;
+	*/
 }

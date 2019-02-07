@@ -34,8 +34,9 @@ class SensorDevices extends Mapper {
 			->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
 			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
 			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
-			->where('sd.user_id = "'.$userId.'"')
-			->orderBy('sd.id', 'DESC');
+			->where('sd.user_id = :userId')
+			->orderBy('sd.id', 'DESC')
+			->setParameter(':userId', $userId);
 		$query->setMaxResults(100);
 		$result = $query->execute();
 
@@ -59,12 +60,12 @@ class SensorDevices extends Mapper {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
 			->from('sensorlogger_devices')
-			->where('id = "'.$id.'" ')
-			->andWhere('user_id = "'.$userId.'"');
+			->where('id = :id')
+			->andWhere('user_id = :userId')
+			->setParameter(':id', $id)
+			->setParameter(':userId', $userId);
 		$result = $query->execute();
-
 		$data = $result->fetch();
-
 		if($data) {
 			$data = Device::fromRow($data);
 		}
@@ -97,17 +98,17 @@ class SensorDevices extends Mapper {
 		$query = $db->getQueryBuilder();
 		$query->select('*')
 			->from('sensorlogger_devices')
-			->where('uuid = "'.$uuid.'" ')
-			->andWhere('user_id = "'.$userId.'"');
+			->where('uuid = :uuid" ')
+			->andWhere('user_id = :userId')
+			->setParameter(':uuid', $uuid)
+			->setParameter(':userId', $userId);
 		$result = $query->execute();
-
 		$data = $result->fetch();
 		if($data) {
 			//foreach($data as $device) {
 				$data = Device::fromRow($data);
 			//}
 		}
-
 		return $data;
 	}
 
@@ -126,8 +127,10 @@ class SensorDevices extends Mapper {
 			->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
 			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
 			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
-			->where('sd.id = "'.$id.'" ')
-			->andWhere('sd.user_id = "'.$userId.'"');
+			->where('sd.id = :id')
+			->andWhere('sd.user_id = :userId')
+			->setParameter(':id', $id)
+			->setParameter(':userId', $userId);
 		$result = $query->execute();
 		$data = $result->fetch();
 		$device = Device::fromRow($data);
@@ -141,14 +144,13 @@ class SensorDevices extends Mapper {
 	 * @param IDBConnection $db
 	 * @return bool
 	 */
-	public static function updateDevice($id,$field,$value, IDBConnection $db) {
+	public static function updateDevice($id, $field, $value, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->update('sensorlogger_devices')
 			->set($field,$query->expr()->literal($value))
-			->where('id = "'.$id.'" ');
-		if($query->execute()) {
-			return true;
-		}
+			->where('id = :id')
+			->setParameter(':id', $id);
+		return $query->execute();
 	}
 
 	/**
@@ -157,12 +159,11 @@ class SensorDevices extends Mapper {
 	 * @return bool
 	 */
 	public static function deleteDevice($id, IDBConnection $db) {
-		$sql = 'DELETE FROM `*PREFIX*sensorlogger_devices` WHERE *PREFIX*sensorlogger_devices.id = ?';
-		$stmt = $db->prepare($sql);
-		$stmt->bindParam(1, $id);
-		if($stmt->execute()){
-			return true;
-		}
+		$query = $db->getQueryBuilder();
+		$query->delete('sensorlogger_devices')
+			->where('id = :id')
+			->setParameter(':id', $id);
+		return $query->execute();
 	}
 
 	/**
@@ -172,6 +173,13 @@ class SensorDevices extends Mapper {
 	 * @return int|string
 	 */
 	public static function insertDevice($userId, $array, IDBConnection $db) {
+/*
+		// immer zuerst die Existenz pruefen
+		$deviceId = isset($array['deviceId']) ? (int)$array['deviceId'] : 0;
+		$device = SensorDevices::getDeviceByUuid($userId, $deviceId, $db);
+		if ($device->getId() > 0)
+			return $devId;
+*/		
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
 		$stmt = $db->prepare($sql);
 

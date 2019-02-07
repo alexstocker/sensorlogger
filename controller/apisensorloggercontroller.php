@@ -101,7 +101,7 @@ class ApiSensorLoggerController extends ApiController {
 	 */
 	protected function insertExtendedLog($array) {
 		$registered = $this->checkRegisteredDevice($array);
-		if ($registered <= 0) 
+		if (!$registered)
 			return false;
 
 		if(!isset($array['date']) || empty($array['date'])) {
@@ -130,16 +130,23 @@ class ApiSensorLoggerController extends ApiController {
 	protected function insertLog($array){
 		$registered = $this->checkRegisteredDevice($array);
 		if (isset($array['deviceId'])) {
-			if ($registered <= 0) {
-				$registered = $this->insertDevice($array);
+			if (!$registered) {
+				// the array contains the deviceid but this device isn't registered
+				// then register now
+				$DevId = $this->insertDevice($array);
+				$registered = ($DevId > 0);
 			}
 		}
 
 		if(!isset($array['date']) || empty($array['date'])) {
+			// the date param isn't set, then set now
 			$array['date'] = date('Y-m-d H:i:s');
 		}
 
-		if($registered > 0 || !isset($array['deviceId'])) {
+		if($registered || !isset($array['deviceId'])) {
+			// the device is registered or not and the deviceid isn't set
+			
+			// use the deviceid if it is in the array
 			$deviceId = $array['deviceId'] ?: null;
 
 			$dataJson = json_encode($array);
@@ -177,10 +184,9 @@ class ApiSensorLoggerController extends ApiController {
 			return $this->requestResponse(false,Error::MISSING_PARAM,implode(',',$messages));
 		}
 		
-		// Test
 		$registered = this->checkRegisteredDevice($params);
-		if (is_numeric($registered) && $registered > 0)
-			return $this->requestResponse(false, Error::DEVICE_EXISTS,'Device already exists (id: '.$registered.')!');
+		if ($registered)
+			return $this->requestResponse(false, Error::DEVICE_EXISTS,'Device already exists.');
 		
 		$lastInsertId = $this->insertDevice($params);
 		if ($lastInsertId <= 0)
@@ -363,14 +369,20 @@ class ApiSensorLoggerController extends ApiController {
 
 	/**
 	 * @param $params
-	 * @return int;
+	 * @return bool;
 	 */
 	protected function checkRegisteredDevice($params) {
+		// A Device whithout UUID isn't registered
 		if (!isset($params['deviceId'])) 
-			return -1;
+			return false;
 		
-		return Devices::getDeviceIdByUuid($this->userSession->getUser()->getUID(),
-			$params["deviceId"], $this->db);
+		// only if the return value > 0 (id > 0) is guaranteed
+		// that the device UUID is already contained in the DB (in the user context user_id)
+		if (Devices::getDeviceIdByUuid($this->userSession->getUser()->getUID(),
+				$params["deviceId"], $this->db) > 0)
+			return true;
+		
+		return false;
 	}
 
 	/**
@@ -378,11 +390,10 @@ class ApiSensorLoggerController extends ApiController {
 	 * @return int
 	 */
 	protected function insertDevice($array) {
-
 		if (isset($array['deviceId']))
 			return Devices::insertDevice($this->userSession->getUser()->getUID(),
 				$array['deviceId'], $array['deviceName'], $array['deviceTypeId'], $this->db);
-		
+		// Error
 		return -1;
 	}
 
@@ -406,8 +417,11 @@ class ApiSensorLoggerController extends ApiController {
 	 */
 	public function getDeviceTypes(){
 		$params = $this->request->getParams();
-		$device = SensorDevices::getDeviceByUuid($this->userSession->getUser()->getUID(),$params['deviceId'],$this->db);
-		$devTypes = DeviceTypes::getDeviceTypesByDeviceId($this->userSession->getUser()->getUID(),$device->getId(),$this->db);
+		$userId = $this->userSession->getUser()->getUID();
+		$device = SensorDevices::getDeviceByUuid($userId,
+			$params['deviceId'],$this->db);
+		$devTypes = DeviceTypes::getDeviceTypesByDeviceId($userId,
+			$device->getId(),$this->db);
 		return $this->returnJSON($devTypes);
 	}
 

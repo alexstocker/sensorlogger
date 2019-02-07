@@ -21,8 +21,9 @@ class Devices {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id', 'user_id','uuid','name', 'type_id', 'group_id', 'group_parent_id'))
 			->from('sensorlogger_devices')
-			->where('user_id = "'.$userId.'"')
-			->orderBy('id', 'DESC');
+			->where('user_id = :userId')
+			->orderBy('id', 'DESC')
+			->setParameter(':userId', $userId);
 		$query->setMaxResults(100);
 		$result = $query->execute();
 		$data = $result->fetchAll();
@@ -39,11 +40,16 @@ class Devices {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id', 'user_id', 'uuid', 'name', 'type_id', 'group_id', 'group_parent_id'))
 			->from('sensorlogger_devices')
-			->where('user_id = "'.$userId.'"')
-			->andWhere('id = '.$deviceId);
+			->where('user_id = :userId')
+			->andWhere('id = :deviceId')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceId', $deviceId);
 		$result = $query->execute();
 		$data = $result->fetch();
-		return $data;
+		if ($data && is_numeric($data['id']))
+			return Device::fromRow($data);
+		
+		return null;
 	}
 
 	/**
@@ -56,14 +62,16 @@ class Devices {
 		$query = $db->getQueryBuilder();
 		$query->select('id')
 			->from('sensorlogger_devices')
-			->where('user_id = "'.$userId.'"')
-			->andWhere('uuid = "'.$deviceUuid.'"');
+			->where('user_id = :userId')
+			->andWhere('uuid = :deviceUuid')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceUuid', $deviceUuid);
 		$result = $query->execute();
 		$data = $result->fetch();
-		if (is_numeric($data['id']))
+		if ($data && is_numeric($data['id']))
 			return (int)$data['id'];
 		
-		return 0;
+		return -1;
 	}
 
 	/**
@@ -75,18 +83,23 @@ class Devices {
 	public static function getDeviceByDeviceId($userId, $deviceId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		
-		$query->select(array('sdt.id','sdt.device_type_name'))
+		$query->selectAlias('sdt.id','id')
+			->selectAlias('sdt.device_type_name','device_type_name')
 			->from('sensorlogger_devices','sd')
 			->leftJoin('sd','sensorlogger_device_types','sdt', 'sdt.id = sd.type_id')
-			->where('sd.user_id = "'.$userId.'"')
-			->andWhere('sd.id = '.$deviceId)
-			->orderBy('sd.id', 'ASC');
+			->where('sd.user_id = :userId')
+			->andWhere('sd.id = :deviceId')
+			->orderBy('sd.id', 'ASC')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceId', $deviceId);
 			
 		$query->setMaxResults(100);
 		$result = $query->execute();
 		$data = $result->fetchAll();
-
-		return $data;
+		if ($data && is_numeric($data['sdt.id']))
+			return Device::fromRow($data);
+		
+		return null;
 	}
 
 	/**
@@ -103,6 +116,9 @@ class Devices {
 		if ($devId > 0)
 			return $devId;
 		
+		// todo: dbms transaction
+		// begin transaction 
+		
 		// ansonsten einfuegen
 		$sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
 		$stmt = $db->prepare($sql);
@@ -118,10 +134,13 @@ class Devices {
 		$stmt->bindParam(3, $deviceTypeId);
 		$stmt->bindParam(4, $userId);
 
+		$lastId = -1;
 		if ($stmt->execute())
-			return (int)$db->lastInsertId();
+			$lastId = (int)$db->lastInsertId();
 		
-		return -1;
+		// Transaction end
+		
+		return $lastId;
 		
 	}
 }

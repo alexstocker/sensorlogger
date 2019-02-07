@@ -21,9 +21,10 @@ class DeviceTypes {
 		$query->select(array('sdt.user_id','sdt.id','sdt.device_type_name'))
 			->from('sensorlogger_device_types','sdt')
 			->leftJoin('sdt', 'sensorlogger_devices', 'sd', 'sdt.id = sd.type_id')
-			->where('sdt.user_id = "'.$userId.'"')
+			->where('sdt.user_id = :userId')
 			->groupBy('sdt.id')
-			->orderBy('sdt.id', 'DESC');
+			->orderBy('sdt.id', 'DESC')
+			->setParameter(':userId', $userId);
 		$query->setMaxResults(100);
 		$result = $query->execute();
 		$data = $result->fetchAll();
@@ -40,8 +41,10 @@ class DeviceTypes {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id', 'user_id', 'device_type_name'))
 			->from('sensorlogger_device_types')
-			->where('user_id = "'.$userId.'"')
-			->andWhere('id = '.$deviceTypeId);
+			->where('user_id = :userId')
+			->andWhere('id = :deviceTypeId')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceTypeId', $deviceTypeId);
 		$result = $query->execute();
 		$data = $result->fetch();
 		return $data;
@@ -57,16 +60,13 @@ class DeviceTypes {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id', 'user_id', 'device_type_name'))
 			->from('sensorlogger_device_types')
-			->where('user_id = "'.$userId.'"')
-			->andWhere('device_type_name = "'.$deviceTypeName.'"');
+			->where('user_id = :userId')
+			->andWhere('device_type_name = :deviceTypeName')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceTypeName', $deviceTypeName);
 		$result = $query->execute();
 		$data = $result->fetch();
 		return $data;
-/*		
-		if (is_numeric($data['id']))
-			return (int)$data['id'];
-		return -1;
-*/
 	}
 
 	/**
@@ -81,9 +81,11 @@ class DeviceTypes {
 		$query->select(array('sdt.id','sdt.device_type_name'))
 			->from('sensorlogger_devices','sd')
 			->leftJoin('sd','sensorlogger_device_types','sdt', 'sdt.id = sd.type_id')
-			->where('sd.user_id = "'.$userId.'"')
-			->andWhere('sd.id = '.$deviceId)
-			->orderBy('sd.id', 'ASC');
+			->where('sd.user_id = :userId')
+			->andWhere('sd.id = :deviceId')
+			->orderBy('sd.id', 'ASC')
+			->setParameter(':userId', $userId)
+			->setParameter(':deviceId', $deviceId);
 			
 		$query->setMaxResults(100);
 		$result = $query->execute();
