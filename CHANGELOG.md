@@ -7,59 +7,59 @@
   * Loesch-Symbol in listen device type, device groups, data type implementiert (noch nicht funktionsfaehig)
   
   * php-Seite DataTypes.php
-	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
-	* deleteDeviceDataTypesByDeviceId deletes data type only if Type in user context
-	* isDeletable implementiert
-	* deleteDataType implementiert (data type nur loeschen, wenn nicht verwendet)
+    * prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+    * deleteDeviceDataTypesByDeviceId deletes data type only if Type in user context
+    * isDeletable implementiert
+    * deleteDataType implementiert (data type nur loeschen, wenn nicht verwendet)
 	
   * php-Seite DeviceTypes.php
-	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
-	* isDeletable implementiert
-	* deleteDeviceType implementiert (device type nur loeschen, wenn nicht verwendet)
+    * prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+    * isDeletable implementiert
+    * deleteDeviceType implementiert (device type nur loeschen, wenn nicht verwendet)
 	
   * php-Seite SensorGroups.php
-	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
-	* isDeletable implementiert
-	* deleteDeviceType implementiert (device type nur loeschen, wenn nicht verwendet)
+    * prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+    * isDeletable implementiert
+    * deleteDeviceType implementiert (device type nur loeschen, wenn nicht verwendet)
 	
   * php-Seite Devices.php:
-	* prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+    * prepared QueryBuilder SQL-Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
 
 #### 05.02.2019 (JB)
   * php-Seite DeviceTypes.php:
-	* SQL-Statements prepared SQL Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
-	
+    * SQL-Statements prepared SQL Statements geaendert (setParameters), um SQL-Injektionen zu verhindern
+
   * php-Seite SensorGroups.php:
-	* Methoden deleteDeviceGroupByX[Id/Name] implementiert
-	* SQL-Statements von QueryBuilder auf prepared SQL Statements geaendert, um SQL-Injektionen zu verhindern
+    * Methoden deleteDeviceGroupByX[Id/Name] implementiert
+    * SQL-Statements von QueryBuilder auf prepared SQL Statements geaendert, um SQL-Injektionen zu verhindern
 
 #### 04.02.2019 (JB)
   * php-Seite apisensorloggercontroller.php:
-	* return value function checkRegisteredDevice changed (now true/false again)
-	* code at the caller positions adjusted accordingly
-	
+    * return value function checkRegisteredDevice changed (now true/false again)
+    * code at the caller positions adjusted accordingly
+
 #### 28.01.2019 (JB)
   * php-Seite apisensorloggercontroller.php:
-	* registerDevice: Code-Optimierung (returnvalue !== null, params)
-	* Aenderung der InsertX-Strategie: bisher insert into -> getId, jetzt select -> getId oder insert into getId
-	* checkRegisteredDevice: Code-Optimierung (select id, return value: id)
-	* insertExtendedLog: Bugfix (return false bei Fehler)
-	* insertDevice: Bugfix (return value nur int, -1 bei Fehler, ansonsten id)
-	* methode getDeviceTypes eingefuegt
-	* alle Abfragen mit is_int durch is_numeric ausgetauscht
+    * registerDevice: Code-Optimierung (returnvalue !== null, params)
+    * Aenderung der InsertX-Strategie: bisher insert into -> getId, jetzt select -> getId oder insert into getId
+    * checkRegisteredDevice: Code-Optimierung (select id, return value: id)
+    * insertExtendedLog: Bugfix (return false bei Fehler)
+    * insertDevice: Bugfix (return value nur int, -1 bei Fehler, ansonsten id)
+    * methode getDeviceTypes eingefuegt
+    * alle Abfragen mit is_int durch is_numeric ausgetauscht
 	
   * php-Seite DeviceTypes.php:
-	* methoden getDeviceTypeById, getDeviceTypeByName und getDeviceTypesByDeviceId hinzugefuegt
-	* Aenderung der Methode insertDeviceType (Pruefung auf Existenz)
+    * methoden getDeviceTypeById, getDeviceTypeByName und getDeviceTypesByDeviceId hinzugefuegt
+    * Aenderung der Methode insertDeviceType (Pruefung auf Existenz)
 	
   * php-Seite routes.php:
-	* array-Element getDeviceTypes eingefuegt
+    * array-Element getDeviceTypes eingefuegt
 
   * php-Seite part.listDeviceTypes.php:
-	* <?php p($deviceType['uuid']); ?> entfernt
+    * <?php p($deviceType['uuid']); ?> entfernt
 	
   * neue PHP-Seite Devices eingefuehrt (Alternative zu SensorDevices):
-	* Methoden liefern Id als Integer oder Array als DB-Fields
+    * Methoden liefern Id als Integer oder Array als DB-Fields
   
 ### 24.01.2019 (JB)
   * Limit 1000 -> 100: getChartData in getChartData (sensorloggercontroller.php)
