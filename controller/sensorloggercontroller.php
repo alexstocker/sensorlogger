@@ -464,9 +464,9 @@ class SensorLoggerController extends Controller {
 	public function deleteDeviceGroup($id)
 	{
 		$userId = $this->userSession->getUser()->getUID();
-		if (DeviceGroups::isDeletable($userId, (int)$id, $this->connection)) {
+		if (SensorGroups::isDeletable($userId, (int)$id, $this->connection)) {
 			try {
-				DeviceGroups::deleteDeviceGroup($userId, (int)$id, $this->connection);
+				SensorGroups::deleteDeviceGroup($userId, (int)$id, $this->connection);
 				return $this->returnJSON(array('success' => true));
 			} catch (Exception $e) {}
 		}

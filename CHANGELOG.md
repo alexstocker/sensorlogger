@@ -1,5 +1,8 @@
 # SensorLogger
 
+#### 08.02.2019 (JB)
+  * Bugfix delete functions (isDelete and DeleteX for Device Type, Device Group and DataType)
+
 #### 07.02.2019 (JB)
   * Loesch-Symbol in listen device type, device groups, data type implementiert (noch nicht funktionsfaehig)
   

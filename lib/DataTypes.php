@@ -104,7 +104,8 @@ class DataTypes {
 			->andWhere('data_type_id = :id')
 			->setParameter(':userId', $userId)
 			->setParameter(':id', $id);
-		if ($query->execute())
+		$result = $query->execute();
+		if ($result)
 		{
 			$data = $result->fetch();
 			if($data && is_numeric($data['id']) && $data['id'] > 0)
@@ -124,7 +125,7 @@ class DataTypes {
 		// data types nur loeschen, wenn sie von keinem Sensor mehr verwendet werden
 		if (!DataTypes::isDeletable($userId, $id, $db))
 			return false;
-		
+
 		$sql = 'DELETE FROM `*PREFIX*sensorlogger_data_types` WHERE user_id = ? AND id = ?';
 		$stmt = $db->prepare($sql);
 		$stmt->bindParam(1, $userId);

@@ -23,10 +23,8 @@ class SensorGroups{
 		$stmt->bindParam(1, $userId);
 		//$stmt->setMaxResults(100);
 		if ($stmt->execute())
-		{
-			$row = $stmt->fetchAll();
-			return $row;
-		}
+			return $stmt->fetchAll();
+
 		return null;
 	}
 
@@ -43,10 +41,8 @@ class SensorGroups{
 		$stmt->bindParam(1, $groupId);
 		$stmt->bindParam(2, $userId);
 		if ($stmt->execute())
-		{
-			$row = $stmt->fetch();
-			return $row;
-		}
+			return $stmt->fetch();
+
 		return null;
 	}
 
@@ -63,10 +59,7 @@ class SensorGroups{
 		$stmt->bindParam(1, $groupName);
 		$stmt->bindParam(2, $userId);
 		if ($stmt->execute())
-		{
-			$row = $stmt->fetch();
-			return $row;
-		}
+			return $stmt->fetch();
 		
 		return null;
 	}
@@ -87,7 +80,8 @@ class SensorGroups{
 			->setParameter(':userId', $userId)
 			->setParameter(':gid', $id)
 			->setParameter(':gpid', $id);
-		if ($query->execute())
+		$result = $query->execute();
+		if ($result)
 		{
 			$data = $result->fetch();
 			if($data && is_numeric($data['id']) && $data['id'] > 0)

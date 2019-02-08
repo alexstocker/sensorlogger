@@ -37,7 +37,7 @@ class DeviceTypes {
 	 * @param IDBConnection $db
 	 * @return string
 	 */
-	public static function getDeviceTypeById($userId, $deviceTypeId, IDBConnection $db) {
+	public static function getDeviceType($userId, $deviceTypeId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->select(array('id', 'user_id', 'device_type_name'))
 			->from('sensorlogger_device_types')
@@ -46,10 +46,12 @@ class DeviceTypes {
 			->setParameter(':userId', $userId)
 			->setParameter(':deviceTypeId', $deviceTypeId);
 		$result = $query->execute();
-		$data = $result->fetch();
-		if ($data && is_numeric($data['id']))
-			return $data;
-		
+		if ($result)
+		{
+			$data = $result->fetch();
+			if ($data && is_numeric($data['id']))
+				return $data;
+		}
 		return null;
 	}
 
@@ -68,8 +70,13 @@ class DeviceTypes {
 			->setParameter(':userId', $userId)
 			->setParameter(':deviceTypeName', $deviceTypeName);
 		$result = $query->execute();
-		$data = $result->fetch();
-		return $data;
+		if ($result)
+		{
+			$data = $result->fetch();
+			if ($data && is_numeric($data['id']))
+				return $data;
+		}
+		return null;
 	}
 
 	/**
@@ -92,9 +99,9 @@ class DeviceTypes {
 			
 		$query->setMaxResults(100);
 		$result = $query->execute();
-		$data = $result->fetchAll();
-
-		return $data;
+		if ($result)
+			return $result->fetchAll();
+		return null;
 	}
 
 	/**
@@ -130,10 +137,11 @@ class DeviceTypes {
 		$query->select('id')
 			->from('sensorlogger_devices')
 			->where('user_id = :userId')
-			->andWhere('type_id = :id )')
+			->andWhere('type_id = :id')
 			->setParameter(':userId', $userId)
 			->setParameter(':id', $id);
-		if ($query->execute())
+		$result = $query->execute();
+		if ($result)
 		{
 			$data = $result->fetch();
 			if($data && is_numeric($data['id']) && $data['id'] > 0)
