@@ -3,7 +3,7 @@
 
     $registerArray = [
         //'_route' => 'sensorlogger.apisensorlogger.registerDevice',
-        'deviceId' => '6e643ee8-0f9f-11e7-93ae-92361f002675',
+        'deviceId' => '7e643ee8-0f9f-11e7-93ae-92361f002675',
         'deviceName' => 'Multi data sensor V2',
         'deviceType' => 'Indoor',
         'deviceGroup' => 'Wohnzimmer',

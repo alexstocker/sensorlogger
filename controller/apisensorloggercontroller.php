@@ -143,7 +143,8 @@ class ApiSensorLoggerController extends ApiController
         }
 
         if (isset($params['data']) && empty($this->errors)) {
-            if ($this->checkRegisteredDataTypes($params) && empty($this->errors)) {
+            if ($this->checkRegisteredDataTypes($params)
+                && empty($this->errors)) {
                 $this->insertExtendedLog($params);
             }
         }
@@ -167,26 +168,26 @@ class ApiSensorLoggerController extends ApiController
      */
     protected function insertExtendedLog($array)
     {
-        if ($this->checkRegisteredDevice($array)) {
-
-            if (!isset($array['date']) || empty($array['date'])) {
-                $array['date'] = date('Y-m-d H:i:s');
-            }
-
-            $deviceId = $array['deviceId'];
-            $dataJson = json_encode($array['data']);
-
-            $query = $this->db->getQueryBuilder();
-            $query->insert('sensorlogger_logs')
-                ->values([
-                    'created_at' => $query->createNamedParameter($array['date']),
-                    'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
-                    'device_uuid' => $query->createNamedParameter($deviceId),
-                    'data' => $query->createNamedParameter($dataJson)
-                ])
-                ->execute();
+        if(!$this->checkRegisteredDevice($array)) {
+            $this->errors[] = 'Device #'.$array['deviceId'].' not registered';
+            return false;
         }
-        return true;
+        if (!isset($array['date']) || empty($array['date'])) {
+            $array['date'] = date('Y-m-d H:i:s');
+        }
+
+        $deviceId = $array['deviceId'];
+        $dataJson = json_encode($array['data']);
+
+        $query = $this->db->getQueryBuilder();
+        $query->insert('sensorlogger_logs')
+            ->values([
+                'created_at' => $query->createNamedParameter($array['date']),
+                'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                'device_uuid' => $query->createNamedParameter($deviceId),
+                'data' => $query->createNamedParameter($dataJson)
+            ])
+            ->execute();
     }
 
     /**

@@ -455,6 +455,57 @@ class SensorLoggerController extends Controller
      * @param $id
      * @return DataResponse
      */
+    public function deleteDataType($id)
+    {
+        $userId = $this->userSession->getUser()->getUID();
+        if (DataTypes::isDeletable($userId, (int)$id, $this->connection)) {
+            try {
+                DataTypes::deleteDataType($userId, (int)$id, $this->connection);
+                return $this->returnJSON(array('success' => true));
+            } catch (Exception $e) {}
+        }
+        return $this->returnJSON(array('success' => false));
+    }
+
+    /**
+     * @NoAdminRequired
+     * @param $id
+     * @return DataResponse
+     */
+    public function deleteDeviceGroup($id)
+    {
+        $userId = $this->userSession->getUser()->getUID();
+        if (DeviceGroups::isDeletable($userId, (int)$id, $this->connection)) {
+            try {
+                DeviceGroups::deleteDeviceGroup($userId, (int)$id, $this->connection);
+                return $this->returnJSON(array('success' => true));
+            } catch (Exception $e) {}
+        }
+        return $this->returnJSON(array('success' => false));
+    }
+
+    /**
+     * @NoAdminRequired
+     * @param $id
+     * @return DataResponse
+     */
+    public function deleteDeviceType($id)
+    {
+        $userId = $this->userSession->getUser()->getUID();
+        if (DeviceTypes::isDeletable($userId, (int)$id, $this->connection)) {
+            try {
+                DeviceTypes::deleteDeviceType($userId, (int)$id, $this->connection);
+                return $this->returnJSON(array('success' => true));
+            } catch (Exception $e) {}
+        }
+        return $this->returnJSON(array('success' => false));
+    }
+
+    /**
+     * @NoAdminRequired
+     * @param $id
+     * @return DataResponse
+     */
     public function deleteDevice($id)
     {
         if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
@@ -466,21 +517,6 @@ class SensorLoggerController extends Controller
             }
         }
         return $this->returnJSON(array('success' => false));
-    }
-
-    public function deleteDataType($id)
-    {
-
-    }
-
-    public function deleteDeviceGroup($id)
-    {
-
-    }
-
-    public function deleteDeviceType($id)
-    {
-
     }
 
     /**
@@ -746,6 +782,7 @@ class SensorLoggerController extends Controller
     {
         $templateName = 'part.listDataTypes';
         $dataTypes = DataTypes::getDataTypes($this->userSession->getUser()->getUID(), $this->connection);
+
         $parameters = array('part' => 'listDataTypes', 'dataTypes' => $dataTypes);
         return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
     }
