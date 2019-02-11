@@ -23,13 +23,6 @@
   * Added some more data validation #69 @vitoller
   * Removed obsolete and undefined properties in LogExtended
   * Adding some more requirements
-  * Fixed min-version tag due semver minor update compatibility
-  * Update README.md
-  * Syncronisation Release to close gap between SensorLogger vor Owncloud and Nextcloud
-  * SensorLogger Release Version 0.0.7 for owncloud
-  * Prepare Release 0.0.7
-  * Updated CHANGELOG
-  * WipeOut Device #49
   
 ### 0.0.10 UNRELEASED
 
