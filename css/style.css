@@ -5,7 +5,7 @@
 	font-weight: bold;
 	line-height: 24px;
 	min-height: 24px;
-	padding: 16px 55px 13px;
+	padding: 16px 15px 13px;
 	text-shadow: 0 1px 0 white;
 	word-wrap: break-word;
 }
@@ -19,7 +19,7 @@
 	left: 0;
 	overflow: auto;
 	right: 0;
-	top: 55px;
+	top: 15px;
 }
 
 div.right,
@@ -51,7 +51,7 @@ span.center {
 #app-sidebar div.content-wrapper .body .bodyDetails {
 	border-bottom: 1px dotted;
 	/* height: 46px; */
-	padding: 9px 20px 9px 55px;
+	padding: 9px 20px 9px 15px;
 	position: relative;
 	text-shadow: 0 1px 0 white;
 	border-top: none;

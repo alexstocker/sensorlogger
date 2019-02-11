@@ -392,13 +392,7 @@
 			'.deviceactions > a.action-share, ' +
 			'.deviceactions > a.action-menu', function(e) {
 			var target = $(e.target);
-			/*
-			if(e.target.nodeName != 'TD') {
-				return;
-			}
-			*/
-
-			console.log(target);
+			$(".confirm-container").remove();
 
 			$(target).parent().tooltip('hide');
 
