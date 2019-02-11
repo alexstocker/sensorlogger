@@ -3,7 +3,7 @@
 
     $registerArray = [
         //'_route' => 'sensorlogger.apisensorlogger.registerDevice',
-        'deviceId' => '7e643ee8-0f9f-11e7-93ae-92361f002675',
+        'deviceId' => '0e643ee8-0f9f-11e7-93ae-92361f002675',
         'deviceName' => 'Multi data sensor V2',
         'deviceType' => 'Indoor',
         'deviceGroup' => 'Wohnzimmer',
@@ -29,10 +29,10 @@
 
     $data_json = json_encode($registerArray);
 
-	$username = 'admin';
-	$token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
-    //$username = 'test';
-    //$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
+	//$username = 'admin';
+	//$token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
+    $username = 'test';
+    $token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

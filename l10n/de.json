@@ -1,13 +1,13 @@
 {
     "translations": {
-    "Reset Chart": "zurücksetzen",
-    "Delete Widget": "löschen",
-    "Dashboard": "Startseite",
-    "List": "Logs",
-    "Devices": "Sensoren",
-    "Device Types": "Typen",
-    "Device Groups": "Gruppen",
-    "Data Types": "Datentypen",
+        "Reset Chart": "zurücksetzen",
+        "Delete Widget": "löschen",
+        "Dashboard": "Startseite",
+        "List": "Logs",
+        "Devices": "Sensoren",
+        "Device Types": "Typen",
+        "Device Groups": "Gruppen",
+        "Data Types": "Datentypen",
         "Widget Live - Current Data": "Aktuelle Werte",
         "Widget 24h max Values": "24h Maximum"
     },

@@ -23,8 +23,6 @@ style('sensorlogger', 'jquery-editable');
 //\OC_Util::addScript('sensorlogger','deviceactions');
 vendor_style('select2/select2');
 vendor_script('select2/select2');
-
-
 ?>
 <div id="app">
 	<div id="app-navigation">
@@ -74,7 +72,7 @@ vendor_script('select2/select2');
 					<span class="icon icon-save" ></span>
 				</a>
                 <a id="wipeout-btn" class="icon-wipeout" style="display:none;">
-                    <span class="icon icon-wipeout"></span>
+                    <span class="has-tooltip icon icon-wipeout"></span>
                 </a>
 				<a class="icon-delete handler" style="display:none;">
 					<span class="icon icon-delete"></span>

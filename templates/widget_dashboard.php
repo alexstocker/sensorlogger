@@ -124,8 +124,8 @@
 		<div id="emptycontent" class="">
 			<div class="icon-info"></div>
 				<h2>No dashboard widget configured</h2>
-				<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Configuration#dashboard"
-						   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
+				<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Users#widgets"
+						   title="SensorLogger Wiki Dashboard Widgets" target="_blank">SensorLogger Wiki Dashboard Widgets</a></p>
 		</div>
 	</div>
 <?php } ?>

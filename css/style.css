@@ -61,7 +61,9 @@ span.center {
 .bodyDetails > .unique-id,
 .bodyDetails > .group,
 .bodyDetails > .parent-group,
-.bodyDetails > .type {
+.bodyDetails > .type,
+.bodyDetails > .widget-type,
+.bodyDetails > .device {
 	display: block;
 }
 
