@@ -7,14 +7,14 @@ assignees: ''
 
 ---
 
-**Platform you are using
+**Platform you are using**
 > owncloud | nextcloud
 
 **Sensors/Hardware**
 > Information about the hardware you want to log data from
 
-**Your Goals
+**Your Goals**
 > Tell us what goals you pursue
 
-**Your Question
+**Your Question**
 > Please keep your question as short and clear as possible. Thanx
