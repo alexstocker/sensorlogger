@@ -38,10 +38,10 @@
 	<tfoot></tfoot>
 </table>
 <?php if(is_array($_['logs']) && empty($_['logs'])) { ?>
-	<div id="emptycontent" class="">
-		<div class="icon-info"></div>
-		<h2>No Sensor data</h2>
-		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki"
-				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
-	</div>
+    <div id="emptycontent" class="">
+        <div class="icon-info"></div>
+        <h2>No Sensor data</h2>
+        <p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Users#list"
+                   title="SensorLogger Wiki Log List" target="_blank">SensorLogger Wiki Log List</a></p>
+    </div>
 <?php } ?>
