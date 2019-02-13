@@ -28,8 +28,8 @@ use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
 use OCA\SensorLogger\DeviceTypes;
 use OCA\SensorLogger\iWidget;
-use OCA\SensorLogger\SensorDevices;
-use OCA\SensorLogger\SensorGroups;
+use OCA\SensorLogger\Devices;
+use OCA\SensorLogger\DeviceGroups;
 use OCA\SensorLogger\SensorLogs;
 use OCA\SensorLogger\Widgets;
 use OCP\App\IAppManager;
@@ -351,7 +351,7 @@ class SensorLoggerController extends Controller
      */
     protected function getWidgets()
     {
-        $devices = SensorDevices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
+        $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
         $widgets = [];
 
         $availableWidgets = new Widgets();
@@ -409,7 +409,7 @@ class SensorLoggerController extends Controller
         //$widgetTypes = Widgets::WIDGET_TYPES;
         $widgets = new Widgets();
         $widgetTypes = $widgets->getWidgetTypes();
-        $devices = SensorDevices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
+        $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
         return $this->returnJSON(array('widgetTypes' => $widgetTypes, 'devices' => $devices));
     }
 
@@ -508,9 +508,9 @@ class SensorLoggerController extends Controller
      */
     public function deleteDevice($id)
     {
-        if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
+        if (Devices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
             try {
-                SensorDevices::deleteDevice((int)$id, $this->connection);
+                Devices::deleteDevice((int)$id, $this->connection);
                 DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
                 return $this->returnJSON(array('success' => true));
             } catch (Exception $e) {
@@ -541,15 +541,15 @@ class SensorLoggerController extends Controller
     {
         if ($this->request->getParam('device_id') && $this->userSession->getUser()->getUID()) {
             $id = $this->request->getParam('device_id');
-            $device = SensorDevices::getDevice($this->userSession->getUser()->getUID(), (int)$id, $this->connection);
+            $device = Devices::getDevice($this->userSession->getUser()->getUID(), (int)$id, $this->connection);
 
             if (!$this->deleteLogsByDevice($device)) {
                 return $this->returnJSON(['errors' => 'Could not delete Logs for Device #' . $id]);
             }
 
-            if (SensorDevices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
+            if (Devices::isDeletable($this->userSession->getUser()->getUID(), (int)$id, $this->connection)) {
                 try {
-                    SensorDevices::deleteDevice((int)$id, $this->connection);
+                    Devices::deleteDevice((int)$id, $this->connection);
                     DataTypes::deleteDeviceDataTypesByDeviceId((int)$id, $this->connection);
                     return $this->returnJSON(array('success' => true));
                 } catch (Exception $e) {
@@ -605,8 +605,8 @@ class SensorLoggerController extends Controller
      */
     public function showDeviceDetails($id)
     {
-        $deviceDetails = SensorDevices::getDeviceDetails($this->userSession->getUser()->getUID(), $id, $this->connection);
-        $groups = SensorGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
+        $deviceDetails = Devices::getDeviceDetails($this->userSession->getUser()->getUID(), $id, $this->connection);
+        $groups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
         $types = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
 
         $policy = new ContentSecurityPolicy();
@@ -631,7 +631,7 @@ class SensorLoggerController extends Controller
     {
         $field = $this->request->getParam('name');
         $value = $this->request->getParam('value');
-        SensorDevices::updateDevice($id, $field, $value, $this->connection);
+        Devices::updateDevice($id, $field, $value, $this->connection);
     }
 
     /**
@@ -654,7 +654,7 @@ class SensorLoggerController extends Controller
     public function createDeviceGroup()
     {
         $deviceGroupName = $this->request->getParam('device_group_name');
-        $deviceGroupId = SensorGroups::insertSensorGroup($this->userSession->getUser()->getUID(), $deviceGroupName, $this->connection);
+        $deviceGroupId = DeviceGroups::insertSensorGroup($this->userSession->getUser()->getUID(), $deviceGroupName, $this->connection);
         if (is_int($deviceGroupId)) {
             return $this->returnJSON(['deviceGroupId' => $deviceGroupId]);
         }
@@ -682,7 +682,7 @@ class SensorLoggerController extends Controller
     public function deviceChart($id)
     {
         $templateName = 'part.chart';
-        $device = SensorDevices::getDevice($this->userSession->getUser()->getUID(), $id, $this->connection);
+        $device = Devices::getDevice($this->userSession->getUser()->getUID(), $id, $this->connection);
         $parameters = array('part' => 'chart', 'device' => $device);
         return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
     }
@@ -716,7 +716,7 @@ class SensorLoggerController extends Controller
     {
         if (is_int($id) && (is_int($param) && $param !== 0)) {
 
-            $device = SensorDevices::getDevice(
+            $device = Devices::getDevice(
                 $this->userSession->getUser()->getUID(),
                 $id,
                 $this->connection
@@ -745,7 +745,7 @@ class SensorLoggerController extends Controller
     public function deviceList()
     {
         $templateName = 'part.listDevices';
-        $devices = SensorDevices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
+        $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
         $parameters = array('part' => 'list', 'devices' => $devices);
         return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
     }
@@ -769,7 +769,7 @@ class SensorLoggerController extends Controller
     public function deviceGroupList()
     {
         $templateName = 'part.listDeviceGroups';
-        $deviceGroups = SensorGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
+        $deviceGroups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
         $parameters = array('part' => 'listDeviceGroups', 'deviceGroups' => $deviceGroups);
         return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
     }
@@ -830,7 +830,7 @@ class SensorLoggerController extends Controller
         $limit = $this->request->getParam('limit') ?: 1000;
         $offset = $this->request->getParam('offset') ?: 0;
 
-        $device = SensorDevices::getDevice(
+        $device = Devices::getDevice(
             $this->userSession->getUser()->getUID(),
             $id,
             $this->connection
@@ -858,7 +858,7 @@ class SensorLoggerController extends Controller
 
     protected function getChartDataLastLog($id)
     {
-        $device = SensorDevices::getDevice(
+        $device = Devices::getDevice(
             $this->userSession->getUser()->getUID(),
             $id,
             $this->connection
@@ -890,7 +890,7 @@ class SensorLoggerController extends Controller
      */
     protected function getDeviceData($id)
     {
-        $device = SensorDevices::getDevice($this->userSession->getUser()->getUID(), $id, $this->connection);
+        $device = Devices::getDevice($this->userSession->getUser()->getUID(), $id, $this->connection);
         $logs = SensorLogs::getLogsByUuId($this->userSession->getUser()->getUID(), $device->getUuid(), $this->connection);
         return $logs;
     }

@@ -29,10 +29,10 @@
 
     $data_json = json_encode($registerArray);
 
-	//$username = 'admin';
-	//$token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
-    $username = 'test';
-    $token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
+	$username = 'admin';
+	$token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
+    //$username = 'test';
+    //$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

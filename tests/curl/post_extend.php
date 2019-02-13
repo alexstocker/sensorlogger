@@ -5,7 +5,7 @@
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
 	$co2 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "7e643ee8-0f9f-11e7-93ae-92361f002675",
+	$array = array("deviceId" => "0e643ee8-0f9f-11e7-93ae-92361f002675",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(array(
 						"dataTypeId" => 7,

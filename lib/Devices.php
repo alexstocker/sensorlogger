@@ -7,11 +7,11 @@ use OCP\IDb;
 use OCP\IDBConnection;
 
 /**
- * Class SensorDevices
+ * Class Devices
  *
  * @package OCA\SensorLogger
  */
-class SensorDevices extends Mapper {
+class Devices extends Mapper {
 
 	public function __construct(IDb $db) {
 		parent::__construct($db, 'sensorlogger_devices', '\OCA\SensorLogger\Lib\Device');
@@ -80,7 +80,7 @@ class SensorDevices extends Mapper {
 	 */
 	public static function isDeletable($userId, $id, IDBConnection $db) {
         /** @var Device $device */
-        $device = SensorDevices::getDevice($userId, (int)$id, $db);
+        $device = Devices::getDevice($userId, (int)$id, $db);
         if(SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $db)) {
             return false;
         } else {

@@ -6,7 +6,6 @@
 	<th id="descprition"><span class="th-header">Description</span></th>
 	<th id="type"><span class="th-header">Data Type</span></th>
 	<th id="short"><span class="th-header">Unit</span></th>
-	<th><span class="th-header"></th>
 	</thead>
 	<tbody>
 <?php foreach($_['dataTypes'] as $dataType){ ?>
@@ -17,7 +16,6 @@
 		<td class="td-data"><?php p($dataType['description']); ?></td>
 		<td class="td-data"><?php p($dataType['type']); ?></td>
 		<td class="td-data"><?php p($dataType['short']); ?></td>
-		<td class="td-data">Show devices</td>
 	</tr>
 <?php } ?>
 	</tbody>

@@ -9,7 +9,7 @@ use OC\Share\Share;
 use OCA\SensorLogger\DataType;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Error;
-use OCA\SensorLogger\SensorDevices;
+use OCA\SensorLogger\Devices;
 use OCP\API;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
@@ -248,7 +248,7 @@ class ApiSensorLoggerController extends ApiController
                     $deviceTypeId = $this->insertDeviceType($params['deviceType']);
                     if (is_int($deviceTypeId)) {
                         try {
-                            SensorDevices::updateDevice($lastInsertId, 'type_id', (string)$deviceTypeId, $this->db);
+                            Devices::updateDevice($lastInsertId, 'type_id', (string)$deviceTypeId, $this->db);
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }
@@ -260,7 +260,7 @@ class ApiSensorLoggerController extends ApiController
                     $deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
                     if (is_int($deviceGroupId)) {
                         try {
-                            SensorDevices::updateDevice($lastInsertId, 'group_id', $deviceGroupId, $this->db);
+                            Devices::updateDevice($lastInsertId, 'group_id', $deviceGroupId, $this->db);
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }
@@ -272,7 +272,7 @@ class ApiSensorLoggerController extends ApiController
                     $deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
                     if (is_int($deviceGroupParentId)) {
                         try {
-                            SensorDevices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
+                            Devices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }
@@ -476,7 +476,7 @@ class ApiSensorLoggerController extends ApiController
     protected function checkRegisteredDevice($params)
     {
         if (isset($params['deviceId'])) {
-            $device = SensorDevices::getDeviceByUuid(
+            $device = Devices::getDeviceByUuid(
                 $this->userSession->getUser()->getUID(),
                 $params['deviceId'], $this->db
             );
@@ -558,7 +558,7 @@ class ApiSensorLoggerController extends ApiController
             $this->errors[] = 'deviceId required';
         }
 
-        $device = SensorDevices::getDeviceByUuid($this->userSession->getUser()->getUID(), $params['deviceId'], $this->db);
+        $device = Devices::getDeviceByUuid($this->userSession->getUser()->getUID(), $params['deviceId'], $this->db);
 
         if ($device !== null || $device === false) {
             $this->errors[] = 'not device for given user found';

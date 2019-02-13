@@ -1,6 +1,8 @@
 # SensorLogger
 ### 0.1.0 UNRELEASED
-  * Added deleteDeviceType, deleteDeviceGroup, deleteDeviceType thanks to @issb-gh #6
+  * Renamed SensorDevices to Devices
+  * Renamed SensorGroups to DeviceGroup
+  * Added DeleteDeviceGroup, Added DeleteDeviceType. #73 #6 contributed by @issb-gh
   * Fix bug in registerDevice, added some more checks on api registerDevice params
   * Added Missing Initial Migration #71
   * Change Database Scheme set user_id and uuid unique by migration #71
