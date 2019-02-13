@@ -25,8 +25,8 @@
 	<div id="emptycontent" class="">
 		<div class="icon-info"></div>
 		<h2>No Data types registered</h2>
-		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki"
-				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
+		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Users#data-types"
+				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki DataTypes</a></p>
 	</div>
 <?php } ?>
 </div>
