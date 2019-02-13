@@ -550,26 +550,35 @@ class ApiSensorLoggerController extends ApiController
      * @NoAdminRequired
      * @NoCSRFRequired
      * @CORS
+     * @return Error|JSONResponse
+     * @throws \Exception
      */
     public function getDeviceDataTypes()
     {
         $params = $this->request->getParams();
         if (!isset($params['deviceId'])) {
             $this->errors[] = 'deviceId required';
+            return $this->requestResponse(false, Error::MISSING_PARAM, implode(',', $this->errors));
         }
 
         $device = Devices::getDeviceByUuid($this->userSession->getUser()->getUID(), $params['deviceId'], $this->db);
 
-        if ($device !== null || $device === false) {
-            $this->errors[] = 'not device for given user found';
+        if ($device === null || $device === false) {
+            $this->errors[] = 'No Device Found';
+            return $this->requestResponse(false, Error::NOT_FOUND, implode(',', $this->errors));
         }
 
-        $dataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(), $device->getId(), $this->db);
-        if ($device !== null || $device === false) {
-            $this->errors[] = 'not device for given user found';
+        $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(), $device->getId(), $this->db);
+        if ($deviceDataTypes === null || $deviceDataTypes === false) {
+            $this->errors[] = 'No DataTypes for Device #'.$params['deviceId'].' found';
+            return $this->requestResponse(false, Error::NOT_FOUND, implode(',', $this->errors));
         }
 
-        return $this->returnJSON($dataTypes);
+        return $this->requestResponse(
+            true,
+            Http::STATUS_OK,
+            'DataTypes for Device #'.$params['deviceId'],
+            $deviceDataTypes);
     }
 
     /**
