@@ -1,11 +1,11 @@
 <?php
-	$url = 'http://nextcloud12.loc/index.php/apps/sensorlogger/api/v1/getdevicedatatypes/';
+	$url = 'http://nextcloud-dev.loc/index.php/apps/sensorlogger/api/v1/getdevicedatatypes/';
 
-	$array = array("deviceId" => "87a80561-273d-a1ec-67cf-30a997d92fa6");
+	$array = array("deviceId" => "000e643ee8-0f9f-11e7-93ae-92361f002675");
 	$data_json = json_encode($array);
 
-	$username = 'test';
-	$token = 'kP4Rf-ZytHM-sqFsc-F25Sk-nra4K';
+    $username = 'admin';
+    $token = 'QwJna-jcN3p-JrgwE-4S3Mf-pD4f5';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -13,7 +13,6 @@
 	curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $token);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
 	$response  = curl_exec($ch);
-echo $response;
 	curl_close($ch);

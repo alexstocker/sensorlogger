@@ -1,5 +1,10 @@
 # SensorLogger
 ### 0.1.0nc UNRELEASED
+  * Renamed SensorDevices to Devices
+  * Renamed SensorGroups to DeviceGroup
+  * Added DeleteDeviceGroup, Added DeleteDeviceType. #73 #6 contributed by @issb-gh
+  * Fix bug in registerDevice, added some more checks on api registerDevice params
+  * Added Missing Initial Migration #71
   * Change Database Scheme set user_id and uuid unique by migration #71
   * Modified DeviceId to unique for each user #71
   * Added more data validation on createLog #69
@@ -10,7 +15,18 @@
   * Modified registerDevice set deviceParentGroup optional 
   * Modified Device Sidebar content by adding some Labels
   * Modified Device Sidebar Select boxes by making the ability to create on the fly more visible
-
+  * Added Share/Edit Icons to Devices. Removed Delete Icon because of already existing wipeOut action in Sidebar. #19 #74
+  * Updated Controllers, Templates und JS
+  * Fix index error on registerDevice, api registerDevice params validation
+  * Updated README
+  * Added missing initial Migration replaces database.xml
+  * Updated CHANGELOG by adding some issue mentions #71 #69
+  * Added data valiation on createLog #69. Added Database Migration to add unique index on user_id and uuid
+  * Modified registerDevice and Device Sidebar
+  * Added some more data validation #69 @vitoller
+  * Removed obsolete and undefined properties in LogExtended
+  * Adding some more requirements
+  
 ### 0.0.10nc UNRELEASED
 
 

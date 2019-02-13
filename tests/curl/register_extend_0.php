@@ -64,7 +64,6 @@ function genUniquID() {
 	curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $token);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
 	$response  = curl_exec($ch);
-	echo $response;
 	curl_close($ch);

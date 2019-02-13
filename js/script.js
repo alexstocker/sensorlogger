@@ -21,6 +21,7 @@
 		var deviceGroupList = $('#deviceGroupList');
 		var dataTypeList = $('#dataTypeList');
 		var appContentWrapper = $('#app-content-wrapper');
+		var chartBtns = $('.deviceChart');
 
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
@@ -55,9 +56,16 @@
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceList');
 			$.post(url).success(function (response) {
-				appContentWrapper.empty().append(response);
+				var $response = $(response).clone();
+				$.each($response
+					.find('.deviceChart > span, ' +
+						'.deviceListData > span, ' +
+						'.deviceactions > a.action-share, ' +
+						'.deviceactions > a.action-menu'),function(idx,element){
+					$(element).tooltip({placement:'right'})
+				});
+				appContentWrapper.empty().append($response);
 			});
-
 		});
 
 		deviceTypeList.click(function (e) {
@@ -118,6 +126,48 @@
 				if(response.success) {
 					container.remove();
 					OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget deleted'));
+				}
+			});
+		});
+
+		appContentWrapper.on('click','a.datatype-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDataType/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Data Type deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Data Type NOT deleted'));
+				}
+			});
+		});
+
+		appContentWrapper.on('click','a.devicegroup-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDeviceGroup/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Group deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Group NOT deleted'));
+				}
+			});
+		});
+
+		appContentWrapper.on('click','a.devicetype-delete',function (e) {
+			var id = $(e.target).data('id');
+			var container = $(e.target).closest('tr');
+			var url = OC.generateUrl('/apps/sensorlogger/deleteDeviceType/'+id);
+			$.post(url).success(function (response) {
+				if(response.success) {
+					container.remove();
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Type deleted'));
+				} else {
+					OC.Notification.showTemporary(t('sensorlogger', 'Device Type NOT deleted'));
 				}
 			});
 		});
@@ -236,6 +286,13 @@
 					}
 				});
 
+				var widgetTypeLabel = $('<label/>', {
+					'class':'widget-type'
+				}).text(t('sensorlogger', 'Select Widget Type'));
+				var widgetTypeContentSpan = $('<span/>', {
+					'class':'widget-type-content'
+				}).append(widgetTypeSelect);
+
 				var deviceSelect = $('<a/>',{
 					'id':'device_id',
 					'href': '#',
@@ -253,19 +310,30 @@
 					}
 				});
 
+				var deviceLabel = $('<label/>', {
+					'class':'device'
+				}).text(t('sensorlogger', 'Select Device'));
+				var deviceContentSpan = $('<span/>', {
+					'class':'device-content'
+				}).append(deviceSelect);
+
 				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
 				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 
 				sidebar.find('.bodyDetails').remove();
 
-				var widgetType = bodyDetailsContainer.clone().append(widgetTypeSelect);
-				var device = bodyDetailsContainer.clone().append(deviceSelect);
+				var widgetType = bodyDetailsContainer.clone()
+					.append(widgetTypeLabel)
+					.append(widgetTypeContentSpan);
+				var device = bodyDetailsContainer.clone()
+					.append(deviceLabel)
+					.append(deviceContentSpan);
 
 				sidebarBody.append(widgetType);
 				sidebarBody.append(device);
                 wipeOutBtn.hide();
 
-				sidebarTitle.empty().append('Dashboard widget');
+				sidebarTitle.empty().append('Dashboard Widget');
 
 			})
 		};
@@ -299,7 +367,6 @@
 					sortorder = sortorder.substring(0, sortorder.length - 1)
 				}
 			}).disableSelection();
-			//console.log($(".column"));
 
 			$(".column").each(function(){
 				var type = $(this).children().data('widget-type');
@@ -321,13 +388,15 @@
 			});
 		};
 
-		appContentWrapper.on('click','.deviceEdit',function(e) {
+		appContentWrapper.on('click','.deviceEdit, ' +
+			'.deviceactions > a.action-share, ' +
+			'.deviceactions > a.action-menu', function(e) {
 			var target = $(e.target);
-			if(e.target.nodeName != 'TD') {
-				return;
-			}
+			$(".confirm-container").remove();
 
-            var id = $(this).data('id');
+			$(target).parent().tooltip('hide');
+
+            var id = $(this).closest('tr').data('id');
 
             var sidebarFooter = sidebar.find('.footer');
 
@@ -357,7 +426,7 @@
             var wipeOutUrl = OC.generateUrl('/apps/sensorlogger/wipeOutDevice');
 
             var wipeOutDevice = $('#wipeout-btn').show();
-            wipeOutDevice.attr('title','Wipe out device!');
+            wipeOutDevice.find('span').attr('data-original-title','Wipe out device!').tooltip({placement:'right'});
 
             var wipeOutDeviceConfirm = $('<button/>',{
                 "text": t('sensorlogger', 'Yes')

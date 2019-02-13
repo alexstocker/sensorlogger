@@ -1,15 +1,14 @@
 <?php $widgets = $_['widgets']; ?>
 <?php if($widgets) { ?>
 	<?php foreach ($widgets as $widget) { ?>
-<?php //var_dump($widget) ?>
 		<div id="column-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="column">
 			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"
                  class="widget dashboard-widget dragbox"
                  data-id="<?php p($widget->getDeviceId()); ?>"
                  data-widget-type="<?php p($widget->getType()); ?>">
 				<h2 class="widget-header ui-widget-header">
-                    <?php p($widget->getName()); ?>
-                    <small><?php p($widget->getDisplayName()); ?></small>
+                    <?php p($widget->getName()); ?> -
+                    <small><?php p($l->t('Widget '.$widget->getDisplayName())); ?></small>
 					<?php if($widget->getType() === 'chart') { ?>
 						<a href="#" id="zoom_reset" title="<?php p($l->t('Reset Chart')); ?>" class="reset opIcons">
 							<span class="icon icon-reset-white"></span>
@@ -46,8 +45,7 @@
 									</p>
 							</div>
 						<?php } ?>
-					<?php } ?>
-					<?php if($widget->getType() === 'list') { ?>
+					<?php } else if ($widget->getType() === 'list') { ?>
 						<?php if($widget->getLog()) { ?>
 							<table style="width: 100%;">
 								<?php foreach ($widget->getLog() as $dataLog) { ?>
@@ -91,8 +89,9 @@
 								</p>
 							</div>
 						<?php } ?>
-					<?php } ?>
-					<?php if($widget->getType() === 'chart') { ?>
+					<?php  ?>
+					<?php } else if($widget->getType() === 'chart') { ?>
+
 						<?php //var_dump($widget); ?>
 						<div class="widget widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
 							<?php //var_dump($widget)//$device = $_['device'] ?>
@@ -101,9 +100,8 @@
 						<div>
 
 						</div>
-					<?php } ?>
+                    <?php } else if($widget->getType() === 'realTimeChart') { ?>
 
-                    <?php if($widget->getType() === 'realTimeChart') { ?>
                         <?php //var_dump($widget); ?>
                         <div class="widget widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>">
                             <?php //var_dump($widget)//$device = $_['device'] ?>
@@ -112,6 +110,8 @@
                         <div>
 
                         </div>
+                    <?php } else { ?>
+                        <?php print_unescaped($this->inc('widgets/'.$widget->widgetTemplateName(), array('widget' => $widget))); ?>
                     <?php } ?>
 				</div>
 			</div>
@@ -123,8 +123,8 @@
 		<div id="emptycontent" class="">
 			<div class="icon-info"></div>
 				<h2>No dashboard widget configured</h2>
-				<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Configuration#dashboard"
-						   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki</a></p>
+				<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Users#widgets"
+						   title="SensorLogger Wiki Dashboard Widgets" target="_blank">SensorLogger Wiki Dashboard Widgets</a></p>
 		</div>
 	</div>
 <?php } ?>
