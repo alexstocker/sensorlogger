@@ -1,5 +1,5 @@
 # SensorLogger
-### 0.1.0nc UNRELEASED
+### 0.1.0nc RELEASED
   * Renamed SensorDevices to Devices
   * Renamed SensorGroups to DeviceGroup
   * Added DeleteDeviceGroup, Added DeleteDeviceType. #73 #6 contributed by @issb-gh

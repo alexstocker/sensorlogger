@@ -5,7 +5,7 @@
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
 	$co2 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "000e643ee8-0f9f-11e7-93ae-92361f002675",
+	$array = array("deviceId" => "0e643ee8-0f9f-11e7-93ae-92361f002675",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(array(
 						"dataTypeId" => 1,
@@ -23,8 +23,8 @@
 
 	$data_json = json_encode($array);
 
-	$username = 'admin';
-	$token = 'QwJna-jcN3p-JrgwE-4S3Mf-pD4f5';
+$username = 'admin';
+$token = 'XSEZa-cQqwz-jDzcX-9Tq5m-mQjc8';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
