@@ -1,5 +1,5 @@
 # SensorLogger
-### 0.1.0 UNRELEASED
+### 0.1.0 RELEASED
   * Fixed GetDeviceDataTypes API call
   * Renamed SensorDevices to Devices
   * Renamed SensorGroups to DeviceGroup
@@ -27,8 +27,7 @@
   * Removed obsolete and undefined properties in LogExtended
   * Adding some more requirements
   
-### 0.0.10 UNRELEASED
-
+### 0.0.10 REVOKED
 
 ### 0.0.9 RELEASED
   * Fixed min-version property due semver

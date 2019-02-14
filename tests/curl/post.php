@@ -11,7 +11,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'RWGFF-KMZUC-NFOQD-CMXCC';
+	$token = 'ZOVOP-DABCK-ZGQMI-UDXKA';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

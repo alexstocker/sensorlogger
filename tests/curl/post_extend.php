@@ -5,18 +5,18 @@
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
 	$co2 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "0e643ee8-0f9f-11e7-93ae-92361f002675",
+	$array = array("deviceId" => "6e643ee8-0f9f-11e7-93ae-92361f002675",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(array(
-						"dataTypeId" => 7,
+						"dataTypeId" => 1,
 						"value" => $temperature
 						),
 						array(
-							"dataTypeId" => 8,
+							"dataTypeId" => 2,
 							"value" => $humidity
 						),
 						array(
-							"dataTypeId" => 9,
+							"dataTypeId" => 3,
 							"value" => $co2,
 						)
 					));
@@ -24,7 +24,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
+	$token = 'ZOVOP-DABCK-ZGQMI-UDXKA';
 	//$username = 'test';
 	//$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 

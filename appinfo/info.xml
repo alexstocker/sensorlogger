@@ -15,9 +15,9 @@
     </types>
 
     <documentation>
-        <user>https://github.com/alexstocker/sensorlogger/wiki/</user>
-        <admin>https://github.com/alexstocker/sensorlogger/wiki</admin>
-        <developer>https://github.com/alexstocker/sensorlogger/wiki</developer>
+        <user>https://github.com/alexstocker/sensorlogger/wiki/Users</user>
+        <admin>https://github.com/alexstocker/sensorlogger/wiki/Administrators</admin>
+        <developer>https://github.com/alexstocker/sensorlogger/Developers</developer>
     </documentation>
 
     <repository type="git">https://github.com/alexstocker/sensorlogger.git</repository>
