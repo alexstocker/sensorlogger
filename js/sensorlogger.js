@@ -37,7 +37,7 @@
     SensorLogger.Buttons = function() {
         SensorLogger.buttons.each(function(index,element){
             /* assign to the element what to do on click */
-            let $element = $(element);
+            var $element = $(element);
             $element.on('click',function () {
                 if($element.hasClass('.someclass'))  {
                     /* what should be done */

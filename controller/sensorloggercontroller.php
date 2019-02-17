@@ -383,18 +383,22 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     function showList()
     {
-        $templateName = 'part.list';  // will use templates/main.php
         $logs = SensorLogs::getLogs($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'list', 'logs' => $logs);
+        $templateName = 'main';
+        $parameters = array(
+            'part' => 'list',
+            'logs' => $logs,
+            'navItems' => $this->getNavigationItems());
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
 
-        $response = new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
         $response->setContentSecurityPolicy($policy);
 
         return $response;
@@ -662,15 +666,28 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function showDashboard()
     {
-        $templateName = 'part.dashboard';
         $log = SensorLogs::getLastLog($this->userSession->getUser()->getUID(), $this->connection);
         $widgets = $this->getWidgets();
-        $parameters = array('part' => 'dashboard', 'log' => $log, 'widgets' => $widgets);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+        $parameters = [
+            'part' => 'dashboard',
+            'log' => $log,
+            'widgets' => $widgets,
+            'navItems' => $this->getNavigationItems()
+        ];
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**
@@ -711,6 +728,7 @@ class SensorLoggerController extends Controller
      * @NoAdminRequired
      * @param integer $id
      * @param integer $param
+     * @return DataResponse
      */
     public function maxLastLog($id, $param)
     {
@@ -740,14 +758,26 @@ class SensorLoggerController extends Controller
     }
 
     /**
+     * @NoCSRFRequired
      * @NoAdminRequired
      */
     public function deviceList()
     {
-        $templateName = 'part.listDevices';
         $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'list', 'devices' => $devices);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+        $parameters = [
+            'part' => 'listDevices',
+            'devices' => $devices,
+            'navItems' => $this->getNavigationItems()
+        ];
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**

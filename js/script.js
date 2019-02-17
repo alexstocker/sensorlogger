@@ -35,6 +35,7 @@
 			saveBtn.hide();
 		};
 
+/*
 		showList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/showList');
@@ -42,7 +43,8 @@
 				appContentWrapper.empty().append(response);
 			});
 		});
-
+*/
+/*
 		showDashboard.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/showDashboard');
@@ -51,7 +53,8 @@
 				dashboardWidgets(e);
 			});
 		});
-
+*/
+/*
 		deviceList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceList');
@@ -67,7 +70,7 @@
 				appContentWrapper.empty().append($response);
 			});
 		});
-
+*/
 /*
 		deviceTypeList.click(function (e) {
 			_onClickAction(e);
@@ -229,7 +232,7 @@
 							$(this).editable('option', 'pk', data.id);
 							$(sidebar).hide();
 							OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
-							showDashboard.trigger('click');
+							//showDashboard.trigger('click');
 
 						} else if(data && data.errors){
 							OC.Notification.showTemporary(t('sensorlogger', data.errors));

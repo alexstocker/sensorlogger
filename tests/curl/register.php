@@ -30,7 +30,7 @@
     $data_json = json_encode($registerArray);
 
 	$username = 'admin';
-	$token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
+	$token = 'DVRHU-HFYHA-UXJOW-ELFMC';
     //$username = 'test';
     //$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
