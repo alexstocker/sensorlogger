@@ -97,6 +97,7 @@
 			});
 		});
 */
+
 		appContentWrapper.on('click','.deviceChart',function (e) {
 			sidebar.hide();
 			saveBtn.hide();

@@ -3,7 +3,23 @@
     SensorLogger = {
         $sidebar : $('#app-sidebar'),
         $buttons : $('.app-sensorlogger > .button')
-    }
+    };
+
+    SensorLogger.sidebar.widget = {
+        elements: ['widget_type','device'],
+        actions : ['save','close'],
+        tabs: []
+    };
+
+    SensorLogger.sidebar.device = {
+        elements: ['name','unique_id','device_group','device_type'],
+        actions: ['wipeout', 'close'],
+        tabs: ['details','share','notifications']
+    };
+    SensorLogger.sidebar.device.shareTab = {
+        elements: ['share_with'],
+        actions: ['share','revoke']
+    };
 
 
     SensorLogger.SideBar = function(settings)  {
@@ -20,7 +36,7 @@
     
     SensorLogger.Buttons = function() {
         SensorLogger.buttons.each(function(index,element){
-            /* assign to te elmenet what to do on click */
+            /* assign to the element what to do on click */
             let $element = $(element);
             $element.on('click',function () {
                 if($element.hasClass('.someclass'))  {
