@@ -752,39 +752,74 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+	 * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function deviceTypeList()
     {
-        $templateName = 'part.listDeviceTypes';
         $deviceTypes = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'listDeviceTypes', 'deviceTypes' => $deviceTypes);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+		$parameters = [
+			'part' => 'listDeviceTypes',
+			'deviceTypes' => $deviceTypes,
+			'navItems' => $this->getNavigationItems()
+		];
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters);
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
     }
 
     /**
-     * @NoAdminRequired
-     * @return TemplateResponse
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return TemplateResponse
      */
     public function deviceGroupList()
     {
-        $templateName = 'part.listDeviceGroups';
         $deviceGroups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'listDeviceGroups', 'deviceGroups' => $deviceGroups);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+		$parameters = [
+			'part' => 'listDeviceGroups',
+			'deviceGroups' => $deviceGroups,
+			'navItems' => $this->getNavigationItems()
+		];
+
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters);
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
     }
 
-    /**
-     * @NoAdminRequired
-     * @return TemplateResponse
-     */
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return TemplateResponse
+	 */
     public function dataTypeList()
     {
-        $templateName = 'part.listDataTypes';
-        $dataTypes = DataTypes::getDataTypes($this->userSession->getUser()->getUID(), $this->connection);
+    	$dataTypes = DataTypes::getDataTypes($this->userSession->getUser()->getUID(), $this->connection);
+		$templateName = 'main';
+		$parameters = [
+			'part' => 'listDataTypes',
+			'dataTypes' => $dataTypes,
+			'navItems' => $this->getNavigationItems()
+		];
 
-        $parameters = array('part' => 'listDataTypes', 'dataTypes' => $dataTypes);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain("'self'");
+
+		$response = new TemplateResponse($this->appName, $templateName, $parameters);
+		$response->setContentSecurityPolicy($policy);
+
+		return $response;
     }
 
     /**

@@ -62,12 +62,13 @@
 						'.deviceListData > span, ' +
 						'.deviceactions > a.action-share, ' +
 						'.deviceactions > a.action-menu'),function(idx,element){
-					$(element).tooltip({placement:'right'})
+					$(element).tooltip({placement:'right'});
 				});
 				appContentWrapper.empty().append($response);
 			});
 		});
 
+/*
 		deviceTypeList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceTypeList');
@@ -76,7 +77,8 @@
 			});
 
 		});
-
+*/
+/*
 		deviceGroupList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceGroupList');
@@ -85,16 +87,16 @@
 			});
 
 		});
-
+*/
+/*
 		dataTypeList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/dataTypeList');
 			$.post(url).success(function (response) {
 				appContentWrapper.empty().append(response);
 			});
-
 		});
-
+*/
 		appContentWrapper.on('click','.deviceChart',function (e) {
 			sidebar.hide();
 			saveBtn.hide();

@@ -1,4 +1,9 @@
 # SensorLogger
+### 0.1.1 UNRELEASED
+  * Changed DeviceTypeList request type to GET
+  * Changed DeviceGroupList request type to GET
+  * Changed DataTypeList request type to GET
+  
 ### 0.1.0 RELEASED
   * Fixed GetDeviceDataTypes API call
   * Renamed SensorDevices to Devices
