@@ -1,5 +1,8 @@
 # SensorLogger
 ### 0.1.1 UNRELEASED
+  * Changed Dashboard request type to GET
+  * Changed LogList request type to GET
+  * Changed DeviceList request type to GET
   * Changed DeviceTypeList request type to GET
   * Changed DeviceGroupList request type to GET
   * Changed DataTypeList request type to GET
