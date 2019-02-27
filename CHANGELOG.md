@@ -1,4 +1,8 @@
 # SensorLogger
+
+### 0.1.0.1 RELEASED
+  * Fixed problem in deployment pipeline causing broken owncloud marketplace archive. #76 Thanx to @ibaranov-cp
+
 ### 0.1.0 RELEASED
   * Fixed GetDeviceDataTypes API call
   * Renamed SensorDevices to Devices
