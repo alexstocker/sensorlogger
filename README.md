@@ -12,7 +12,7 @@
 - owncloud [0.1-devel](https://github.com/alexstocker/sensorlogger/tree/0.1-devel)
 - nextcloud [0.1-nc-devel](https://github.com/alexstocker/sensorlogger/tree/0.1-nc-devel)
 
-### Upcomming Versions
+### Upcoming Versions
 - owncloud 0.1.1
 - nextcloud 0.1.1
 
