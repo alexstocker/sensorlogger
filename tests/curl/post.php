@@ -1,5 +1,5 @@
 <?php
-	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/createlog/';
+	$url = 'http://owncloud-dev.loc/index.php/apps/sensorlogger/api/v1/createlog/';
 
 	$humidity = mt_rand (1.00*10, 99.99*10) / 10;
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
@@ -11,7 +11,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'ZOVOP-DABCK-ZGQMI-UDXKA';
+	$token = 'MFSFF-VREYH-PHSLT-DTMFN';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -19,13 +19,8 @@
 	curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $token);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
 	$response  = curl_exec($ch);
-	if($response === false){
-		echo('Error: ' . curl_error($ch));
-	}
-	else{
-        	echo('Operation successful');
-	}
 	curl_close($ch);
+	return $response;
 ?>

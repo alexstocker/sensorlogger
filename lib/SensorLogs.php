@@ -9,72 +9,76 @@ use OCP\IDBConnection;
  *
  * @package OCA\SensorLogger
  */
-class SensorLogs {
+class SensorLogs
+{
 
-	/**
-	 * @param $userId
-	 * @param IDBConnection $db
-	 * @return Log
-	 */
-	public static function getLastLog($userId, IDBConnection $db) {
-		$query = $db->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_logs')
-			->where('user_id = "'.$userId.'"')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(1);
-		$result = $query->execute();
+    /**
+     * @param $userId
+     * @param IDBConnection $db
+     * @return Log
+     */
+    public static function getLastLog($userId, IDBConnection $db)
+    {
+        $query = $db->getQueryBuilder();
+        $query->select('*')
+            ->from('sensorlogger_logs')
+            ->where('user_id = "'.$userId.'"')
+            ->orderBy('id', 'DESC');
+        $query->setMaxResults(1);
+        $result = $query->execute();
 
-		$data = $result->fetch();
+        $data = $result->fetch();
 
-		if($data){
-			$data = Log::fromRow($data);
-		}
-		return $data;
-	}
+        if ($data) {
+            $data = Log::fromRow($data);
+        }
+        return $data;
+    }
 
-	public static function getLastLogByUuid($userId, $deviceId, IDBConnection $db) {
-		$query = $db->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_logs')
-			->where('user_id = "'.$userId.'"')
-			->andWhere('device_uuid = "'.$deviceId.'"')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(1);
-		$result = $query->execute();
+    public static function getLastLogByUuid($userId, $deviceId, IDBConnection $db)
+    {
+        $query = $db->getQueryBuilder();
+        $query->select('*')
+            ->from('sensorlogger_logs')
+            ->where('user_id = "'.$userId.'"')
+            ->andWhere('device_uuid = "'.$deviceId.'"')
+            ->orderBy('id', 'DESC');
+        $query->setMaxResults(1);
+        $result = $query->execute();
 
-		$data = $result->fetch();
+        $data = $result->fetch();
 
-		if($data){
-			$data = Log::fromRow($data);
-		}
-		return $data;
-	}
+        if ($data) {
+            $data = Log::fromRow($data);
+        }
+        return $data;
+    }
 
-	/**
-	 * @param $userId
-	 * @param IDBConnection $db
-	 * @return array
-	 */
-	public static function getLogs($userId, IDBConnection $db) {
-		$query = $db->getQueryBuilder();
-		$query->select('*')
-			->from('sensorlogger_logs')
-			->where('user_id = "'.$userId.'"')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults(100);
-		$result = $query->execute();
-		$data = $result->fetchAll();
+    /**
+     * @param $userId
+     * @param IDBConnection $db
+     * @return array
+     */
+    public static function getLogs($userId, IDBConnection $db)
+    {
+        $query = $db->getQueryBuilder();
+        $query->select('*')
+            ->from('sensorlogger_logs')
+            ->where('user_id = "'.$userId.'"')
+            ->orderBy('id', 'DESC');
+        $query->setMaxResults(100);
+        $result = $query->execute();
+        $data = $result->fetchAll();
 
-		$logs = [];
-		if($data) {
-			foreach($data as $log) {
-				$logModel = Log::fromRow($log);
-				$logs[] = $logModel;
-			}
-		}
-		return $logs;
-	}
+        $logs = [];
+        if ($data) {
+            foreach ($data as $log) {
+                $logModel = Log::fromRow($log);
+                $logs[] = $logModel;
+            }
+        }
+        return $logs;
+    }
 
     /**
      * @param $userId
@@ -84,52 +88,55 @@ class SensorLogs {
      * @param int $offset
      * @return array
      */
-	public static function getLogsByUuId($userId, $uuId, IDBConnection $db, $limit = 1000, $offset = 0) {
-		$query = $db->getQueryBuilder();
-		$query->select(array('id','device_uuid','humidity','temperature','data','created_at'))
-			->from('sensorlogger_logs')
-			->where('device_uuid = "'.$uuId.'"')
-			->andWhere('user_id = "'.$userId.'"')
-			->orderBy('id', 'DESC');
-		$query->setMaxResults($limit);
-		$query->setFirstResult($offset);
-		$result = $query->execute();
+    public static function getLogsByUuId($userId, $uuId, IDBConnection $db, $limit = 1000, $offset = 0)
+    {
+        $query = $db->getQueryBuilder();
+        $query->select(array('id','device_uuid','humidity','temperature','data','created_at'))
+            ->from('sensorlogger_logs')
+            ->where('device_uuid = "'.$uuId.'"')
+            ->andWhere('user_id = "'.$userId.'"')
+            ->orderBy('id', 'DESC');
+        $query->setMaxResults($limit);
+        $query->setFirstResult($offset);
+        $result = $query->execute();
 
-		$data = $result->fetchAll();
+        $data = $result->fetchAll();
 
-		$logs = [];
-		if($data) {
-			foreach($data as $log) {
-				$logModel = Log::fromRow($log);
-				$logs[] = $logModel;
-			}
-		}
-		return $logs;
-	}
+        $logs = [];
+        if ($data) {
+            foreach ($data as $log) {
+                $logModel = Log::fromRow($log);
+                $logs[] = $logModel;
+            }
+        }
+        return $logs;
+    }
 
-	/**
-	 * @param $id
-	 * @param IDBConnection $db
-	 * @return \Doctrine\DBAL\Driver\Statement|int
-	 */
-	public static function deleteLogById($id, IDBConnection $db) {
-		$query = $db->getQueryBuilder();
-		$query->delete('sensorlogger_logs')
-			//->where('id = :log_id')
-			//->setParameter([':log_id' => ''])
-			->where('id = :log_id')
-			->setParameters([
-				':log_id' => $id
-			]);
-		return $query->execute();
-	}
+    /**
+     * @param $id
+     * @param IDBConnection $db
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
+    public static function deleteLogById($id, IDBConnection $db)
+    {
+        $query = $db->getQueryBuilder();
+        $query->delete('sensorlogger_logs')
+            //->where('id = :log_id')
+            //->setParameter([':log_id' => ''])
+            ->where('id = :log_id')
+            ->setParameters([
+                ':log_id' => $id
+            ]);
+        return $query->execute();
+    }
 
     /**
      * @param $uuid
      * @param IDBConnection $db
      * @return \Doctrine\DBAL\Driver\Statement|int
      */
-    public static function deleteLogsByUuid($uuid, IDBConnection $db) {
+    public static function deleteLogsByUuid($uuid, IDBConnection $db)
+    {
         $query = $db->getQueryBuilder();
         $query->delete('sensorlogger_logs')
             ->where('device_uuid = :uuid')

@@ -31,15 +31,15 @@ require_once __DIR__ . '/autoload.php';
 
 
 \OC::$server->getNavigationManager()->add(function () {
-	$urlGenerator = \OC::$server->getURLGenerator();
-	$l = \OC::$server->getL10N('sensorlogger');
-	return [
-		'id' => 'sensorlogger',
-		'order' => 10,
-		'href' => $urlGenerator->linkToRoute('sensorlogger.sensorlogger.index'),
-		'icon' => $urlGenerator->imagePath('sensorlogger', 'app.svg'),
-		'name' => $l->t('SensorLogger'),
-	];
+    $urlGenerator = \OC::$server->getURLGenerator();
+    $l = \OC::$server->getL10N('sensorlogger');
+    return [
+        'id' => 'sensorlogger',
+        'order' => 10,
+        'href' => $urlGenerator->linkToRoute('sensorlogger.sensorlogger.index'),
+        'icon' => $urlGenerator->imagePath('sensorlogger', 'app.svg'),
+        'name' => $l->t('SensorLogger'),
+    ];
 });
 
 
