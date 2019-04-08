@@ -15,7 +15,7 @@
 		var saveBtn = $('#save-btn');
 		var wipeOutBtn = $('#wipeout-btn');
 		var showList = $('#showList');
-		var showDashboard = $('#showDashboard');
+		var showDashboard = $('#showDashboard a');
 		var deviceList = $('#deviceList');
 		var deviceTypeList = $('#deviceTypeList');
 		var deviceGroupList = $('#deviceGroupList');
@@ -232,8 +232,7 @@
 							$(this).editable('option', 'pk', data.id);
 							$(sidebar).hide();
 							OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
-							//showDashboard.trigger('click');
-
+							showDashboard[0].click();
 						} else if(data && data.errors){
 							OC.Notification.showTemporary(t('sensorlogger', data.errors));
 						}
