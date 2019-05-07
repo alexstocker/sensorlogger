@@ -1,6 +1,8 @@
 # SensorLogger
 ### 0.1.1nc UNRELEASED
-  * Raised supported nc version to 16 and supported PHP Version to 7.3. Thanx to @e-alfred and @c99ipnerd
+  * Raised supported nc version to 16 #81 and supported PHP Version to 7.3 #80. Thanx to @e-alfred and @c99ipnerd
+  * Changed Widget Header background color to primary
+  * Set Sidebar container absolute  
 
 ### 0.1.0nc RELEASED
   * Renamed SensorDevices to Devices
