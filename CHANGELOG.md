@@ -1,4 +1,7 @@
 # SensorLogger
+### 0.1.1nc UNRELEASED
+  * Raised supported nc version to 16 and supported PHP Version to 7.3. Thanx to @e-alfred and @c99ipnerd
+
 ### 0.1.0nc RELEASED
   * Renamed SensorDevices to Devices
   * Renamed SensorGroups to DeviceGroup
