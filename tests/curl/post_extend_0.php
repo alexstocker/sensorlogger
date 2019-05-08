@@ -8,7 +8,7 @@
 	$nh3 = mt_rand (1*10, 500*10) / 10;
 	$ch4 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "7f626f0d-81f6-361a-7d76-72aab9c6409b",
+	$array = array("deviceId" => "6e643ee8-0f9f-11e7-93ae-92361f002671",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(
 						array(
@@ -40,7 +40,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'bNPab-Sc8ZG-nkWJr-FyFBL-dawg3';
+	$token = 'XSEZa-cQqwz-jDzcX-9Tq5m-mQjc8';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

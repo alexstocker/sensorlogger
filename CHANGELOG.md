@@ -1,10 +1,14 @@
 # SensorLogger
 ### 0.1.1nc UNRELEASED
+  * Updated Screenshots
+  * Minor css style changes
   * Raised supported nc version to 16 #81 and supported PHP Version to 7.3 #80. Thanx to @e-alfred and @c99ipnerd
   * Changed Widget Header background color to primary
   * Set Sidebar container absolute  
 
 ### 0.1.0nc RELEASED
+  * Modified DataScheme and registerDevice #71. Added more data validation stuff #69
+  * Modified registerDevice by making some params optional and modified Device Sidbar select boxes
   * Renamed SensorDevices to Devices
   * Renamed SensorGroups to DeviceGroup
   * Added DeleteDeviceGroup, Added DeleteDeviceType. #73 #6 contributed by @issb-gh
@@ -31,9 +35,6 @@
   * Added some more data validation #69 @vitoller
   * Removed obsolete and undefined properties in LogExtended
   * Adding some more requirements
-  
-### 0.0.10nc UNRELEASED
-
 
 ### 0.0.9nc RELEASED
   * Updated to support Nextcloud 15 #64

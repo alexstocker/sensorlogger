@@ -1,3 +1,13 @@
 bin/*
+vendor/*
+builds/*
 package.json
+
+js/plugins/*
+!js/plugins/jqplot.cursor.min
+!js/plugins/jqplot.dateAxisRenderer.min
+!js/plugins/jqplot.canvasTextRenderer.min
+!js/plugins/jqplot.canvasAxisTickRenderer.min
+!js/plugins/jqplot.highlighter.min
+!js/plugins/jqplot.enhancedLegendRenderer.min
 
