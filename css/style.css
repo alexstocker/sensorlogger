@@ -36,6 +36,7 @@ span.center {
 
 #app-sidebar {
 	z-index: 1000 !important;
+	position: absolute;
 }
 
 #app-sidebar div.content-wrapper div.footer {
@@ -237,6 +238,7 @@ h2.widget-header a span.icon {
 	border-bottom:1px solid #eee;
 	cursor:move;
 	padding:5px;
+	background-color: var(--color-primary);
 }
 
 .dragbox-content{
