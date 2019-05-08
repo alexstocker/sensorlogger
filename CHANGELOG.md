@@ -1,5 +1,6 @@
 # SensorLogger
-### 0.1.1nc UNRELEASED
+### 0.1.1nc RELEASED
+  * jqPlot cleanup
   * Updated Screenshots
   * Minor css style changes
   * Raised supported nc version to 16 #81 and supported PHP Version to 7.3 #80. Thanx to @e-alfred and @c99ipnerd
