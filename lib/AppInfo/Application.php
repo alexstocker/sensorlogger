@@ -19,7 +19,7 @@
  *
  */
 
-namespace OCA\SensorLogger;
+namespace OCA\SensorLogger\AppInfo;
 
 use OCA\SensorLogger\Controller\ApiSensorLoggerController;
 use OCA\SensorLogger\Controller\SensorLoggerController;
@@ -54,6 +54,7 @@ class Application extends App
             );
         });
 
+        /*
         $container->registerService('apisensorloggercontroller', function (IContainer $c) use ($server) {
             return new ApiSensorLoggerController(
                 $c->query('AppName'),
@@ -67,6 +68,7 @@ class Application extends App
                 $server->getUserSession()
             );
         });
+        */
 
 
         /**

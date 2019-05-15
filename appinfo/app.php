@@ -28,6 +28,7 @@ use OCP\Util;
 require_once __DIR__ . '/autoload.php';
 
 \OCP\App::registerAdmin('sensorlogger', 'admin');
+\OC::$server->getJobList()->add('OCA\SensorLogger\Cron\WidgetAggregateDataJob');
 
 
 \OC::$server->getNavigationManager()->add(function () {
