@@ -151,8 +151,9 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'dashboard',
             'widgets' => $widgets,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('showDashboard')
         );
+
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -163,7 +164,7 @@ class SensorLoggerController extends Controller
         return $response;
     }
 
-    protected function getNavigationItems()
+    protected function getNavigationItems($active = null)
     {
         App::getNavigationManager()->add(
             [
@@ -269,11 +270,16 @@ class SensorLoggerController extends Controller
             }
         }
 
-
         $navItems = App::getNavigationManager()->getAll();
         usort($navItems, function ($item1, $item2) {
             return $item1['order'] - $item2['order'];
         });
+
+		foreach ($navItems as $navKey => $navItem) {
+			if($navItem['id'] === $active) {
+				$navItems[$navKey]['active'] = true;
+			}
+        }
 
         return $navItems;
     }
@@ -289,7 +295,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharingin'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -311,7 +317,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharingout'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -333,7 +339,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharinglinks'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -394,7 +400,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'list',
             'logs' => $logs,
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('showList'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -682,7 +688,7 @@ class SensorLoggerController extends Controller
             'part' => 'dashboard',
             'log' => $log,
             'widgets' => $widgets,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('showDashboard')
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -770,7 +776,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDevices',
             'devices' => $devices,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('deviceList'),
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -794,7 +800,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDeviceTypes',
             'deviceTypes' => $deviceTypes,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('deviceTypeList')
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -818,7 +824,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDeviceGroups',
             'deviceGroups' => $deviceGroups,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('deviceGroupList')
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -842,7 +848,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDataTypes',
             'dataTypes' => $dataTypes,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('dataTypeList')
         ];
 
         $policy = new ContentSecurityPolicy();
