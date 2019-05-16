@@ -33,11 +33,20 @@
 
     	widgets: [],
 
+        DetailTabs: function(type,sidebar) {
+    	    console.log(type);
+    	    console.log(sidebar);
+    	    if(type === 'deviceList') {
+
+            }
+        },
+
         DeviceList: function () {
 
         },
-        Navigation: function (element) {
-
+        Navigation: function (appNavigation) {
+            this.active = appNavigation.find('a.active');
+            this.activeType = this.active.closest('li').prop('id');
         },
         DeviceActions: function () {
 
@@ -429,7 +438,7 @@
 		navigation: null,
 		devices: null,
 		widgets: null,
-        sidebar : $('#app-sidebar'),
+        sidebar : null,
         saveBtn : $('#save-btn'),
         showList : $('#showList'),
         showDashboard : $('#showDashboard'),
@@ -441,14 +450,33 @@
 
 		initialize: function() {
 			this.navigation = new OCA.SensorLogger.Navigation($('#app-navigation'));
-			this.widgets = new OCA.SensorLogger.Widgets($('#widget-wrapper'));
+			//this.widgets = new OCA.SensorLogger.Widgets($('#widget-wrapper'));
+            //console.log(this.navigation.activeType)
 
+            if ( this.navigation.activeType === 'deviceList' ) {
+                return $('a.action-share').each(function(idx,shareDeviceElement){
+                    $(shareDeviceElement).on('click',function(event) {
+                        console.log($(event.target));
+                    });
+                })
+            }
+
+			//OCA.SensorLogger.App.sidebar = $('#app-sidebar');
+
+            //var urlParams = OC.Util.History.parseUrlQuery();
+            //this.View = this.navigation.activeType;
+
+
+            //var deviceActions = new OCA.SensorLogger.DeviceActions();
+			//console.log(deviceActions);
+            //console.log(this.navigation.activeType);
+            //this.sidebarTabs = new OCA.SensorLogger.DetailTabs(this.navigation.activeType,OCA.SensorLogger.App.sidebar);
+
+
+            /*
 			if ($('#deviceNotFound').val() === "1") {
 				OC.Notification.showTemporary(t('sensorlogger', 'Device could not be found'));
 			}
-
-			var urlParams = OC.Util.History.parseUrlQuery();
-			var deviceActions = new OCA.SensorLogger.DeviceActions();
 
 			this.devices = OCA.SensorLogger.Devices;
 
@@ -464,6 +492,7 @@
 					}
 				}
 			);
+			*/
 		}
 
 	}
