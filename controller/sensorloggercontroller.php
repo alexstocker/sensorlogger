@@ -164,6 +164,10 @@ class SensorLoggerController extends Controller
         return $response;
     }
 
+	/**
+	 * @param null $active
+	 * @return mixed
+	 */
     protected function getNavigationItems($active = null)
     {
         App::getNavigationManager()->add(
@@ -380,6 +384,15 @@ class SensorLoggerController extends Controller
                     $this->connection,
                     $this->config
                 );
+
+                if(!isset($customWidget->getOptions()['position'])) {
+                	$x = (count($widgets) - 1 ) + 1;
+					$y = (count($widgets) - 1 ) + 1;
+					$w = 4;
+					$h = 4;
+					$customWidget->setOptions('position',['x' => $x, 'y' => $y]);
+					$customWidget->setOptions('size',['w' => $w, 'h' => $h]);
+				}
 
                 //$buildWidget = Widgets::build($this->userSession->getUser()->getUID(), $device, $widgetConfig, $this->connection, $this->config);
                 $widgets[] = $customWidget;
@@ -870,6 +883,26 @@ class SensorLoggerController extends Controller
         return $this->config->getUserValue($userId, $this->appName, $key);
     }
 
+	/**
+	 * @NoAdminRequired
+	 * @return DataResponse
+	 * @throws \OCP\PreConditionNotMetException
+	 */
+    public function updateWidgetSettings() {
+		$array = $this->request->getParams();
+		foreach($array as $key => $widget) {
+			if(isset($widget['key']) && !is_array($widget['key']) && !empty($widget['key'])) {
+				$json = json_encode($widget);
+				try {
+					$this->updateUserValue($widget['key'], $this->userSession->getUser()->getUID(), $json);
+				} catch (Exception $e) {
+					return $this->returnJSON(array('errors' => 'Could not Update widget settings!'));
+				}
+			}
+		}
+		return $this->returnJSON(['msg' => 'Updated Widget Position and size']);
+	}
+
     /**
      * @param $key
      * @param $userId
@@ -880,6 +913,19 @@ class SensorLoggerController extends Controller
     {
         $this->config->setUserValue($userId, $this->appName, $key, $value);
     }
+
+	/**
+	 * @param $key
+	 * @param $userId
+	 * @param $value
+	 * @throws \OCP\PreConditionNotMetException
+	 */
+    protected function updateUserValue($key, $userId, $value) {
+    	if($this->config->getUserValue($userId, $this->appName, $key)
+			&& $this->config->deleteUserValue($userId, $this->appName, $key)) {
+    		$this->setUserValue($key, $userId, $value);
+		}
+	}
 
     /**
      * @param $array
