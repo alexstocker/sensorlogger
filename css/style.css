@@ -158,16 +158,17 @@ table th, table td {
 
 
 .dashboard-widget .section {
+	/*
 	text-align: right;
 	padding-top: 10px;
 	margin-bottom: 10px;
 	background-color: #eee;
+	*/
 }
 
 .dashboard-widget .section.list,
 .dashboard-widget .section.chart {
-	max-height: 300px;
-	overflow-x: auto;
+
 }
 
 .dashboard-widget .section h3 {
@@ -223,11 +224,11 @@ h2.widget-header a span.icon {
 }
 
 .column .dragbox {
-	margin:5px 2px 17px;
+	/* margin:5px 2px 17px; */
 	position: relative;
-	border:1px solid #eee;
+	/*border:1px solid #eee;
 	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
+	-webkit-border-radius:5px;*/
 }
 .column .dragbox h2{
 	margin:0;

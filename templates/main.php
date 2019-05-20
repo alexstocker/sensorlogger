@@ -1,7 +1,8 @@
 <?php
 script('sensorlogger', array(
-	'script',
-    'app',
+	'gridstack.min',
+	'gridstack.jQueryUI.min',
+	'app',
 	'jquery.poshytip.min',
 	'jquery-editable-poshytip.min',
 	'jquery.jqplot.min',
@@ -14,6 +15,7 @@ script('sensorlogger', array(
 ));
 style('sensorlogger', 'style');
 style('sensorlogger', 'jquery-editable');
+style('sensorlogger', 'gridstack.min');
 
 # TODO [GH11] Rebuild JS
 # Rewrite JS and split it into smaller files

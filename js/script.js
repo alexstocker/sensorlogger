@@ -124,17 +124,7 @@
 			});
 		});
 
-		appContentWrapper.on('click','a.widget-delete',function (e) {
-			var id = $(e.target).data('id');
-			var container = $(e.target).closest('div.column');
-			var url = OC.generateUrl('/apps/sensorlogger/deleteWidget/'+id);
-			$.post(url).success(function (response) {
-				if(response.success) {
-					container.remove();
-					OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget deleted'));
-				}
-			});
-		});
+
 
 		appContentWrapper.on('click','a.datatype-delete',function (e) {
 			var id = $(e.target).data('id');
@@ -352,6 +342,7 @@
 				}
 			);
 
+			/*
 			$('.column').sortable({
 				connectWith: '.column',
 				handle: 'h2',
@@ -372,6 +363,8 @@
 					sortorder = sortorder.substring(0, sortorder.length - 1)
 				}
 			}).disableSelection();
+			*/
+
 
 			$(".column").each(function(){
 				var type = $(this).children().data('widget-type');

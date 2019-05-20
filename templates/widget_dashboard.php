@@ -1,7 +1,15 @@
 <?php $widgets = $_['widgets']; ?>
 <?php if($widgets) { ?>
-	<?php foreach ($widgets as $widget) { ?>
-		<div id="column-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>" class="column">
+	<?php foreach ($widgets as $widgetIdx => $widget) { ?>
+		<?php //var_dump($widget->getOptions()); ?>
+		<div id="column-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"
+			 class="column"
+			 data-gs-id="widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"
+			 data-gs-width="<?php p($widget->getOptions('size')['w']) ?>"
+			 data-gs-height="<?php p($widget->getOptions('size')['h']) ?>"
+			 data-gs-x="<?php p($widget->getOptions('position')['x']) ?>"
+			 data-gs-y="<?php p($widget->getOptions('position')['y']) ?>"
+			 data-gs-auto-position>
 			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"
                  class="widget dashboard-widget dragbox"
                  data-id="<?php p($widget->getDeviceId()); ?>"

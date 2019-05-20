@@ -33,12 +33,238 @@
 
     	widgets: [],
 
+        sidebar: {
+    	    infoContainer: {
+    	        title: null,
+                body: {}
+            },
+            tabsContainer: {
+    	        tabHeaders: {},
+                tabs: {}
+            },
+            footerContainer: {
+    	        actions: {
+    	            save: null,
+                    close: null,
+                    delete: null
+                }
+            }
+        },
+
+        Sidebar: null,
+
         DetailTabs: function(type,sidebar) {
     	    console.log(type);
     	    console.log(sidebar);
     	    if(type === 'deviceList') {
 
             }
+        },
+
+        loadChart: function(plotArea,id,url,data) {
+            $.getJSON(url,data,"json").success(function(data) {
+                var dataLines = [];
+                var serieslabel = [];
+                var line1 = [];
+                var line2 = [];
+
+                if(data.dataTypes && data.logs) {
+                    if (data.logs[0] && data.logs[0].data.length > 0) {
+                        var lines = data.logs[0].data;
+                        $.each(data.dataTypes, function (index, item) {
+                            serieslabel.push(
+                                {
+                                    'series':item
+                                }
+                            )
+                        });
+
+                        for (var i = 0; i < lines.length; i++) {
+                            dataLines[i] = [];
+                            $.each(data.logs, function (index, item) {
+                                var xaxis = item.createdAt;
+                                var ydata = item.data[i];
+
+                                if (ydata && ydata.value) {
+                                    ydata = ydata.value;
+                                    dataLines[i].push([xaxis, parseFloat(ydata)])
+                                }
+                            });
+
+                            var clonedPlotArea = plotArea.clone();
+                            if(plotArea.parent().hasClass('widget')) {
+                                clonedPlotArea.attr('id', 'chart-' + i).appendTo(plotArea.parent());
+                            } else {
+                                clonedPlotArea.attr('id', 'chart-' + i).appendTo('#app-content-wrapper');
+                            }
+
+                        }
+                    }
+                }
+
+                options = {
+                    grid: {
+                        backgroundColor: "white",
+                    },
+                    axesDefaults: {
+                        labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+                    },
+                    seriesDefaults: {
+                        lineWidth: 2,
+                        style: 'square',
+                        rendererOptions: { smooth: false }
+                    },
+                    highlighter: {
+                        show: true,
+                        sizeAdjust: 7.5
+                    }
+                };
+
+                if(dataLines.length > 0) {
+                    for (var dataLine in dataLines) {
+                        $.jqplot("chart-"+dataLine,[dataLines[dataLine]], $.extend(options, {
+                                //title: 'GRAPT TITLE',
+                                axes: {
+                                    xaxis:{
+                                        //label:"x axis",
+                                        renderer:$.jqplot.DateAxisRenderer,
+                                        tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+                                        tickOptions:{formatString:'%H:%M:%S', angle: -45}
+                                    },
+                                    yaxis:{
+                                        tickOptions:{
+                                            formatString:'%.2f'
+                                        }
+                                    }
+                                },
+                                series: [{
+                                    label: data.dataTypes[dataLine].description+' ['+data.dataTypes[dataLine].short+']'
+                                }],
+                                legend:{
+                                    renderer: $.jqplot.EnhancedLegendRenderer,
+                                    show: true,
+                                    showLabels: true,
+                                    location: 's',
+                                    placement: 'inside',
+                                    fontSize: '11px',
+                                    fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+                                    rendererOptions: {
+                                        seriesToggle: 'normal'
+                                    }
+                                }
+                            })
+                        )
+                    }
+                }
+
+                drawableLines = [];
+                if(dataLines.length < 1) {
+                    $.each(data, function (index, item) {
+                        line1.push([item.createdAt, parseFloat(item.temperature)])
+                        line2.push([item.createdAt, parseFloat(item.humidity)])
+                    });
+                    drawableLines.push(line1)
+                    drawableLines.push(line2)
+                } else {
+                    drawableLines = dataLines;
+                }
+
+
+                try {
+                    OCA.SensorLogger.plotChart(plotArea,drawableLines,serieslabel);
+
+                    $("a#toggle_realtime").on('click',function(){
+                        plotArea = $(this).attr('data-plotarea');
+                        doUpdate();
+                    });
+                } catch (err) {
+                    $(plotArea).html(err);
+                }
+            });
+        },
+
+        plotChart: function(plotArea,drawableLines,labels) {
+            var series = [];
+            if(labels.length > 0) {
+                //console.log(labels);
+                for (var label in labels) {
+                    var serie = {
+                        yaxis: 'yaxis',
+                        tickInterval: 1,
+                        showMarker:true,
+                        label: labels[label].series.description+' ['+labels[label].series.type+']'
+                    };
+                    series.push(serie);
+                }
+
+
+            } else {
+                series = [
+                    {
+                        yaxis: 'yaxis',
+                        tickInterval: 0.5,
+                        showMarker:false,
+                        label: 'Temperature [°C]',
+                        color: 'red'
+                        //markerOptions: {size: 2, style: "x"}
+                    },{
+                        yaxis: 'y2axis',
+                        showMarker:false,
+                        tickInterval: 1,
+                        label: 'Humidity [%]',
+                        color: 'blue'
+                        //markerOptions: {style:"circle"}
+                    },
+                    {yaxis: 'yaxis'},
+                    {yaxis: 'y2axis'},
+                ]
+            }
+            var plot = $.jqplot($(plotArea).attr('id'),drawableLines,{
+
+                height: 240,
+                axes: {
+                    xaxis:{
+                        //label:"x axis",
+                        renderer:$.jqplot.DateAxisRenderer,
+                        tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+                        tickOptions:{formatString:'%H:%M:%S', angle: -10}
+                    },
+                    yaxis:{
+                        tickOptions:{
+                            formatString:'%.2f'
+                        }
+                    }
+                },
+                highlighter: {
+                    show: true,
+                    sizeAdjust: 7.5
+                },
+                series: series,
+                cursor: {
+                    show: true,
+                    tooltipLocation:'sw',
+                    zoom:true
+                },
+                seriesDefaults: {
+                    rendererOptions: { smooth: false }
+                },
+                axesDefaults: {
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+                },
+                legend:{
+                    renderer: $.jqplot.EnhancedLegendRenderer,
+                    show: true,
+                    showLabels: true,
+                    //location: 's	',
+                    placement: 'inside',
+                    fontSize: '11px',
+                    fontFamily: ["Lucida Grande","Lucida Sans Unicode","Arial","Verdana","sans-serif"],
+                    rendererOptions: {
+                        seriesToggle: 'normal'
+                    }
+                }
+            });
+            $('a#zoom_reset').click(function() { plot.resetZoom() });
         },
 
         DeviceList: function () {
@@ -53,16 +279,105 @@
         },
 		Widgets: function(container) {
         	var widgets = container.find('.dashboard-widget');
-        	$.map(widgets, function (widget,idx) {
-                new OCA.SensorLogger.Widget($(widget));
+        	//console.log(widgets);
+        	$.each(widgets, function (idx,widget) {
+                return OCA.SensorLogger.Widget($(widget));
 			});
 		},
+        GridElements: function(widgetContainer) {
+
+    	    //console.log(widgetContainer.find('div[data-widget-type]').data('widget-type'));
+            //$('.grid-stack').gridstack({});
+            widgetContainer.gridstack({
+                itemClass: 'column',
+                //  disableResize: true
+            }).on('change', function(event, items) {
+                var updateUrl = OC.generateUrl('/apps/sensorlogger/updateWidgetSettings');
+
+                var data = {};
+                for (var idx in items) {
+                    var widgetType = $(items[idx].el).children().data('widget-type');
+                    var deviceId = $(items[idx].el).children().data('id')
+
+                    //console.log($(items[idx].el).children().data('widget-type'));
+
+                    data[idx] = {
+                        key:items[idx].id,
+                        x: items[idx].x,
+                        y: items[idx].y,
+                        h: items[idx].height,
+                        w: items[idx].width,
+                        widget_type:widgetType,
+                        device_id:deviceId
+                    }
+                }
+
+                console.log(data);
+
+                $.post(updateUrl,data).success(function (response) {
+                    if(response.success) {
+                        //container.remove();
+                        //OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget deleted'));
+                    }
+                });
+
+                /*
+                OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn.on('click',function() {
+
+                    $('.editable').editable('submit', {
+                        url: saveWidget,
+                        ajaxOptions: {
+                            dataType: 'json' //assuming json response
+                        },
+                        success: function(data, config) {
+                            if(data && data.id) {
+                                $(this).editable('option', 'pk', data.id);
+                                OCA.SensorLogger.Sidebar.hide();
+                                OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
+                                //showDashboard[0].click();
+                                location.reload(true);
+                            } else if(data && data.errors){
+                                OC.Notification.showTemporary(t('sensorlogger', data.errors));
+                            }
+                        },
+                        error: function(errors) {
+                            if(errors && errors.responseText) {
+                            } else {
+                                $.each(errors, function(k, v) { msg += k+": "+v+"<br>"; });
+                            }
+                            OC.Notification.showTemporary(t('sensorlogger', 'Some Error occured'));
+                        }
+                    });
+                });
+                */
+            });
+
+            OCA.SensorLogger.Widgets(widgetContainer);
+
+            widgetContainer.on('click','a.widget-delete',function (e) {
+                var id = $(e.target).data('id');
+                var container = $(e.target).closest('div.column');
+                var url = OC.generateUrl('/apps/sensorlogger/deleteWidget/'+id);
+                $.post(url).success(function (response) {
+                    if(response.success) {
+                        container.remove();
+                        OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget deleted'));
+                    }
+                });
+            });
+
+            $('#controls').on('click','.actions',function(e) {
+                OCA.SensorLogger.SidebarWidgets($('#app-sidebar'));
+                //sidebar.show();
+            });
+        },
 		Widget: function (widgetContainer) {
 
+            var widgetType = widgetContainer.data('widget-type');
+            var dataId = widgetContainer.data('id');
             var startBtn = $('<button/>', {
                 'text': 'Start'
             });
-
             var timeOutDd = $('<select/>', {
                 'class':'realtimechart-timeout',
             });
@@ -82,8 +397,13 @@
             });
 
             //console.log(widgetContainer.data('widget-type'));
-    		if(widgetContainer.data('widget-type') === 'chart') {
-
+    		if(widgetType === 'chart') {
+    		    console.log('It is a chart '+dataId);
+                var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + dataId);
+                var chartContainer = widgetContainer.find('.chartcontainer');
+                var data = {"limit":1280};
+                plotArea = chartContainer;
+                OCA.SensorLogger.loadChart(chartContainer,dataId,dataUrl,data);
 			} else if (widgetContainer.data('widget-type') === 'list') {
 
 			} else if (widgetContainer.data('widget-type') === 'last') {
@@ -430,6 +750,138 @@
 			} else {
 
             }
+        },
+
+        SidebarWidgets: function (sidebar) {
+            OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn = $('a#save-btn');
+
+    	    OCA.SensorLogger.Sidebar = sidebar.show();
+            var saveWidget = OC.generateUrl('/apps/sensorlogger/saveWidget');
+
+            OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn.on('click',function() {
+                $('.editable').editable('submit', {
+                    url: saveWidget,
+                    ajaxOptions: {
+                        dataType: 'json' //assuming json response
+                    },
+                    success: function(data, config) {
+                        if(data && data.id) {
+                            $(this).editable('option', 'pk', data.id);
+                            OCA.SensorLogger.Sidebar.hide();
+                            OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
+                            //showDashboard[0].click();
+                            location.reload(true);
+                        } else if(data && data.errors){
+                            OC.Notification.showTemporary(t('sensorlogger', data.errors));
+                        }
+                    },
+                    error: function(errors) {
+                        if(errors && errors.responseText) {
+                        } else {
+                            $.each(errors, function(k, v) { msg += k+": "+v+"<br>"; });
+                        }
+                        OC.Notification.showTemporary(t('sensorlogger', 'Some Error occured'));
+                    }
+                });
+            });
+
+            var widgetDataUrl = OC.generateUrl('/apps/sensorlogger/widgetTypeList');
+            $.get(widgetDataUrl).success(function (response) {
+                //console.log(OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn);
+                OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn.show();
+                $.fn.editable.defaults.mode = 'inline';
+                var sidebarBody = OCA.SensorLogger.Sidebar.find('.body');
+                var sidebarTitle = OCA.SensorLogger.Sidebar.find('.title');
+
+                var widgetTypeSource = [];
+                for (var key in response.widgetTypes) {
+                    widgetTypeSource.push({
+                            value : key,
+                            text: response.widgetTypes[key].displayName,
+                            id : key
+                        }
+                    );
+                }
+
+                var deviceSource = [];
+                for (var key in response.devices) {
+                    deviceSource.push({
+                            value : response.devices[key].id,
+                            text: response.devices[key].name,
+                            id : response.devices[key].id,
+                        }
+                    );
+                }
+
+                var widgetTypeSelect = $('<a/>',{
+                    'id':'widget_type',
+                    'href': '#',
+                    'data-type': 'select2',
+                    'data-url': '',
+                    'data-title': 'Select widget type'
+                }).editable({
+                    source: widgetTypeSource,
+                    select2: {
+                        placeholder: 'Select an option',
+                        minimumResultsForSearch: Infinity,
+                        multiple: false,
+                        data: widgetTypeSource,
+                        dropdownAutoWidth: true
+                    }
+                });
+
+                var widgetTypeLabel = $('<label/>', {
+                    'class':'widget-type'
+                }).text(t('sensorlogger', 'Select Widget Type'));
+                var widgetTypeContentSpan = $('<span/>', {
+                    'class':'widget-type-content'
+                }).append(widgetTypeSelect);
+
+                var deviceSelect = $('<a/>',{
+                    'id':'device_id',
+                    'href': '#',
+                    'data-type': 'select2',
+                    'data-url': '',
+                    'data-title': 'Select device'
+                }).editable({
+                    source: deviceSource,
+                    select2: {
+                        placeholder: 'Select an option',
+                        minimumResultsForSearch: Infinity,
+                        multiple: false,
+                        data: deviceSource,
+                        dropdownAutoWidth: true
+                    }
+                });
+
+                var deviceLabel = $('<label/>', {
+                    'class':'device'
+                }).text(t('sensorlogger', 'Select Device'));
+                var deviceContentSpan = $('<span/>', {
+                    'class':'device-content'
+                }).append(deviceSelect);
+
+                var bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
+                bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
+                OCA.SensorLogger.Sidebar.find('.bodyDetails').remove();
+
+                var widgetType = bodyDetailsContainer.clone()
+                    .append(widgetTypeLabel)
+                    .append(widgetTypeContentSpan);
+                var device = bodyDetailsContainer.clone()
+                    .append(deviceLabel)
+                    .append(deviceContentSpan);
+
+                sidebarBody.append(widgetType);
+                sidebarBody.append(device);
+                //wipeOutBtn.hide();
+
+                //console.log(OCA.SensorLogger.Sidebar);
+
+                sidebarTitle.empty().append('Dashboard Widget');
+
+            })
         }
 	};
 
@@ -442,6 +894,7 @@
         saveBtn : $('#save-btn'),
         showList : $('#showList'),
         showDashboard : $('#showDashboard'),
+        dashboardGrid: null,
         deviceList : $('#deviceList'),
         deviceTypeList : $('#deviceTypeList'),
         deviceGroupList : $('#deviceGroupList'),
@@ -456,9 +909,57 @@
             if ( this.navigation.activeType === 'deviceList' ) {
                 return $('a.action-share').each(function(idx,shareDeviceElement){
                     $(shareDeviceElement).on('click',function(event) {
-                        console.log($(event.target));
+                        //console.log($(event.target));
                     });
                 })
+            }
+            //console.log(this.navigation.activeType);
+            if ( this.navigation.activeType === 'showDashboard' ) {
+                this.dashboardGrid = new OCA.SensorLogger.GridElements($('#widget-wrapper'));
+                //return true;
+                //var options = {};
+
+
+                //console.log($('div.widget'));
+
+                //var widgets = $('div.widget');
+
+                var serializedData = [
+                    {x: 0, y: 0, width: 2, height: 2},
+                    {x: 3, y: 1, width: 1, height: 2},
+                    {x: 4, y: 1, width: 1, height: 1},
+                    {x: 2, y: 3, width: 3, height: 1},
+                    {x: 1, y: 4, width: 1, height: 1},
+                    {x: 1, y: 3, width: 1, height: 1},
+                    {x: 2, y: 4, width: 1, height: 1},
+                    {x: 2, y: 5, width: 1, height: 1}
+                ];
+
+                //widgets.each(function(idx,widget){
+                   //serializedData[idx] = ({idx: idx, x: idx+1, width: 4, height: 2});
+                //});
+                /*
+                console.log(serializedData);
+
+
+                var grid = $('.grid-stack').data('gridstack');
+
+                var loadGrid = function () {
+                    grid.removeAll();
+
+
+
+
+                    var items = GridStackUI.Utils.sort(serializedData);
+                    _.each(items, function (node) {
+                        grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
+                            node.x, node.y, node.width, node.height);
+                    }, this);
+                    return false;
+                }.bind(this);
+
+                loadGrid();
+                */
             }
 
 			//OCA.SensorLogger.App.sidebar = $('#app-sidebar');
@@ -498,9 +999,12 @@
 	}
 
 })();
-
+$(function () {
+    //$('.grid-stack').gridstack({});
+});
 $(document).ready(function() {
 	_.defer(function() {
-		OCA.SensorLogger.App.initialize();
+        OCA.SensorLogger.App.initialize();
 	});
 });
+
