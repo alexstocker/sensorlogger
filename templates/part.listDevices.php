@@ -14,13 +14,15 @@
         <td class="td-data">
             <a href="#"
                class="deviceChart device-datalist"
+			   data-action="Chart"
                data-id="<?php p($device->getId()); ?>" title="">
                 <span class="has-tooltip icon icon-datachart"
                       data-original-title="<?php p($l->t('Show Device Chart for %s',[$device->getUuid()])); ?>"></span>
             </a>
             <a href="#"
                class="deviceListData device-datalist"
-               data-id="<?php p($device->getId()); ?>" title="">
+			   data-action="DataList"
+			   data-id="<?php p($device->getId()); ?>" title="">
                 <span class="has-tooltip icon icon-datalist"
                       data-original-title="<?php p($l->t('Show Device Logs for %s',[$device->getUuid()])); ?>"></span>
             </a>
@@ -34,7 +36,7 @@
                     <span class="hidden-visually">Share</span></a>
                 <a class="has-tooltip action action-menu permanent"
                    href="#"
-                   data-action="menu"
+                   data-action="Menu"
                    data-original-title="<?php p($l->t('Edit Device %s',[$device->getUuid()])); ?>"
                    title="">
                     <span class="icon icon-more"></span>

@@ -37,7 +37,7 @@ vendor_script('select2/select2');
 			<?php print_unescaped($this->inc('part.'.$_['part'])); ?>
 		</div>
 	</div>
-	<div id="app-sidebar" data-type="" data-id="" ng-class="" style="display: none;">
+	<div id="app-sidebar" style="display: none;">
 		<div class="content-wrapper">
 			<div class="sidebarInfoContainer">
 				<div class="sidbarInfoView">
@@ -74,10 +74,10 @@ vendor_script('select2/select2');
                 <a id="wipeout-btn" class="icon-wipeout" style="display:none;">
                     <span class="has-tooltip icon icon-wipeout"></span>
                 </a>
-				<a class="icon-delete handler" style="display:none;">
+				<a id="delete-btn" class="icon-delete handler" style="display:none;">
 					<span class="icon icon-delete"></span>
 				</a>
-				<a class="icon-close handler close-all">
+				<a id="close-btn" class="icon-close handler close-all">
 					<span class="icon icon-close"></span>
 				</a>
 			</div>

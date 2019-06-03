@@ -51,6 +51,10 @@
             }
         },
 
+        actionButtons: {
+    	    addWidget: null,
+        },
+
         Sidebar: null,
 
         DetailTabs: function(type,sidebar) {
@@ -267,19 +271,54 @@
             $('a#zoom_reset').click(function() { plot.resetZoom() });
         },
 
-        DeviceList: function () {
-
+        DeviceList: function (tbody) {
+            /*
+    	    tbody.on('click','.deviceEdit, ' +
+                '.deviceactions > a.action-share, ' +
+                '.deviceactions > a.action-menu', function(e) {
+                console.log(e.target);
+            });
+            */
+            var deviceRows = tbody.find('tr');
+            $.each(deviceRows,function(idx,row){
+               return OCA.SensorLogger.DeviceActions($(row).data('id'),row);
+            });
         },
         Navigation: function (appNavigation) {
             this.active = appNavigation.find('a.active');
             this.activeType = this.active.closest('li').prop('id');
+            if(this.activeType === 'showDashboard') {
+                $('li.actions a.add-widget').on('click',function(e) {
+                    OCA.SensorLogger.SidebarBuilder('widgets');
+                    OCA.SensorLogger.Sidebar.show();
+                });
+            }
         },
-        DeviceActions: function () {
+        DeviceActions: function (deviceId,element) {
+            $(element).on('click','a', function(e) {
+                //console.log($(e.target).closest('a').data('action'));
+                var action = $(e.target).closest('a').data('action');
 
+                if(action === 'Menu' || action === 'Share') {
+                    OCA.SensorLogger.SidebarBuilder('deviceDetails');
+                    OCA.SensorLogger.Sidebar.show();
+                }
+                if(action === 'Chart') {
+
+                }
+                if(action === 'DataList') {
+
+                }
+
+                var wipeOutUrl = OC.generateUrl('/apps/sensorlogger/wipeOutDevice');
+                var deviceChartUrl = OC.generateUrl('/apps/sensorlogger/deviceChart/'+deviceId);
+                var deviceDataUrl = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+deviceId);
+
+            });
+    	    //console.log('DeviceActions:'+deviceId);
         },
 		Widgets: function(container) {
         	var widgets = container.find('.dashboard-widget');
-        	//console.log(widgets);
         	$.each(widgets, function (idx,widget) {
                 return OCA.SensorLogger.Widget($(widget));
 			});
@@ -312,7 +351,7 @@
                     }
                 }
 
-                console.log(data);
+                //console.log(data);
 
                 $.post(updateUrl,data).success(function (response) {
                     if(response.success) {
@@ -365,11 +404,6 @@
                     }
                 });
             });
-
-            $('#controls').on('click','.actions',function(e) {
-                OCA.SensorLogger.SidebarWidgets($('#app-sidebar'));
-                //sidebar.show();
-            });
         },
 		Widget: function (widgetContainer) {
 
@@ -398,7 +432,7 @@
 
             //console.log(widgetContainer.data('widget-type'));
     		if(widgetType === 'chart') {
-    		    console.log('It is a chart '+dataId);
+    		    //console.log('It is a chart '+dataId);
                 var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + dataId);
                 var chartContainer = widgetContainer.find('.chartcontainer');
                 var data = {"limit":1280};
@@ -752,10 +786,10 @@
             }
         },
 
-        SidebarWidgets: function (sidebar) {
+        SidebarWidgets: function () {
             OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn = $('a#save-btn');
 
-    	    OCA.SensorLogger.Sidebar = sidebar.show();
+    	    //OCA.SensorLogger.Sidebar = sidebar.show();
             var saveWidget = OC.generateUrl('/apps/sensorlogger/saveWidget');
 
             OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn.on('click',function() {
@@ -882,6 +916,23 @@
                 sidebarTitle.empty().append('Dashboard Widget');
 
             })
+        },
+
+        SidebarBuilder: function (type) {
+    	    if(type === 'widgets') {
+    	        OCA.SensorLogger.SidebarWidgets(OCA.SensorLogger.Sidebar)
+            }
+    	    console.log('SidebarBuilder: '+type);
+            if ( type === 'deviceList' ) {
+                return $('a.action-share').each(function(idx,shareDeviceElement){
+                    $(shareDeviceElement).on('click',function(event) {
+                        console.log($(event.target));
+                    });
+                })
+            }
+            OCA.SensorLogger.Sidebar.find('a#close-btn').on('click', function() {
+                OCA.SensorLogger.Sidebar.hide();
+            })
         }
 	};
 
@@ -895,71 +946,25 @@
         showList : $('#showList'),
         showDashboard : $('#showDashboard'),
         dashboardGrid: null,
-        deviceList : $('#deviceList'),
+        deviceList : null,
         deviceTypeList : $('#deviceTypeList'),
         deviceGroupList : $('#deviceGroupList'),
         dataTypeList : $('#dataTypeList'),
-        appContentWrapper : $('#app-content-wrapper'),
+        appContentWrapper : null,
 
 		initialize: function() {
+            this.sidebar = $('#app-sidebar');
+            this.appContentWrapper = $('#app-content-wrapper');
+            OCA.SensorLogger.Sidebar = this.sidebar;
 			this.navigation = new OCA.SensorLogger.Navigation($('#app-navigation'));
-			//this.widgets = new OCA.SensorLogger.Widgets($('#widget-wrapper'));
-            //console.log(this.navigation.activeType)
 
-            if ( this.navigation.activeType === 'deviceList' ) {
-                return $('a.action-share').each(function(idx,shareDeviceElement){
-                    $(shareDeviceElement).on('click',function(event) {
-                        //console.log($(event.target));
-                    });
-                })
-            }
-            //console.log(this.navigation.activeType);
             if ( this.navigation.activeType === 'showDashboard' ) {
                 this.dashboardGrid = new OCA.SensorLogger.GridElements($('#widget-wrapper'));
-                //return true;
-                //var options = {};
+            }
 
-
-                //console.log($('div.widget'));
-
-                //var widgets = $('div.widget');
-
-                var serializedData = [
-                    {x: 0, y: 0, width: 2, height: 2},
-                    {x: 3, y: 1, width: 1, height: 2},
-                    {x: 4, y: 1, width: 1, height: 1},
-                    {x: 2, y: 3, width: 3, height: 1},
-                    {x: 1, y: 4, width: 1, height: 1},
-                    {x: 1, y: 3, width: 1, height: 1},
-                    {x: 2, y: 4, width: 1, height: 1},
-                    {x: 2, y: 5, width: 1, height: 1}
-                ];
-
-                //widgets.each(function(idx,widget){
-                   //serializedData[idx] = ({idx: idx, x: idx+1, width: 4, height: 2});
-                //});
-                /*
-                console.log(serializedData);
-
-
-                var grid = $('.grid-stack').data('gridstack');
-
-                var loadGrid = function () {
-                    grid.removeAll();
-
-
-
-
-                    var items = GridStackUI.Utils.sort(serializedData);
-                    _.each(items, function (node) {
-                        grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
-                            node.x, node.y, node.width, node.height);
-                    }, this);
-                    return false;
-                }.bind(this);
-
-                loadGrid();
-                */
+            if ( this.navigation.activeType === 'deviceList' ) {
+                var tbody = this.appContentWrapper.find($('tbody#deviceList'));
+                this.deviceList = new OCA.SensorLogger.DeviceList(tbody);
             }
 
 			//OCA.SensorLogger.App.sidebar = $('#app-sidebar');

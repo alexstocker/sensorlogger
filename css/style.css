@@ -130,11 +130,26 @@ span.center {
 }
 
 #app-content-wrapper .widget-wrapper {
-	margin-top: 44px;
+	/* margin-top: 44px; */
+	margin: 5px;
 }
 
-#app-content-wrapper #controls .actions {
+#app-navigation li#showDashboard a.menuItem {
+	display: inline;
+}
 
+#app-navigation > ul#navigation-list ul#dashboard-actionbar {
+	display: inline;
+}
+
+#app-navigation > ul#navigation-list ul#dashboard-actionbar li a {
+	margin: 0;
+	padding: 0;
+	height: 44px;
+}
+
+#app-navigation #dashboard-actionbar {
+	float: right;
 }
 
 table th, table td {
@@ -181,11 +196,9 @@ h2.widget-header a span.icon {
 	vertical-align: sub !important;
 }
 
-
-
 .column{
-	margin-right:.5%;
-	margin-left: .5%;
+	/*margin-right:.5%;
+	margin-left: .5%;*/
 	background:#fff;
 	float:left;
 }
@@ -224,11 +237,10 @@ h2.widget-header a span.icon {
 }
 
 .column .dragbox {
-	/* margin:5px 2px 17px; */
+	margin: 2px;
 	position: relative;
-	/*border:1px solid #eee;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;*/
+	height: -webkit-fill-available;
+	background-color: lightgrey;
 }
 .column .dragbox h2{
 	margin:0;
