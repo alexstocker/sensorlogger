@@ -11,7 +11,7 @@
 			 data-gs-y="<?php p($widget->getOptions('position')['y']) ?>"
 			 data-gs-auto-position>
 			<div id="dashboard-widget-<?php p($widget->getType()); ?>-<?php p($widget->getDeviceId()); ?>"
-                 class="widget dashboard-widget dragbox"
+                 class="widget dashboard-widget widget-type-<?php p($widget->getType()); ?> dragbox"
                  data-id="<?php p($widget->getDeviceId()); ?>"
                  data-widget-type="<?php p($widget->getType()); ?>">
 				<h2 class="widget-header ui-widget-header">

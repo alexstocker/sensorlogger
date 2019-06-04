@@ -31,7 +31,9 @@
 
     OCA.SensorLogger = {
 
-    	widgets: [],
+    	widgets: {
+    	    gridstack: null,
+        },
 
         sidebar: {
     	    infoContainer: {
@@ -327,10 +329,12 @@
 
     	    //console.log(widgetContainer.find('div[data-widget-type]').data('widget-type'));
             //$('.grid-stack').gridstack({});
-            widgetContainer.gridstack({
+            OCA.SensorLogger.widgets.gridstack = widgetContainer.gridstack({
                 itemClass: 'column',
                 //  disableResize: true
-            }).on('change', function(event, items) {
+            });
+
+            OCA.SensorLogger.widgets.gridstack.on('change', function(event, items) {
                 var updateUrl = OC.generateUrl('/apps/sensorlogger/updateWidgetSettings');
 
                 var data = {};
@@ -788,35 +792,36 @@
 
         SidebarWidgets: function () {
             OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn = $('a#save-btn');
-
-    	    //OCA.SensorLogger.Sidebar = sidebar.show();
             var saveWidget = OC.generateUrl('/apps/sensorlogger/saveWidget');
-
             OCA.SensorLogger.sidebar.footerContainer.actions.saveBtn.on('click',function() {
+                var loadingWidget = $('<div/>',{
+                	'class':'column'
+				}).append('<div class="widget dashboard-widget dragbox"><div class="widget icon-loading"></div></div>');
+				OCA.SensorLogger.widgets.gridstack.data('gridstack').addWidget(loadingWidget,0,0,4,4,true);
                 $('.editable').editable('submit', {
-                    url: saveWidget,
-                    ajaxOptions: {
-                        dataType: 'json' //assuming json response
-                    },
-                    success: function(data, config) {
-                        if(data && data.id) {
-                            $(this).editable('option', 'pk', data.id);
-                            OCA.SensorLogger.Sidebar.hide();
-                            OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
-                            //showDashboard[0].click();
-                            location.reload(true);
-                        } else if(data && data.errors){
-                            OC.Notification.showTemporary(t('sensorlogger', data.errors));
+                        url: saveWidget,
+                        ajaxOptions: {
+                            dataType: 'json' //assuming json response
+                        },
+                        data: {x: loadingWidget.data('gsX'),y:loadingWidget.data('gsY')},
+                        success: function(data, config) {
+                            if(data && data.id) {
+                                $(this).editable('option', 'pk', data.id);
+                                OCA.SensorLogger.Sidebar.hide();
+                                OC.Notification.showTemporary(t('sensorlogger', 'Dashboard widget saved'));
+                                location.reload(true);
+                            } else if(data && data.errors){
+                                OC.Notification.showTemporary(t('sensorlogger', data.errors));
+                            }
+                        },
+                        error: function(errors) {
+                            if(errors && errors.responseText) {
+                            } else {
+                                $.each(errors, function(k, v) { msg += k+": "+v+"<br>"; });
+                            }
+                            OC.Notification.showTemporary(t('sensorlogger', 'Some Error occured'));
                         }
-                    },
-                    error: function(errors) {
-                        if(errors && errors.responseText) {
-                        } else {
-                            $.each(errors, function(k, v) { msg += k+": "+v+"<br>"; });
-                        }
-                        OC.Notification.showTemporary(t('sensorlogger', 'Some Error occured'));
-                    }
-                });
+                    });
             });
 
             var widgetDataUrl = OC.generateUrl('/apps/sensorlogger/widgetTypeList');

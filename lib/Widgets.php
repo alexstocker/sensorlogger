@@ -186,7 +186,7 @@ class Widgets
 		$widget->setOptions('position',$position);
         $size = [
 				'w' => $config->w ?: 4,
-				'h' => $config->h ?: 4
+				'h' => $config->h ?: 6
 			];
 		$widget->setOptions('size',$size);
 
