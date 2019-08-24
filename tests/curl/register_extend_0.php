@@ -12,7 +12,7 @@ function genUniquID() {
 	return $uuid;
 }
 
-	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://owncloud-dev.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
 
 	$registerArray = [
 		'_route' => 'sensorlogger.apisensorlogger.registerDevice',
