@@ -166,7 +166,7 @@ table th, table td {
 
 .dashboard-widget .section.list,
 .dashboard-widget .section.chart {
-	max-height: 300px;
+	/* max-height: 300px; */
 	overflow-x: auto;
 }
 
@@ -240,7 +240,8 @@ h2.widget-header a span.icon {
 
 .dragbox-content{
 	background:#fff;
-	min-height:100px; margin:5px;
+	/* min-height:100px; */
+	margin:5px;
 	font-family:'Lucida Grande', Verdana; font-size:0.8em; line-height:1.5em;
 }
 .column  .placeholder{

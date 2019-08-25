@@ -1,9 +1,9 @@
 <?php
-	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://owncloud-dev.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
 
     $registerArray = [
         //'_route' => 'sensorlogger.apisensorlogger.registerDevice',
-        'deviceId' => '0e643ee8-0f9f-11e7-93ae-92361f002675',
+        'deviceId' => '00e643ee8-0f9f-11e7-93ae-92361f002675',
         'deviceName' => 'Multi data sensor V2',
         'deviceType' => 'Indoor',
         'deviceGroup' => 'Wohnzimmer',
@@ -30,7 +30,11 @@
     $data_json = json_encode($registerArray);
 
 	$username = 'admin';
+<<<<<<< Updated upstream
 	$token = 'DVRHU-HFYHA-UXJOW-ELFMC';
+=======
+	$token = 'YPPYJ-WOSGZ-HRUKW-KGSHJ';
+>>>>>>> Stashed changes
     //$username = 'test';
     //$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
