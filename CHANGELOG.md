@@ -1,6 +1,6 @@
 # SensorLogger
 
-### 0.1.2nc UNRELEASED
+### 0.1.2nc RELEASED
   * #85 Fixed error on submitting 0 values
   * #89 Updated to support Nextcloud 17
   * #86 Fixed fatal on widgetTemplateName
