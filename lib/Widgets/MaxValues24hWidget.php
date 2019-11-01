@@ -10,10 +10,15 @@ use OCA\SensorLogger\LogExtended;
 use OCA\SensorLogger\Widget;
 use OCA\SensorLogger\Widgets\iWidget;
 
+/**
+ * Class MaxValues24hWidget
+ * @package OCA\SensorLogger\Widgets
+ * @deprecated will be removed and replace by something smarter and less expensive
+ */
 class MaxValues24hWidget extends Widget implements iWidget
 {
     protected $identifier = 'max_values_24h';
-    protected $displayName = '24h max Values';
+    protected $displayName = '24h max Values @deprecated';
     protected $templateName = 'maxValues24h';
     private $userId;
     private $connection;

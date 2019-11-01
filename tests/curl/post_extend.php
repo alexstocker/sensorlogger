@@ -1,7 +1,7 @@
 <?php
 	$url = 'http://nextcloud-dev.loc/index.php/apps/sensorlogger/api/v1/createlog/';
 
-	$humidity = mt_rand (1.00*10, 99.99*10) / 10;
+	$humidity = 0;
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
 	$co2 = mt_rand (1*10, 1000*10) / 10;
 
