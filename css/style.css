@@ -252,6 +252,7 @@ h2.widget-header a span.icon {
 	height: -webkit-fill-available;
 	height: inherit;
 	background-color: lightgrey;
+	overflow: hidden;
 }
 .column .dragbox h2{
 	margin:0;
