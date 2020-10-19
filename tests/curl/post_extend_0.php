@@ -8,31 +8,31 @@
 	$nh3 = mt_rand (1*10, 500*10) / 10;
 	$ch4 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "6e643ee8-0f9f-11e7-93ae-92361f002671",
+	$array = array("deviceId" => "abb7c850-fcc9-6a5b-3218-15cfbcdab8ce",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(
 						array(
-							"dataTypeId" => 1,
+							"dataTypeId" => 6,
 							"value" => $co
 						),
 						array(
-							"dataTypeId" => 2,
+							"dataTypeId" => 7,
 							"value" => $co2
 						),
 						array(
-							"dataTypeId" => 3,
+							"dataTypeId" => 8,
 							"value" => $c2h6oh
 						),
 						array(
-							"dataTypeId" => 4,
+							"dataTypeId" => 9,
 							"value" => $h,
 						),
 						array(
-							"dataTypeId" => 5,
+							"dataTypeId" => 10,
 							"value" => $nh3,
 						),
 						array(
-							"dataTypeId" => 6,
+							"dataTypeId" => 11,
 							"value" => $ch4,
 						)
 					));
@@ -40,7 +40,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'XSEZa-cQqwz-jDzcX-9Tq5m-mQjc8';
+	$token = 'pTkkK-L843b-LDLp7-sSWPd-9m4pW';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

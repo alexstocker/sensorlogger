@@ -1,5 +1,8 @@
 # SensorLogger
 
+### 0.1.3nc RELEASED
+  * updated to support Nextcloud 20
+
 ### 0.1.2nc RELEASED
   * #85 Fixed error on submitting 0 values
   * #89 Updated to support Nextcloud 17
