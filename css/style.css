@@ -176,6 +176,10 @@ table th, table td {
 	margin-bottom: 0;
 }
 
+h2.widget-header {
+	background-color: #0082c9;
+}
+
 h2.widget-header a span.icon {
 	height: 0px !important;
 	width: 0px !important;

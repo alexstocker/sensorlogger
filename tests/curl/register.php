@@ -32,7 +32,7 @@ $data_json = json_encode($registerArray);
 #$username = 'test';
 #$token = 'TJWRN-AGRIW-FXCZW-EQXFX';
 $username = 'admin';
-$token = 'XSEZa-cQqwz-jDzcX-9Tq5m-mQjc8';
+$token = 'pTkkK-L843b-LDLp7-sSWPd-9m4p';
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
