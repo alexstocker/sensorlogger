@@ -1,5 +1,8 @@
 # SensorLogger
 
+### 0.1.4nc UNRELEASED
+  * #98 Modified App description
+
 ### 0.1.3nc RELEASED
   * updated to support Nextcloud 20
 

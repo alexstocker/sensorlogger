@@ -2,7 +2,10 @@
 <info>
     <id>sensorlogger</id>
     <name>Sensorlogger</name>
-    <description>SensorLogger for ownCloud enables users to log data provided by sensor devices</description>
+    <description>SensorLogger for nextcloud enables users to log data provided by sensor devices
+		such as temperatur, humidity, VOCs, pressure etc. SensorLogger for nextcloud can be used
+		to log almost any raw or aggregated data. Other examples of usage: fan speed, disk usage,
+		uptime, iops, water level, voltage, luminosity, rainfall and many many more.</description>
     <licence>AGPL</licence>
     <author>Alexander Stocker</author>
     <version>0.1.3</version>
