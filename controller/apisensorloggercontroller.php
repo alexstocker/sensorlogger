@@ -128,9 +128,9 @@ class ApiSensorLoggerController extends ApiController
                             if (!(int)$param['dataTypeId']) {
                                 $this->errors[] = 'dataTypeId needs to be an integer';
                             }
-                            if (!(int)$param['value'] && !(float)$param['value']) {
-                                $this->errors[] = 'value needs to be an integer or float';
-                            }
+							if (!is_numeric($param['value'])) {
+								$this->errors[] = 'value needs to be an integer or float';
+							}
                         }
                     } else {
                         $this->errors[] = 'Malformed data found';

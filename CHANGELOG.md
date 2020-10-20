@@ -1,5 +1,7 @@
-# SensorLogger
+# SensorLogger for owncloud
+
 ### 0.1.1 UNRELEASED
+  * #85 Allow 0 value @Kixunil
   * Changed Dashboard request type to GET
   * Changed LogList request type to GET
   * Changed DeviceList request type to GET
