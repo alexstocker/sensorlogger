@@ -8,8 +8,6 @@
         OCA.SensorLogger = {};
     }
 
-
-
 	OCA.SensorLogger.Filter = {
 		filter: undefined,
 		$navigation: $('#app-navigation'),
@@ -50,7 +48,7 @@
                     close: null,
                     delete: null
                 }
-            }
+            },
         },
 
         actionButtons: {
@@ -297,13 +295,26 @@
             }
         },
         DeviceActions: function (deviceId,element) {
+    	    var options = {};
+            var wipeOutUrl = OC.generateUrl('/apps/sensorlogger/wipeOutDevice');
+            var deviceChartUrl = OC.generateUrl('/apps/sensorlogger/deviceChart/'+deviceId);
+            var deviceDataUrl = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+deviceId);
+            var deviceDetailsUrl = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+deviceId);
             $(element).on('click','a', function(e) {
                 //console.log($(e.target).closest('a').data('action'));
                 var action = $(e.target).closest('a').data('action');
 
-                if(action === 'Menu' || action === 'Share') {
-                    OCA.SensorLogger.SidebarBuilder('deviceDetails');
-                    OCA.SensorLogger.Sidebar.show();
+                if(action === 'Menu') {
+                    options = {
+                        id: deviceId,
+                        url: deviceDetailsUrl
+                    }
+                    OCA.SensorLogger.SidebarBuilder('deviceDetails', options);
+                    //OCA.SensorLogger.Sidebar.show();
+                }
+
+                if(action === 'Share') {
+
                 }
                 if(action === 'Chart') {
 
@@ -312,9 +323,6 @@
 
                 }
 
-                var wipeOutUrl = OC.generateUrl('/apps/sensorlogger/wipeOutDevice');
-                var deviceChartUrl = OC.generateUrl('/apps/sensorlogger/deviceChart/'+deviceId);
-                var deviceDataUrl = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+deviceId);
 
             });
     	    //console.log('DeviceActions:'+deviceId);
@@ -923,22 +931,22 @@
             })
         },
 
-        SidebarBuilder: function (type) {
+        SidebarBuilder: function (type, options) {
+            OCA.SensorLogger.App.Sidebar.destroy();
     	    if(type === 'widgets') {
     	        OCA.SensorLogger.SidebarWidgets(OCA.SensorLogger.Sidebar)
             }
-    	    console.log('SidebarBuilder: '+type);
-            if ( type === 'deviceList' ) {
-                return $('a.action-share').each(function(idx,shareDeviceElement){
-                    $(shareDeviceElement).on('click',function(event) {
-                        console.log($(event.target));
-                    });
-                })
+            if ( type === 'deviceDetails' ) {
+                $.post(options.url).success(function (response) {
+                  OCA.SensorLogger.App.DeviceDetails(response);
+                });
             }
             OCA.SensorLogger.Sidebar.find('a#close-btn').on('click', function() {
                 OCA.SensorLogger.Sidebar.hide();
+                OCA.SensorLogger.App.Sidebar.destroy();
             })
-        }
+            OCA.SensorLogger.Sidebar.show();
+        },
 	};
 
 	OCA.SensorLogger.App = {
@@ -956,7 +964,302 @@
         deviceGroupList : $('#deviceGroupList'),
         dataTypeList : $('#dataTypeList'),
         appContentWrapper : null,
+        Sidebar: {
+		    destroy: function() {
+                    $('.sidbarInfoView > .title').empty();
+                    $('.sidbarInfoView > .body > .bodyDetails').remove();
+            }
+        },
+        applyEditable: function (response, options) {
+            $.fn.editable.defaults.mode = 'inline';
 
+            return $('<a/>',{
+                'id': options.id,
+                'href': '#',
+                'data-type': options.type,
+                'data-field': options.field,
+                'data-pk': response.deviceDetails.id,
+                'data-url': options.url,
+                'data-title': options.title,
+                'text': options.text
+            }).editable();
+        },
+        DeviceTitle: function (response) {
+		    var options = {
+		        id: 'name',
+                type: 'text',
+                field: 'group',
+                title: response.name,
+		        url: OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id),
+                text: response.deviceDetails.name
+            }
+            return this.applyEditable(response, options);
+        },
+        DeviceUuid: function (response) {
+            var bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
+            bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
+            var uuidLabel = $('<label/>', {
+                'class':'unique-id'
+            }).text('Device Unique Id');
+            var uuidContentSpan = $('<span/>', {
+                'class':'unique-id-content'
+            }).text(response.deviceDetails.uuid);
+
+            var uuid = bodyDetailsContainer
+                .clone()
+                .append(uuidLabel)
+                .append(uuidContentSpan);
+            return uuid;
+        },
+        DeviceGroupSelect: function(response) {
+            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
+            var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
+            let bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
+            bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
+            var options = {
+                id: 'group_id',
+                type: 'select2',
+                field: 'group',
+                title: response.deviceGroupName,
+                url: OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id),
+                text: response.deviceDetails.name
+            }
+
+            let groupSource = [];
+            for (group in response.groups) {
+                groupSource.push({
+                        value : response.groups[group].id,
+                        text: response.groups[group].device_group_name,
+                        id : response.groups[group].id
+                    }
+                );
+            }
+
+
+            var groupSelect = $('<a/>',{
+                'id':'group_id',
+                'href': '#',
+                'data-type': 'select2',
+                'data-field': 'group',
+                'data-pk': response.deviceDetails.id,
+                'data-url': updateUrl,
+                'data-title': response.deviceGroupName
+            }).editable({
+                value: response.deviceDetails.group,
+                source: groupSource,
+                select2: {
+                    multiple: false,
+                    data: groupSource,
+                    dropdownAutoWidth: true,
+                    initSelection: function(element, callback) {
+                        callback({ 'id': response.deviceDetails.group, 'text': response.deviceDetails.deviceGroupName })
+                    },
+                    createSearchChoice: function(term, data) {
+                        if ($(data).filter(
+                            function() {
+                                return this.text.localeCompare(term)===0;
+                            }).length===0) {
+                            return {id:'create_'+term, text:'Create '+term, data:term};
+                        }
+                    }
+                }
+            });
+
+            var groupLabel = $('<label/>', {
+                'class':'group'
+            }).text('Device Group');
+            var groupContentSpan = $('<span/>', {
+                'class':'group-content'
+            }).append(groupSelect);
+
+            var group = bodyDetailsContainer
+                .clone()
+                .append(groupLabel)
+                .append(groupContentSpan);
+
+            $(group).on('select2-selecting',function(e){
+                var string = e.object.id,
+                    substring = "create_";
+                if(string.includes(substring)) {
+                    $.post(createDeviceGroupUrl, {'device_id':response.deviceDetails.id,'device_group_name':e.object.data} )
+                        .success(function (response) {
+                            $(e.target).val(response.deviceGroupId);
+                            groupSource.push({
+                                value: response.deviceGroupId,
+                                text: e.object.data,
+                                id : response.deviceGroupId
+                            })
+                        });
+                }
+            });
+            return group;
+        },
+        DeviceParentGroupSelect: function(response) {
+            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
+            var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
+            var bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
+            bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
+            var groupSource = [];
+            for (group in response.groups) {
+                groupSource.push({
+                        value : response.groups[group].id,
+                        text: response.groups[group].device_group_name,
+                        id : response.groups[group].id
+                    }
+                );
+            }
+
+            var groupParentSelect = $('<a/>',{
+                'id':'group_parent_id',
+                'href': '#',
+                'data-type': 'select2',
+                'data-field': 'group',
+                'data-pk': response.deviceDetails.id,
+                'data-url': updateUrl,
+                'data-title': response.deviceGroupParentName
+            }).editable({
+                value: response.deviceDetails.groupParent,
+                source: groupSource,
+                select2: {
+                    multiple: false,
+                    data: groupSource,
+                    dropdownAutoWidth: true,
+                    initSelection: function(element, callback) {
+                        callback({ 'id': response.deviceDetails.groupParent, 'text': response.deviceDetails.deviceGroupParentName })
+                    },
+                    createSearchChoice: function(term, data) {
+                        if ($(data).filter(
+                            function() {
+                                return this.text.localeCompare(term)===0;
+                            }).length===0) {
+                            return {id:'create_'+term, text:'Create '+term, data:term};
+                        }
+                    }
+                }
+            });
+
+            var parentGroupLabel = $('<label/>', {
+                'class':'parent-group'
+            }).text('Device Parent Group');
+            var parentGroupContentSpan = $('<span/>', {
+                'class':'parent-group-content'
+            }).append(groupParentSelect);
+
+            var groupParent = bodyDetailsContainer
+                .clone()
+                .append(parentGroupLabel)
+                .append(parentGroupContentSpan);
+
+            $(groupParent).on('select2-selecting',function(e){
+                var string = e.object.id,
+                    substring = "create_";
+                if(string.includes(substring)) {
+                    $.post(createDeviceGroupUrl, {'device_id':response.deviceDetails.id,'device_group_name':e.object.data} )
+                        .success(function (response) {
+                            $(e.target).val(response.deviceGroupId);
+                            groupSource.push({
+                                value: response.deviceGroupId,
+                                text: e.object.data,
+                                id : response.deviceGroupId
+                            })
+                        });
+                }
+            });
+
+            return groupParent;
+        },
+        DeviceTypeSelect: function(response) {
+            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
+            var createDeviceTypeUrl = OC.generateUrl('/apps/sensorlogger/createDeviceType');
+            let bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
+            bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+
+            var typeSource = [];
+            for (type in response.types) {
+                typeSource.push({
+                        value: response.types[type].id,
+                        text: response.types[type].device_type_name,
+                        id : response.types[type].id
+                    }
+                );
+
+            }
+
+            var typeSelect = $('<a/>',{
+                'id':'type_id',
+                'href': '#',
+                'data-type': 'select2',
+                'data-field': 'type',
+                'data-pk': response.deviceDetails.id,
+                'data-url': updateUrl,
+                'data-title': response.deviceTypeName
+            }).editable({
+                value: response.deviceDetails.type,
+                source: typeSource,
+                select2: {
+                    multiple: false,
+                    data: typeSource,
+                    dropdownAutoWidth: true,
+                    initSelection: function(element, callback) {
+                        callback({ 'id': response.deviceDetails.type, 'text': response.deviceDetails.deviceTypeName })
+                    },
+                    createSearchChoice: function(term, data) {
+                        if ($(data).filter(
+                            function() {
+                                return this.text.localeCompare(term) === 0;
+                            }).length === 0 ) {
+                            return {
+                                id:'create_'+term, text:'Create '+term, data:term
+                            };
+                        }
+                    }
+                }
+            });
+
+            var typeLabel = $('<label/>', {
+                'class':'type'
+            }).text('Device Type');
+            var typeContentSpan = $('<span/>', {
+                'class':'type-content'
+            }).append(typeSelect);
+
+            var type = bodyDetailsContainer
+                .clone()
+                .append(typeLabel)
+                .append(typeContentSpan);
+
+            $(type).on('select2-selecting',function(e){
+                var string = e.object.id,
+                    substring = "create_";
+                if(string.includes(substring)) {
+                    $.post(createDeviceTypeUrl, {'device_id':response.deviceDetails.id,'device_type_name':e.object.data} )
+                        .success(function (response) {
+                            $(e.target).val(response.deviceTypeId);
+                            typeSource.push({
+                                value: response.deviceTypeId,
+                                text: e.object.data,
+                                id : response.deviceTypeId
+                            })
+                        });
+                }
+            });
+
+            return type;
+
+        },
+        DeviceDetails: function (response) {
+            var sidebarBody = OCA.SensorLogger.Sidebar.find('.body');
+            var sidebarTitle = OCA.SensorLogger.Sidebar.find('.title')
+
+            sidebarTitle.empty().append(this.DeviceTitle(response));
+            sidebarBody.append(this.DeviceUuid(response));
+            sidebarBody.append(this.DeviceGroupSelect(response));
+            sidebarBody.append(this.DeviceParentGroupSelect(response));
+            sidebarBody.append(this.DeviceTypeSelect(response));
+        },
 		initialize: function() {
             this.sidebar = $('#app-sidebar');
             this.appContentWrapper = $('#app-content-wrapper');

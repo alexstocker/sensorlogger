@@ -639,11 +639,12 @@ class SensorLoggerController extends Controller
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
 
-        $response = $this->returnJSON(array(
+        $deviceDetails->setId($id);
+        $response = $this->returnJSON([
             'deviceDetails' => $deviceDetails,
             'groups' => $groups,
             'types' => $types
-        ));
+        ]);
 
         $response->setContentSecurityPolicy($policy);
 
@@ -658,7 +659,14 @@ class SensorLoggerController extends Controller
     {
         $field = $this->request->getParam('name');
         $value = $this->request->getParam('value');
-        Devices::updateDevice($id, $field, $value, $this->connection);
+
+		try {
+			if(Devices::updateDevice($id, $field, $value, $this->connection)) {
+				return $this->returnJSON(['success' => true]);
+			}
+		} catch (Exception $exception) {
+		}
+		return $this->returnJSON(['success' => false]);
     }
 
     /**
