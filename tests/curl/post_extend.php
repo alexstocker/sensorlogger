@@ -24,11 +24,8 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-<<<<<<< Updated upstream
-	$token = 'DVRHU-HFYHA-UXJOW-ELFMC';
-=======
-	$token = 'YPPYJ-WOSGZ-HRUKW-KGSHJ';
->>>>>>> Stashed changes
+	$token = 'MFSFF-VREYH-PHSLT-DTMFN';
+
 	//$username = 'test';
 	//$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 

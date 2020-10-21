@@ -7,6 +7,7 @@ return [
         ['name' => 'sensorlogger#index', 'url' => '/', 'verb' => 'GET'],
         ['name' => 'sensorlogger#getWidgetTypes', 'url' => 'widgetTypeList', 'verb' => 'GET'],
         ['name' => 'sensorlogger#createWidget', 'url' => 'saveWidget', 'verb' => 'POST'],
+		['name' => 'sensorlogger#updateWidgetSettings', 'url' => 'updateWidgetSettings', 'verb' => 'POST'],
         ['name' => 'sensorlogger#deleteWidget', 'url' => 'deleteWidget/{id}', 'verb' => 'POST'],
         ['name' => 'sensorlogger#deleteDevice', 'url' => 'deleteDevice/{id}', 'verb' => 'POST'],
         ['name' => 'sensorlogger#deleteDeviceType', 'url' => 'deleteDeviceType/{id}', 'verb' => 'POST'],

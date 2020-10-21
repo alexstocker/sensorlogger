@@ -151,8 +151,9 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'dashboard',
             'widgets' => $widgets,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('showDashboard')
         );
+
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -163,7 +164,11 @@ class SensorLoggerController extends Controller
         return $response;
     }
 
-    protected function getNavigationItems()
+	/**
+	 * @param null $active
+	 * @return mixed
+	 */
+    protected function getNavigationItems($active = null)
     {
         App::getNavigationManager()->add(
             [
@@ -269,11 +274,16 @@ class SensorLoggerController extends Controller
             }
         }
 
-
         $navItems = App::getNavigationManager()->getAll();
         usort($navItems, function ($item1, $item2) {
             return $item1['order'] - $item2['order'];
         });
+
+		foreach ($navItems as $navKey => $navItem) {
+			if($navItem['id'] === $active) {
+				$navItems[$navKey]['active'] = true;
+			}
+        }
 
         return $navItems;
     }
@@ -289,7 +299,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharingin'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -311,7 +321,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharingout'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -333,7 +343,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharinglinks'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -375,6 +385,15 @@ class SensorLoggerController extends Controller
                     $this->config
                 );
 
+                if(!isset($customWidget->getOptions()['position'])) {
+                	$x = (count($widgets) - 1 ) + 1;
+					$y = (count($widgets) - 1 ) + 1;
+					$w = 4;
+					$h = 4;
+					$customWidget->setOptions('position',['x' => $x, 'y' => $y]);
+					$customWidget->setOptions('size',['w' => $w, 'h' => $h]);
+				}
+
                 //$buildWidget = Widgets::build($this->userSession->getUser()->getUID(), $device, $widgetConfig, $this->connection, $this->config);
                 $widgets[] = $customWidget;
             }
@@ -394,7 +413,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'list',
             'logs' => $logs,
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('showList'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -620,11 +639,12 @@ class SensorLoggerController extends Controller
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
 
-        $response = $this->returnJSON(array(
+        $deviceDetails->setId($id);
+        $response = $this->returnJSON([
             'deviceDetails' => $deviceDetails,
             'groups' => $groups,
             'types' => $types
-        ));
+        ]);
 
         $response->setContentSecurityPolicy($policy);
 
@@ -639,7 +659,14 @@ class SensorLoggerController extends Controller
     {
         $field = $this->request->getParam('name');
         $value = $this->request->getParam('value');
-        Devices::updateDevice($id, $field, $value, $this->connection);
+
+		try {
+			if(Devices::updateDevice($id, $field, $value, $this->connection)) {
+				return $this->returnJSON(['success' => true]);
+			}
+		} catch (Exception $exception) {
+		}
+		return $this->returnJSON(['success' => false]);
     }
 
     /**
@@ -682,7 +709,7 @@ class SensorLoggerController extends Controller
             'part' => 'dashboard',
             'log' => $log,
             'widgets' => $widgets,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('showDashboard')
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -770,7 +797,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDevices',
             'devices' => $devices,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('deviceList'),
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -794,7 +821,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDeviceTypes',
             'deviceTypes' => $deviceTypes,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('deviceTypeList')
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -818,7 +845,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDeviceGroups',
             'deviceGroups' => $deviceGroups,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('deviceGroupList')
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -842,7 +869,7 @@ class SensorLoggerController extends Controller
         $parameters = [
             'part' => 'listDataTypes',
             'dataTypes' => $dataTypes,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('dataTypeList')
         ];
 
         $policy = new ContentSecurityPolicy();
@@ -864,6 +891,26 @@ class SensorLoggerController extends Controller
         return $this->config->getUserValue($userId, $this->appName, $key);
     }
 
+	/**
+	 * @NoAdminRequired
+	 * @return DataResponse
+	 * @throws \OCP\PreConditionNotMetException
+	 */
+    public function updateWidgetSettings() {
+		$array = $this->request->getParams();
+		foreach($array as $key => $widget) {
+			if(isset($widget['key']) && !is_array($widget['key']) && !empty($widget['key'])) {
+				$json = json_encode($widget);
+				try {
+					$this->updateUserValue($widget['key'], $this->userSession->getUser()->getUID(), $json);
+				} catch (Exception $e) {
+					return $this->returnJSON(array('errors' => 'Could not Update widget settings!'));
+				}
+			}
+		}
+		return $this->returnJSON(['msg' => 'Updated Widget Position and size']);
+	}
+
     /**
      * @param $key
      * @param $userId
@@ -874,6 +921,19 @@ class SensorLoggerController extends Controller
     {
         $this->config->setUserValue($userId, $this->appName, $key, $value);
     }
+
+	/**
+	 * @param $key
+	 * @param $userId
+	 * @param $value
+	 * @throws \OCP\PreConditionNotMetException
+	 */
+    protected function updateUserValue($key, $userId, $value) {
+    	if($this->config->getUserValue($userId, $this->appName, $key)
+			&& $this->config->deleteUserValue($userId, $this->appName, $key)) {
+    		$this->setUserValue($key, $userId, $value);
+		}
+	}
 
     /**
      * @param $array

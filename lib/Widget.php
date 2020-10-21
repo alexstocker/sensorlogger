@@ -17,6 +17,7 @@ class Widget extends Entity implements \JsonSerializable
     protected $name;
     protected $displayName;
     protected $templateName = 'default';
+    protected $options = [];
 
     public function __construct()
     {
@@ -24,6 +25,7 @@ class Widget extends Entity implements \JsonSerializable
         $this->addType('type', 'string');
         $this->addType('log', 'string');
         $this->addType('name', 'string');
+        $this->addType('options', 'array');
     }
 
     /**
@@ -125,4 +127,23 @@ class Widget extends Entity implements \JsonSerializable
     {
         return $this->displayName;
     }
+
+	/**
+	 * @return array
+	 */
+	public function getOptions($key = null) {
+		if($key) {
+			if(array_key_exists($key, $this->options)) {
+				return $this->options[$key];
+			}
+		}
+		return $this->options;
+	}
+
+	/**
+	 * @param array $options
+	 */
+	public function setOptions($key, array $options) {
+		$this->options[$key] = $options;
+	}
 }

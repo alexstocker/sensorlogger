@@ -179,6 +179,17 @@ class Widgets
         $widget->setType($config->widget_type);
         $widget->setLog($log);
         $widget->setName($device->getName());
+        $position = [
+        		'x' => $config->x ?: 0,
+				'y' => $config->y ?: 0
+			];
+		$widget->setOptions('position',$position);
+        $size = [
+				'w' => $config->w ?: 4,
+				'h' => $config->h ?: 6
+			];
+		$widget->setOptions('size',$size);
+
         $widget->setDisplayName(self::WIDGET_TYPES[$config->widget_type]);
         return $widget;
     }

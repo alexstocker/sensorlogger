@@ -1,5 +1,9 @@
-# SensorLogger
+# SensorLogger for owncloud
+
 ### 0.1.1 UNRELEASED
+  * Reworked and cleaned up JS #11
+  * Added #51 make dashboard widgets position persistant
+  * Modified #85 Allow 0 value @Kixunil
   * Changed Dashboard request type to GET
   * Changed LogList request type to GET
   * Changed DeviceList request type to GET
