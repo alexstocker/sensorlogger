@@ -28,7 +28,10 @@
 	};
 
     OCA.SensorLogger = {
-
+        url: {
+            updateDevice: '/apps/sensorlogger/updateDevice/',
+            createdDeviceGroup: '/apps/sensorlogger/createDeviceGroup'
+        },
     	widgets: {
     	    gridstack: null,
         },
@@ -968,7 +971,7 @@
                 type: 'text',
                 field: 'group',
                 title: response.name,
-		        url: OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id),
+		        url: OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id),
                 text: response.deviceDetails.name
             }
             return this.applyEditable(response, options);
@@ -990,20 +993,22 @@
                 .append(uuidContentSpan);
             return uuid;
         },
+        deviceGroupSource: function(response) {
+            let groupSource = [];
+            for (group in response.groups) {
+                groupSource.push({
+                        value : response.groups[group].id,
+                        text: response.groups[group].device_group_name,
+                        id : response.groups[group].id
+                    }
+                );
+            }
+            return groupSource;
+        },
         DeviceGroupSelect: function(response) {
-            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
-            var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
+            var updateUrl = OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id);
             let bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
             bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
-
-            var options = {
-                id: 'group_id',
-                type: 'select2',
-                field: 'group',
-                title: response.deviceGroupName,
-                url: OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id),
-                text: response.deviceDetails.name
-            }
 
             let groupSource = [];
             for (group in response.groups) {
@@ -1022,14 +1027,14 @@
                 'data-field': 'group',
                 'data-pk': response.deviceDetails.id,
                 'data-url': updateUrl,
-                'data-title': response.deviceGroupName
+                'data-title': response.deviceDetails.deviceGroupName,
+                'text': response.deviceDetails.deviceGroupName
             }).editable({
                 value: response.deviceDetails.group,
                 source: groupSource,
                 showbuttons: false,
                 select2: {
                     multiple: false,
-                    data: groupSource,
                     dropdownAutoWidth: true,
                     initSelection: function(element, callback) {
                         callback({ 'id': response.deviceDetails.group, 'text': response.deviceDetails.deviceGroupName })
@@ -1060,23 +1065,18 @@
             $(group).on('select2-selecting',function(e){
                 var string = e.object.id,
                     substring = "create_";
-                if(string.includes(substring)) {
-                    $.post(createDeviceGroupUrl, {'device_id':response.deviceDetails.id,'device_group_name':e.object.data} )
-                        .success(function (response) {
-                            $(e.target).val(response.deviceGroupId);
-                            groupSource.push({
-                                value: response.deviceGroupId,
-                                text: e.object.data,
-                                id : response.deviceGroupId
-                            })
+                    if(string.includes(substring)) {
+                        groupSource.push({
+                            value: e.object.id,
+                            text: e.object.data,
+                            id : e.object.id
                         });
-                }
+                    }
             });
             return group;
         },
         DeviceParentGroupSelect: function(response) {
-            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
-            var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
+            var updateUrl = OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id);
             var bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
             bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 
@@ -1135,24 +1135,19 @@
             $(groupParent).on('select2-selecting',function(e){
                 var string = e.object.id,
                     substring = "create_";
-                if(string.includes(substring)) {
-                    $.post(createDeviceGroupUrl, {'device_id':response.deviceDetails.id,'device_group_name':e.object.data} )
-                        .success(function (response) {
-                            $(e.target).val(response.deviceGroupId);
-                            groupSource.push({
-                                value: response.deviceGroupId,
-                                text: e.object.data,
-                                id : response.deviceGroupId
-                            })
+                    if(string.includes(substring)) {
+                        groupSource.push({
+                            value: e.object.id,
+                            text: e.object.data,
+                            id : e.object.id
                         });
-                }
+                    }
             });
 
             return groupParent;
         },
         DeviceTypeSelect: function(response) {
-            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
-            var createDeviceTypeUrl = OC.generateUrl('/apps/sensorlogger/createDeviceType');
+            var updateUrl = OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id);
             let bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
             bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 
@@ -1214,17 +1209,13 @@
             $(type).on('select2-selecting',function(e){
                 var string = e.object.id,
                     substring = "create_";
-                if(string.includes(substring)) {
-                    $.post(createDeviceTypeUrl, {'device_id':response.deviceDetails.id,'device_type_name':e.object.data} )
-                        .success(function (response) {
-                            $(e.target).val(response.deviceTypeId);
-                            typeSource.push({
-                                value: response.deviceTypeId,
-                                text: e.object.data,
-                                id : response.deviceTypeId
-                            })
+                    if(string.includes(substring)) {
+                        typeSource.push({
+                            value: e.object.id,
+                            text: e.object.data,
+                            id : e.object.id
                         });
-                }
+                    }
             });
             return type;
         },
@@ -1367,4 +1358,3 @@ $(document).ready(function() {
         OCA.SensorLogger.App.initialize();
 	});
 });
-
