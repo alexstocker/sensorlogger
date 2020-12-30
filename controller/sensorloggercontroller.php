@@ -636,6 +636,13 @@ class SensorLoggerController extends Controller
         $groups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
         $types = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
 
+        $dataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+            $this->userSession->getUser()->getUID(),
+            $id,
+            $this->connection
+        );
+
+
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
 
@@ -643,7 +650,8 @@ class SensorLoggerController extends Controller
         $response = $this->returnJSON([
             'deviceDetails' => $deviceDetails,
             'groups' => $groups,
-            'types' => $types
+            'types' => $types,
+            'dataTypes' => $dataTypes
         ]);
 
         $response->setContentSecurityPolicy($policy);

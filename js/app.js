@@ -287,6 +287,12 @@
             var deviceChartUrl = OC.generateUrl('/apps/sensorlogger/deviceChart/'+deviceId);
             var deviceDataUrl = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+deviceId);
             var deviceDetailsUrl = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+deviceId);
+
+            $(element).find('.deviceChart > span, ' +
+                '.deviceListData > span, ' +
+            	'.deviceactions > a.action-share, ' +
+            	'.deviceactions > a.action-menu').tooltip({placement:'right'});
+
             $(element).on('click','a', function(e) {
                 var action = $(e.target).closest('a').data('action');
                 if(action === 'Menu') {
@@ -317,6 +323,7 @@
                         OCA.SensorLogger.Content.empty().append($response);
                     });
                 }
+                $(this).tooltip('hide');
             });
         },
 		Widgets: function(container) {
@@ -993,6 +1000,44 @@
                 .append(uuidContentSpan);
             return uuid;
         },
+        DeviceDataTypes: function (response) {
+            var bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
+            bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+            //console.log(response.dataTypes);
+
+            var dataTypesLabel = $('<label/>', {
+                'class':'device-data-types'
+            }).text('Device data types');
+
+            var dataTypesContentDiv = $('<div/>', {
+                'class':'device-data-types-content'
+            });
+
+console.log(response.dataTypes);
+            if(response.dataTypes.length > 0) {
+                $.each(response.dataTypes, function (index, dataType) {
+                    var dataTypesContentSpan = $('<span/>', {
+                        'class':'device-data-type-tag has-tooltip'
+                    })
+                    .text(dataType.type + ' ['+ dataType.short +']')
+                    .attr('data-original-title',dataType.description).tooltip({placement:'right'});
+                    dataTypesContentDiv.append(dataTypesContentSpan);
+                });
+            } else {
+                var dataTypesContentSpan = $('<span/>', {
+                    'class':'device-data-type-tag has-tooltip'
+                })
+                .text('°C, % rel. Humidity')
+                .attr('data-original-title','Default: Temperature and relative humidity').tooltip({placement:'right'});
+                dataTypesContentDiv.append(dataTypesContentSpan);
+            }
+
+            var dataTypes = bodyDetailsContainer
+                .clone()
+                .append(dataTypesLabel)
+                .append(dataTypesContentDiv);
+            return dataTypes;
+        },
         deviceGroupSource: function(response) {
             let groupSource = [];
             for (group in response.groups) {
@@ -1228,6 +1273,7 @@
             sidebarBody.append(this.DeviceGroupSelect(response));
             sidebarBody.append(this.DeviceParentGroupSelect(response));
             sidebarBody.append(this.DeviceTypeSelect(response));
+            sidebarBody.append(this.DeviceDataTypes(response));
         },
         DeviceShare: function () {
 		    /** TODO: Feature to share device needs to be implemented **/
