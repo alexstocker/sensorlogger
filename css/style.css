@@ -314,3 +314,12 @@ h2.widget-header a span.icon {
 	/* box-shadow: 0 0 0 rgba(204,169,44, 0.4); */
 	animation: pulse 2s infinite;
 }
+
+.device-data-type-tag {
+    background-color: rgba(240, 240, 240, .9);
+    border-radius: 3px;
+	margin-bottom: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+	display: table;
+}

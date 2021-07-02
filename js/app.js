@@ -1,8 +1,5 @@
 (function() {
-    var TEMPLATE =
-        '<div>' +
-        '<div class="dialogContainer"></div>' +
-        '</div>';
+
     if (!OCA.SensorLogger) {
         /**
          * Namespace for the sensorlogger app
@@ -11,194 +8,6 @@
         OCA.SensorLogger = {};
     }
 
-    var SensorInfoModel = OC.Backbone.Model.extend({
-
-        defaults: {
-        },
-
-        initialize: function(data, options) {
-            if (!_.isUndefined(data.id)) {
-                data.id = parseInt(data.id, 10);
-            }
-
-            if( options ){
-
-            }
-        },
-
-        /**
-         * Returns whether sensor is default humidity/temperatur sensor like DHT22
-         *
-         * @return {boolean}
-         */
-        isDefault: function() {
-            return true;
-        },
-
-
-        /**
-         * Returns the type of the sensor
-         *
-         * @return {string} mimetype
-         */
-        getSensorType: function() {
-            return this.get('sensortype');
-        },
-    });
-    OCA.SensorLogger.InfoModel = SensorInfoModel;
-
-    var DetailTabView = OC.Backbone.View.extend({
-        tag: 'div',
-
-        className: 'tab',
-
-        /**
-         * Tab label
-         */
-        _label: null,
-
-        _template: null,
-
-        initialize: function(options) {
-            options = options || {};
-            if (options.order) {
-                this.order = options.order || 0;
-            }
-        },
-
-        /**
-         * Returns the tab label
-         *
-         * @return {String} label
-         */
-        getLabel: function() {
-            return 'Tab ' + this.id;
-        },
-
-        /**
-         * returns the jQuery object for HTML output
-         *
-         * @returns {jQuery}
-         */
-        get$: function() {
-            return this.$el;
-        },
-
-        /**
-         * Renders this details view
-         *
-         * @abstract
-         */
-        render: function() {
-            // to be implemented in subclass
-            // FIXME: code is only for testing
-            this.$el.html('<div>Hello ' + this.id + '</div>');
-        },
-
-        /**
-         * Sets the file info to be displayed in the view
-         *
-         * @param {OCA.SensorLogger.SensorInfoModel} sensorInfo to set
-         */
-        setSensorInfo: function(sensorInfo) {
-            if (this.model !== sensorInfo) {
-                this.model = sensorInfo;
-                this.render();
-            }
-        },
-
-        /**
-         * Returns the file info.
-         *
-         * @return {OCA.SensorLogger.SensorInfoModel} sensor info
-         */
-        getSensorInfo: function() {
-            return this.model;
-        },
-
-        /**
-         * Load the next page of results
-         */
-        nextPage: function() {
-            // load the next page, if applicable
-        },
-
-        /**
-         * Returns whether the current tab is able to display
-         * the given file info, for example based on mime type.
-         *
-         * @param {OCA.SensorLogger.SensorInfoModel} sensorInfo file info model
-         * @return {bool} whether to display this tab
-         */
-        canDisplay: function(sensorInfo) {
-            return true;
-        }
-    });
-    OCA.SensorLogger.DetailTabView = DetailTabView;
-
-    var ShareTabView = OCA.SensorLogger.DetailTabView.extend(
-        /** @lends OCA.Sharing.ShareTabView.prototype */ {
-            id: 'shareTabView',
-            className: 'tab shareTabView',
-
-            template: function(params) {
-                if (!this._template) {
-                    this._template = Handlebars.compile(TEMPLATE);
-                }
-                return this._template(params);
-            },
-
-            getLabel: function() {
-                return t('sensor_sharing', 'Sharing');
-            },
-
-            /**
-             * Renders this details view
-             */
-            render: function() {
-                var self = this;
-                if (this._dialog) {
-                    // remove/destroy older instance
-                    this._dialog.model.off();
-                    this._dialog.remove();
-                    this._dialog = null;
-                }
-
-                if (this.SensorInfoModel) {
-                    this.$el.html(this.template());
-
-                    var attributes = {
-                        itemType: 'sensor',
-                        itemSource: SensorInfoModel.get('id'),
-                        possiblePermissions: SensorInfoModel.get('sharePermissions')
-                    };
-                    var configModel = new OC.Share.ShareConfigModel();
-                    var shareModel = new OC.Share.ShareItemModel(attributes, {
-                        configModel: configModel,
-                        fileInfoModel: this.model
-                    });
-                    this._dialog = new OC.Share.ShareDialogView({
-                        configModel: configModel,
-                        model: shareModel
-                    });
-                    this.$el.find('.dialogContainer').append(this._dialog.$el);
-                    this._dialog.render();
-                    this._dialog.model.fetch();
-                    this._dialog.model.on('change', function() {
-                        self.trigger('sharesChanged', shareModel);
-                    });
-                    this._dialog.model.getLinkSharesCollection().on('update', function() {
-                        self.trigger('sharesChanged', shareModel);
-                    });
-                } else {
-                    this.$el.empty();
-                    // TODO: render placeholder text?
-                }
-            }
-        });
-    //OCA.Sharing.ShareTabView = ShareTabView;
-
-    /* TODO: Filter for sensor list view */
 	OCA.SensorLogger.Filter = {
 		filter: undefined,
 		$navigation: $('#app-navigation'),
@@ -219,9 +28,10 @@
 	};
 
     OCA.SensorLogger = {
-
-        InfoModel: null,
-        DetailsTabView: null,
+        url: {
+            updateDevice: '/apps/sensorlogger/updateDevice/',
+            createdDeviceGroup: '/apps/sensorlogger/createDeviceGroup'
+        },
     	widgets: {
     	    gridstack: null,
         },
@@ -477,6 +287,12 @@
             var deviceChartUrl = OC.generateUrl('/apps/sensorlogger/deviceChart/'+deviceId);
             var deviceDataUrl = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+deviceId);
             var deviceDetailsUrl = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+deviceId);
+
+            $(element).find('.deviceChart > span, ' +
+                '.deviceListData > span, ' +
+            	'.deviceactions > a.action-share, ' +
+            	'.deviceactions > a.action-menu').tooltip({placement:'right'});
+
             $(element).on('click','a', function(e) {
                 var action = $(e.target).closest('a').data('action');
                 if(action === 'Menu') {
@@ -507,6 +323,7 @@
                         OCA.SensorLogger.Content.empty().append($response);
                     });
                 }
+                $(this).tooltip('hide');
             });
         },
 		Widgets: function(container) {
@@ -1161,7 +978,7 @@
                 type: 'text',
                 field: 'group',
                 title: response.name,
-		        url: OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id),
+		        url: OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id),
                 text: response.deviceDetails.name
             }
             return this.applyEditable(response, options);
@@ -1183,20 +1000,60 @@
                 .append(uuidContentSpan);
             return uuid;
         },
+        DeviceDataTypes: function (response) {
+            var bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
+            bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
+            //console.log(response.dataTypes);
+
+            var dataTypesLabel = $('<label/>', {
+                'class':'device-data-types'
+            }).text('Device data types');
+
+            var dataTypesContentDiv = $('<div/>', {
+                'class':'device-data-types-content'
+            });
+
+console.log(response.dataTypes);
+            if(response.dataTypes.length > 0) {
+                $.each(response.dataTypes, function (index, dataType) {
+                    var dataTypesContentSpan = $('<span/>', {
+                        'class':'device-data-type-tag has-tooltip'
+                    })
+                    .text(dataType.type + ' ['+ dataType.short +']')
+                    .attr('data-original-title',dataType.description).tooltip({placement:'right'});
+                    dataTypesContentDiv.append(dataTypesContentSpan);
+                });
+            } else {
+                var dataTypesContentSpan = $('<span/>', {
+                    'class':'device-data-type-tag has-tooltip'
+                })
+                .text('°C, % rel. Humidity')
+                .attr('data-original-title','Default: Temperature and relative humidity').tooltip({placement:'right'});
+                dataTypesContentDiv.append(dataTypesContentSpan);
+            }
+
+            var dataTypes = bodyDetailsContainer
+                .clone()
+                .append(dataTypesLabel)
+                .append(dataTypesContentDiv);
+            return dataTypes;
+        },
+        deviceGroupSource: function(response) {
+            let groupSource = [];
+            for (group in response.groups) {
+                groupSource.push({
+                        value : response.groups[group].id,
+                        text: response.groups[group].device_group_name,
+                        id : response.groups[group].id
+                    }
+                );
+            }
+            return groupSource;
+        },
         DeviceGroupSelect: function(response) {
-            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
-            var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
+            var updateUrl = OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id);
             let bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
             bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
-
-            var options = {
-                id: 'group_id',
-                type: 'select2',
-                field: 'group',
-                title: response.deviceGroupName,
-                url: updateUrl,
-                text: response.deviceDetails.name
-            }
 
             let groupSource = [];
             for (group in response.groups) {
@@ -1215,14 +1072,14 @@
                 'data-field': 'group',
                 'data-pk': response.deviceDetails.id,
                 'data-url': updateUrl,
-                'data-title': response.deviceGroupName
+                'data-title': response.deviceDetails.deviceGroupName,
+                'text': response.deviceDetails.deviceGroupName
             }).editable({
                 value: response.deviceDetails.group,
                 source: groupSource,
                 showbuttons: false,
                 select2: {
                     multiple: false,
-                    data: groupSource,
                     dropdownAutoWidth: true,
                     initSelection: function(element, callback) {
                         callback({ 'id': response.deviceDetails.group, 'text': response.deviceDetails.deviceGroupName })
@@ -1253,25 +1110,18 @@
             $(group).on('select2-selecting',function(e){
                 var string = e.object.id,
                     substring = "create_";
-                if(string.includes(substring)) {
-                    $.post(createDeviceGroupUrl, {'device_id':response.deviceDetails.id,'device_group_name':e.object.data} )
-                        .success(function (response) {
-                            $(e.target).val(response.deviceGroupId);
-                            groupSource.push({
-                                value: response.deviceGroupId,
-                                text: e.object.data,
-                                id : response.deviceGroupId
-                            })
-                            e.object.id = response.deviceGroupId
-                            console.log(response);
+                    if(string.includes(substring)) {
+                        groupSource.push({
+                            value: e.object.id,
+                            text: e.object.data,
+                            id : e.object.id
                         });
-                }
+                    }
             });
             return group;
         },
         DeviceParentGroupSelect: function(response) {
-            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
-            var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
+            var updateUrl = OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id);
             var bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
             bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 
@@ -1330,24 +1180,19 @@
             $(groupParent).on('select2-selecting',function(e){
                 var string = e.object.id,
                     substring = "create_";
-                if(string.includes(substring)) {
-                    $.post(createDeviceGroupUrl, {'device_id':response.deviceDetails.id,'device_group_name':e.object.data} )
-                        .success(function (response) {
-                            $(e.target).val(response.deviceGroupId);
-                            groupSource.push({
-                                value: response.deviceGroupId,
-                                text: e.object.data,
-                                id : response.deviceGroupId
-                            })
+                    if(string.includes(substring)) {
+                        groupSource.push({
+                            value: e.object.id,
+                            text: e.object.data,
+                            id : e.object.id
                         });
-                }
+                    }
             });
 
             return groupParent;
         },
         DeviceTypeSelect: function(response) {
-            var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id);
-            var createDeviceTypeUrl = OC.generateUrl('/apps/sensorlogger/createDeviceType');
+            var updateUrl = OC.generateUrl(OCA.SensorLogger.url.updateDevice + response.deviceDetails.id);
             let bodyDetailsContainer = OCA.SensorLogger.Sidebar.find('.tpl_bodyDetails').clone();
             bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
 
@@ -1409,17 +1254,13 @@
             $(type).on('select2-selecting',function(e){
                 var string = e.object.id,
                     substring = "create_";
-                if(string.includes(substring)) {
-                    $.post(createDeviceTypeUrl, {'device_id':response.deviceDetails.id,'device_type_name':e.object.data} )
-                        .success(function (response) {
-                            $(e.target).val(response.deviceTypeId);
-                            typeSource.push({
-                                value: response.deviceTypeId,
-                                text: e.object.data,
-                                id : response.deviceTypeId
-                            })
+                    if(string.includes(substring)) {
+                        typeSource.push({
+                            value: e.object.id,
+                            text: e.object.data,
+                            id : e.object.id
                         });
-                }
+                    }
             });
             return type;
         },
@@ -1432,22 +1273,9 @@
             sidebarBody.append(this.DeviceGroupSelect(response));
             sidebarBody.append(this.DeviceParentGroupSelect(response));
             sidebarBody.append(this.DeviceTypeSelect(response));
+            sidebarBody.append(this.DeviceDataTypes(response));
         },
         DeviceShare: function () {
-            if(!OC.Share) {
-                OC.Share = {};
-            }
-
-            //var modelConfig = new OC.Share.ShareConfigModel;
-            //var model = new OC.Share.ShareModel;
-            //var item = new OC.Share.ShareItemModel;
-            //var info = new OC.Share.ShareInfo;
-            //var share = new OC.Share.ShareDialogView;
-            //var tabView = new OC.Share.DetailTabView
-            //console.log(OC.Share.DetailTabView.render());
-
-            console.log(DetailTabView);
-
 		    /** TODO: Feature to share device needs to be implemented **/
             var sidebarBody = OCA.SensorLogger.Sidebar.find('.body');
             var sidebarTitle = OCA.SensorLogger.Sidebar.find('.title');
@@ -1576,4 +1404,3 @@ $(document).ready(function() {
         OCA.SensorLogger.App.initialize();
 	});
 });
-

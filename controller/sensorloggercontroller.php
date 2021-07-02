@@ -636,6 +636,13 @@ class SensorLoggerController extends Controller
         $groups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
         $types = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
 
+        $dataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+            $this->userSession->getUser()->getUID(),
+            $id,
+            $this->connection
+        );
+
+
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
 
@@ -643,7 +650,8 @@ class SensorLoggerController extends Controller
         $response = $this->returnJSON([
             'deviceDetails' => $deviceDetails,
             'groups' => $groups,
-            'types' => $types
+            'types' => $types,
+            'dataTypes' => $dataTypes
         ]);
 
         $response->setContentSecurityPolicy($policy);
@@ -660,13 +668,37 @@ class SensorLoggerController extends Controller
         $field = $this->request->getParam('name');
         $value = $this->request->getParam('value');
 
-		try {
-			if(Devices::updateDevice($id, $field, $value, $this->connection)) {
-				return $this->returnJSON(['success' => true]);
-			}
-		} catch (Exception $exception) {
-		}
-		return $this->returnJSON(['success' => false]);
+        if (($field === 'group_id' || $field === 'group_parent_id') && strpos($value, 'create_') !== false) {
+              $deviceGroupId = DeviceGroups::insertSensorGroup(
+                  $this->userSession->getUser()->getUID(),
+                  str_replace('create_', '', $value),
+                  $this->connection);
+              if (is_int($deviceGroupId)) {
+                  $value = $deviceGroupId;
+              } else {
+                  return $this->returnJSON(['success' => false]);
+              }
+        } else if ($field === 'type_id' && strpos($value, 'create_') !== false) {
+            $deviceTypeId = DeviceTypes::insertDeviceType(
+                $this->userSession->getUser()->getUID(),
+                str_replace('create_', '', $value),
+                $this->connection);
+            if (is_int($deviceTypeId)) {
+                $value = $deviceTypeId;
+            } else {
+                return $this->returnJSON(['success' => false]);
+            }
+        } else {
+
+        }
+
+        try {
+        		if(Devices::updateDevice($id, $field, $value, $this->connection)) {
+        			return $this->returnJSON(['success' => true]);
+        		}
+        	} catch (Exception $exception) {
+        	}
+        	return $this->returnJSON(['success' => false]);
     }
 
     /**

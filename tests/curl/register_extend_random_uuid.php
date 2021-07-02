@@ -1,5 +1,14 @@
 <?php
+/**
+* Register fake device/sensor
+* with random uuid
+*
+* NOTICE: Device registration ONLY REQUIRED if other than DHT22 (humidity and temperature) used
+*/
 
+/**
+* Geneate random device UUID
+*/
 function genUniquID() {
 	$uuid = md5( uniqid() );
 	$segments = array();
@@ -12,7 +21,16 @@ function genUniquID() {
 	return $uuid;
 }
 
-	$url = 'http://owncloud-dev.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$host = 'http://localhost:8080'; // Default if https://github.com/sensorlogger/owncloud-docker-development used
+	$path = 'index.php/apps/sensorlogger';
+	$endpoint = 'api/v1/registerdevice';
+	$url = $host . DIRECTORY_SEPARATOR .
+		$path . DIRECTORY_SEPARATOR .
+		$endpoint . DIRECTORY_SEPARATOR;
+
+	$username = 'admin';
+	$token = 'TCQDX-RVAMN-TLKFS-ILSSZ';
+
 
 	$registerArray = [
 		'_route' => 'sensorlogger.apisensorlogger.registerDevice',
@@ -54,9 +72,6 @@ function genUniquID() {
 	];
 
 	$data_json = json_encode($registerArray);
-
-	$username = 'admin';
-	$token = 'KOLDG-ELJML-ZPGIJ-QOUIS';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

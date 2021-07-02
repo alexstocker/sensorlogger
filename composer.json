@@ -1,5 +1,20 @@
 {
-    "require-dev": {
-        "owncloud/coding-standard": "^1.0"
-    }
+    "name": "alexstocker/sensorlogger",
+    "description": "SensorLogger for owncloud",
+    "type": "project",
+    "version": "0.1.0",
+    "license": "AGPL",
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/alexstocker/sensorlogger.git"
+        }
+    ],
+    "require": {
+        "php": ">=7.2"
+    },
+    "require-dev": {},
+    "autoload": {},
+    "autoload-dev": {}
 }

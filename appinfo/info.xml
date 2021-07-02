@@ -44,7 +44,7 @@
 
     <dependencies>
         <owncloud min-version="10" max-version="11"/>
-        <nextcloud min-version="14" max-version="15"/>
+        <nextcloud min-version="14" max-version="21"/>
         <database min-version="5.7">mysql</database>
         <php min-version="7.0" max-version="8.0"/>
     </dependencies>
