@@ -1,6 +1,7 @@
 # SensorLogger
 
 ### 0.1.4nc UNRELEASED
+  * Added #101 PHP 8 and #100 NC21 Support
   * #98 Modified App description
 
 ### 0.1.3nc RELEASED

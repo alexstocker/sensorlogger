@@ -8,7 +8,7 @@
 		uptime, iops, water level, voltage, luminosity, rainfall and many many more.</description>
     <licence>AGPL</licence>
     <author>Alexander Stocker</author>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <namespace>SensorLogger</namespace>
     <category>tools</category>
     <ocsid>174814</ocsid>
@@ -31,8 +31,8 @@
     <screenshot>https://www.html5live.at/wp-content/uploads/2019/05/sensorlogger-nc16-widget-sidebar.png</screenshot>
     <screenshot>https://www.html5live.at/wp-content/uploads/2019/05/sensorlogger-nc16-device-edit.png</screenshot>
     <dependencies>
-        <nextcloud min-version="15" max-version="20"/>
+        <nextcloud min-version="15" max-version="23"/>
         <database min-version="5.7">mysql</database>
-        <php min-version="7.0" max-version="7.3"/>
+        <php min-version="7.0" max-version="8.0"/>
     </dependencies>
 </info>
