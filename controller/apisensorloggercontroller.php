@@ -599,6 +599,13 @@ class ApiSensorLoggerController extends ApiController
     public function createShare()
     {
         # TODO [GH13] Add apisensorloggercontroller::createShare
+
+		$share = $this->shareManager->newShare();
+		if (!$this->shareManager->shareApiEnabled()) {
+			return new Result(null, 404, $this->l->t('Share API is disabled'));
+		}
+		$name = $this->request->getParam('name', null);
+
     }
 
     /**

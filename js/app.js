@@ -1,5 +1,8 @@
 (function() {
-
+    var TEMPLATE =
+        '<div>' +
+        '<div class="dialogContainer"></div>' +
+        '</div>';
     if (!OCA.SensorLogger) {
         /**
          * Namespace for the sensorlogger app
@@ -8,6 +11,194 @@
         OCA.SensorLogger = {};
     }
 
+    var SensorInfoModel = OC.Backbone.Model.extend({
+
+        defaults: {
+        },
+
+        initialize: function(data, options) {
+            if (!_.isUndefined(data.id)) {
+                data.id = parseInt(data.id, 10);
+            }
+
+            if( options ){
+
+            }
+        },
+
+        /**
+         * Returns whether sensor is default humidity/temperatur sensor like DHT22
+         *
+         * @return {boolean}
+         */
+        isDefault: function() {
+            return true;
+        },
+
+
+        /**
+         * Returns the type of the sensor
+         *
+         * @return {string} mimetype
+         */
+        getSensorType: function() {
+            return this.get('sensortype');
+        },
+    });
+    OCA.SensorLogger.InfoModel = SensorInfoModel;
+
+    var DetailTabView = OC.Backbone.View.extend({
+        tag: 'div',
+
+        className: 'tab',
+
+        /**
+         * Tab label
+         */
+        _label: null,
+
+        _template: null,
+
+        initialize: function(options) {
+            options = options || {};
+            if (options.order) {
+                this.order = options.order || 0;
+            }
+        },
+
+        /**
+         * Returns the tab label
+         *
+         * @return {String} label
+         */
+        getLabel: function() {
+            return 'Tab ' + this.id;
+        },
+
+        /**
+         * returns the jQuery object for HTML output
+         *
+         * @returns {jQuery}
+         */
+        get$: function() {
+            return this.$el;
+        },
+
+        /**
+         * Renders this details view
+         *
+         * @abstract
+         */
+        render: function() {
+            // to be implemented in subclass
+            // FIXME: code is only for testing
+            this.$el.html('<div>Hello ' + this.id + '</div>');
+        },
+
+        /**
+         * Sets the file info to be displayed in the view
+         *
+         * @param {OCA.SensorLogger.SensorInfoModel} sensorInfo to set
+         */
+        setSensorInfo: function(sensorInfo) {
+            if (this.model !== sensorInfo) {
+                this.model = sensorInfo;
+                this.render();
+            }
+        },
+
+        /**
+         * Returns the file info.
+         *
+         * @return {OCA.SensorLogger.SensorInfoModel} sensor info
+         */
+        getSensorInfo: function() {
+            return this.model;
+        },
+
+        /**
+         * Load the next page of results
+         */
+        nextPage: function() {
+            // load the next page, if applicable
+        },
+
+        /**
+         * Returns whether the current tab is able to display
+         * the given file info, for example based on mime type.
+         *
+         * @param {OCA.SensorLogger.SensorInfoModel} sensorInfo file info model
+         * @return {bool} whether to display this tab
+         */
+        canDisplay: function(sensorInfo) {
+            return true;
+        }
+    });
+    OCA.SensorLogger.DetailTabView = DetailTabView;
+
+    var ShareTabView = OCA.SensorLogger.DetailTabView.extend(
+        /** @lends OCA.Sharing.ShareTabView.prototype */ {
+            id: 'shareTabView',
+            className: 'tab shareTabView',
+
+            template: function(params) {
+                if (!this._template) {
+                    this._template = Handlebars.compile(TEMPLATE);
+                }
+                return this._template(params);
+            },
+
+            getLabel: function() {
+                return t('sensor_sharing', 'Sharing');
+            },
+
+            /**
+             * Renders this details view
+             */
+            render: function() {
+                var self = this;
+                if (this._dialog) {
+                    // remove/destroy older instance
+                    this._dialog.model.off();
+                    this._dialog.remove();
+                    this._dialog = null;
+                }
+
+                if (this.SensorInfoModel) {
+                    this.$el.html(this.template());
+
+                    var attributes = {
+                        itemType: 'sensor',
+                        itemSource: SensorInfoModel.get('id'),
+                        possiblePermissions: SensorInfoModel.get('sharePermissions')
+                    };
+                    var configModel = new OC.Share.ShareConfigModel();
+                    var shareModel = new OC.Share.ShareItemModel(attributes, {
+                        configModel: configModel,
+                        fileInfoModel: this.model
+                    });
+                    this._dialog = new OC.Share.ShareDialogView({
+                        configModel: configModel,
+                        model: shareModel
+                    });
+                    this.$el.find('.dialogContainer').append(this._dialog.$el);
+                    this._dialog.render();
+                    this._dialog.model.fetch();
+                    this._dialog.model.on('change', function() {
+                        self.trigger('sharesChanged', shareModel);
+                    });
+                    this._dialog.model.getLinkSharesCollection().on('update', function() {
+                        self.trigger('sharesChanged', shareModel);
+                    });
+                } else {
+                    this.$el.empty();
+                    // TODO: render placeholder text?
+                }
+            }
+        });
+    //OCA.Sharing.ShareTabView = ShareTabView;
+
+    /* TODO: Filter for sensor list view */
 	OCA.SensorLogger.Filter = {
 		filter: undefined,
 		$navigation: $('#app-navigation'),
@@ -29,6 +220,8 @@
 
     OCA.SensorLogger = {
 
+        InfoModel: null,
+        DetailsTabView: null,
     	widgets: {
     	    gridstack: null,
         },
@@ -1001,7 +1194,7 @@
                 type: 'select2',
                 field: 'group',
                 title: response.deviceGroupName,
-                url: OC.generateUrl('/apps/sensorlogger/updateDevice/'+response.deviceDetails.id),
+                url: updateUrl,
                 text: response.deviceDetails.name
             }
 
@@ -1069,6 +1262,8 @@
                                 text: e.object.data,
                                 id : response.deviceGroupId
                             })
+                            e.object.id = response.deviceGroupId
+                            console.log(response);
                         });
                 }
             });
@@ -1239,6 +1434,20 @@
             sidebarBody.append(this.DeviceTypeSelect(response));
         },
         DeviceShare: function () {
+            if(!OC.Share) {
+                OC.Share = {};
+            }
+
+            //var modelConfig = new OC.Share.ShareConfigModel;
+            //var model = new OC.Share.ShareModel;
+            //var item = new OC.Share.ShareItemModel;
+            //var info = new OC.Share.ShareInfo;
+            //var share = new OC.Share.ShareDialogView;
+            //var tabView = new OC.Share.DetailTabView
+            //console.log(OC.Share.DetailTabView.render());
+
+            console.log(DetailTabView);
+
 		    /** TODO: Feature to share device needs to be implemented **/
             var sidebarBody = OCA.SensorLogger.Sidebar.find('.body');
             var sidebarTitle = OCA.SensorLogger.Sidebar.find('.title');

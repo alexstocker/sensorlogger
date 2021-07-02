@@ -11,11 +11,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-<<<<<<< Updated upstream
 	$token = 'MFSFF-VREYH-PHSLT-DTMFN';
-=======
-	$token = 'YPPYJ-WOSGZ-HRUKW-KGSHJ';
->>>>>>> Stashed changes
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
