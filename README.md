@@ -16,6 +16,10 @@
 - owncloud 0.1.1
 - nextcloud 0.1.1
 
+### Development Environments
+- SensorLogger for Owncloud (docker, composer) - https://github.com/alexstocker/owncloud-docker-development
+- SensorLogger for Nextcloud - n.a.
+
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
 ![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_oc_dashboard_widget_livedata_001.png)
