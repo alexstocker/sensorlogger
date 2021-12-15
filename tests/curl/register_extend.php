@@ -13,8 +13,8 @@
 		$path . DIRECTORY_SEPARATOR .
 		$endpoint . DIRECTORY_SEPARATOR;
 
-	$username = 'admin';
-	$token = 'TCQDX-RVAMN-TLKFS-ILSSZ';
+    $username = 'admin';
+    $token = 'EDDUA-BGCAA-WUNYU-AVYYY';
 	$deviceId = '20e643ee8-0f9f-11e7-93ae-92361f002675';
 
     $registerArray = [

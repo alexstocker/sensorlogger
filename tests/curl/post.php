@@ -25,7 +25,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'TCQDX-RVAMN-TLKFS-ILSSZ';
+	$token = 'EDDUA-BGCAA-WUNYU-AVYYY';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

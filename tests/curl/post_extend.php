@@ -14,7 +14,7 @@
 		$endpoint . DIRECTORY_SEPARATOR;
 
 	$username = 'admin';
-	$token = 'TCQDX-RVAMN-TLKFS-ILSSZ';
+	$token = 'EDDUA-BGCAA-WUNYU-AVYYY';
 	$deviceId = '20e643ee8-0f9f-11e7-93ae-92361f002675';
 
 	$humidity = mt_rand (1.00*10, 99.99*10) / 10;

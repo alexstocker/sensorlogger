@@ -1,6 +1,6 @@
 # SensorLogger for owncloud
 
-### 0.1.1 UNRELEASED
+### 0.1.1 RELEASED
   * Added #101 PHP 8 Support
   * Fixed creating device groups and types on the fly within device details sidebar
   * Reworked and cleaned up JS #11
