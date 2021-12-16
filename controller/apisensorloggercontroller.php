@@ -35,7 +35,6 @@ use OCP\Share\IShare;
  */
 class ApiSensorLoggerController extends ApiController
 {
-
     private $db;
 
     /**
@@ -62,23 +61,25 @@ class ApiSensorLoggerController extends ApiController
 
     protected $response;
 
-    public function __construct($AppName,
-                                IRequest $request,
-                                IDBConnection $db,
-                                IConfig $config,
-                                IManager $shareManager,
-                                IGroupManager $groupManager,
-                                IUserManager $userManager,
-                                IL10N $l10n,
-                                IUserSession $userSession,
-                                ILogger $logger)
-    {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IDBConnection $db,
+        IConfig $config,
+        IManager $shareManager,
+        IGroupManager $groupManager,
+        IUserManager $userManager,
+        IL10N $l10n,
+        IUserSession $userSession,
+        ILogger $logger
+    ) {
         parent::__construct(
             $AppName,
             $request,
             'PUT, POST, GET, DELETE, PATCH',
             'Authorization, Content-Type, Accept',
-            1728000);
+            1728000
+        );
         $this->db = $db;
         $this->userSession = $userSession;
         $this->config = $config;
@@ -127,7 +128,7 @@ class ApiSensorLoggerController extends ApiController
                             if (!(int)$param['dataTypeId']) {
                                 $this->errors[] = 'dataTypeId needs to be an integer';
                             }
-                            if (!(int)$param['value'] && !(float)$param['value']) {
+                            if (!is_numeric($param['value'])) {
                                 $this->errors[] = 'value needs to be an integer or float';
                             }
                         }
@@ -159,7 +160,8 @@ class ApiSensorLoggerController extends ApiController
             true,
             Http::STATUS_OK,
             'Sensor Log successfully stored',
-            $params['data']);
+            $params['data']
+        );
     }
 
     /**
@@ -168,7 +170,7 @@ class ApiSensorLoggerController extends ApiController
      */
     protected function insertExtendedLog($array)
     {
-        if(!$this->checkRegisteredDevice($array)) {
+        if (!$this->checkRegisteredDevice($array)) {
             $this->errors[] = 'Device #'.$array['deviceId'].' not registered';
             return false;
         }
@@ -301,9 +303,10 @@ class ApiSensorLoggerController extends ApiController
                     true,
                     Http::STATUS_OK,
                     'Device successfully registered',
-                    $deviceDataTypes);
+                    $deviceDataTypes
+                );
             }
-        } else if (!empty($this->errors)) {
+        } elseif (!empty($this->errors)) {
             return $this->requestResponse(false, Error::MISSING_PARAM, implode(',', $this->errors));
         } else {
             return $this->requestResponse(false, Error::DEVICE_EXISTS, 'Device already exists!');
@@ -340,7 +343,6 @@ class ApiSensorLoggerController extends ApiController
                 'message' => $message,
                 'data' => $data
             ];
-
         }
         $response->setData($array)->render();
         return $response;
@@ -478,7 +480,8 @@ class ApiSensorLoggerController extends ApiController
         if (isset($params['deviceId'])) {
             $device = Devices::getDeviceByUuid(
                 $this->userSession->getUser()->getUID(),
-                $params['deviceId'], $this->db
+                $params['deviceId'],
+                $this->db
             );
 
             if ($device) {
@@ -578,7 +581,8 @@ class ApiSensorLoggerController extends ApiController
             true,
             Http::STATUS_OK,
             'DataTypes for Device #'.$params['deviceId'],
-            $deviceDataTypes);
+            $deviceDataTypes
+        );
     }
 
     /**
@@ -595,6 +599,13 @@ class ApiSensorLoggerController extends ApiController
     public function createShare()
     {
         # TODO [GH13] Add apisensorloggercontroller::createShare
+
+		$share = $this->shareManager->newShare();
+		if (!$this->shareManager->shareApiEnabled()) {
+			return new Result(null, 404, $this->l->t('Share API is disabled'));
+		}
+		$name = $this->request->getParam('name', null);
+
     }
 
     /**

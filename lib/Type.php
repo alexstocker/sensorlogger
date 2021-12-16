@@ -1,31 +1,33 @@
 <?php
 
 namespace OCA\SensorLogger;
+
 use OCP\AppFramework\Db\Entity;
 
+class Type extends Entity implements \JsonSerializable
+{
+    protected $id;
 
-class Type extends Entity implements \JsonSerializable {
+    protected $userId;
 
-	protected $id;
+    protected $deviceTypeName;
 
-	protected $userId;
+    protected $assigendDevices;
 
-	protected $deviceTypeName;
+    public function __construct()
+    {
+        $this->addType('userId', 'string');
+        $this->addType('deviceTypeName', 'string');
+        $this->addType('assignedDevices', 'array');
+    }
 
-	protected $assigendDevices;
-
-	public function __construct() {
-		$this->addType('userId', 'string');
-		$this->addType('deviceTypeName', 'string');
-		$this->addType('assignedDevices', 'array');
-	}
-
-	public function jsonSerialize() {
-		return [
-			'id' => $this->id,
-			'userId' => $this->userId,
-			'deviceTypeName' => $this->deviceTypeName,
-			'assignedDevices' => $this->assigendDevices
-		];
-	}
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'userId' => $this->userId,
+            'deviceTypeName' => $this->deviceTypeName,
+            'assignedDevices' => $this->assigendDevices
+        ];
+    }
 }

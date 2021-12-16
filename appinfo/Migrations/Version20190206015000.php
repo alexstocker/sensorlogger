@@ -7,7 +7,8 @@ use OCP\Migration\ISchemaMigration;
 /**
  * Auto-generated migration step: Please modify to your needs!
  */
-class Version20190206015000 implements ISchemaMigration {
+class Version20190206015000 implements ISchemaMigration
+{
 
     /** @var  string */
     private $prefix;
@@ -17,7 +18,8 @@ class Version20190206015000 implements ISchemaMigration {
      * @param array $options
      * @return Schema
      */
-    public function changeSchema(Schema $schema, array $options) {
+    public function changeSchema(Schema $schema, array $options)
+    {
         $this->prefix = $options['tablePrefix'];
 
         if (!$schema->hasTable($this->prefix.'sensorlogger_logs')) {
@@ -191,5 +193,4 @@ class Version20190206015000 implements ISchemaMigration {
         }
         return $schema;
     }
-
 }

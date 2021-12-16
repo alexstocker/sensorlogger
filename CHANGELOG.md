@@ -1,5 +1,18 @@
-# SensorLogger
+# SensorLogger for owncloud
 
+### 0.1.1 RELEASED
+  * Added #101 PHP 8 Support
+  * Fixed creating device groups and types on the fly within device details sidebar
+  * Reworked and cleaned up JS #11
+  * Added #51 make dashboard widgets position persistant
+  * Modified #85 Allow 0 value @Kixunil
+  * Changed Dashboard request type to GET
+  * Changed LogList request type to GET
+  * Changed DeviceList request type to GET
+  * Changed DeviceTypeList request type to GET
+  * Changed DeviceGroupList request type to GET
+  * Changed DataTypeList request type to GET
+  
 ### 0.1.0.1 RELEASED
   * Fixed problem in deployment pipeline causing broken owncloud marketplace archive. #76 Thanx to @ibaranov-cp
 
@@ -16,7 +29,7 @@
   * Added some more data validation #69 @vitoller
   * Modified registerDevice set deviceType optional
   * Modified registerDevice set deviceGroup optional
-  * Modified registerDevice set deviceParentGroup optional 
+  * Modified registerDevice set deviceParentGroup optional
   * Modified Device Sidebar content by adding some Labels
   * Modified Device Sidebar Select boxes by making the ability to create on the fly more visible
   * Added Share/Edit Icons to Devices. Removed Delete Icon because of already existing wipeOut action in Sidebar. #19 #74
@@ -30,7 +43,7 @@
   * Added some more data validation #69 @vitoller
   * Removed obsolete and undefined properties in LogExtended
   * Adding some more requirements
-  
+
 ### 0.0.10 REVOKED
 
 ### 0.0.9 RELEASED
@@ -61,7 +74,7 @@
   * Add CONTRIBUTING.md
   * Added CODE_OF_CONDUCT.md
   * Updated README
-  
+
 ### 0.0.5
   * Fixed missing Select2 on oc v10.0.3, added DataTypes::deleteDeviceDataTypesByDeviceId, SensorDevices::isDeletable
   * Added missing DataTypes::getDataTypesByUserId

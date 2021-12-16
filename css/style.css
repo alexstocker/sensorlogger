@@ -130,11 +130,26 @@ span.center {
 }
 
 #app-content-wrapper .widget-wrapper {
-	margin-top: 44px;
+	/* margin-top: 44px; */
+	margin: 5px;
 }
 
-#app-content-wrapper #controls .actions {
+#app-navigation li#showDashboard a.menuItem {
+	display: inline;
+}
 
+#app-navigation > ul#navigation-list ul#dashboard-actionbar {
+	display: inline;
+}
+
+#app-navigation > ul#navigation-list ul#dashboard-actionbar li a {
+	margin: 0;
+	padding: 0;
+	height: 44px;
+}
+
+#app-navigation #dashboard-actionbar {
+	float: right;
 }
 
 table th, table td {
@@ -158,16 +173,26 @@ table th, table td {
 
 
 .dashboard-widget .section {
+	/*
 	text-align: right;
 	padding-top: 10px;
 	margin-bottom: 10px;
 	background-color: #eee;
+	*/
+	/*background-color: lightgrey;*/
+}
+
+.widget-type-realTimeChart {
+	/*min-height: 350px;*/
+}
+
+.widget.icon-loading {
+	height: -webkit-fill-available;
+	height: inherit;
 }
 
 .dashboard-widget .section.list,
 .dashboard-widget .section.chart {
-	max-height: 300px;
-	overflow-x: auto;
 }
 
 .dashboard-widget .section h3 {
@@ -180,11 +205,9 @@ h2.widget-header a span.icon {
 	vertical-align: sub !important;
 }
 
-
-
 .column{
-	margin-right:.5%;
-	margin-left: .5%;
+	/*margin-right:.5%;
+	margin-left: .5%;*/
 	background:#fff;
 	float:left;
 }
@@ -223,11 +246,12 @@ h2.widget-header a span.icon {
 }
 
 .column .dragbox {
-	margin:5px 2px 17px;
+	margin: 2px;
 	position: relative;
-	border:1px solid #eee;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
+	height: -webkit-fill-available;
+	height: inherit;
+	background-color: lightgrey;
+	overflow: hidden;
 }
 .column .dragbox h2{
 	margin:0;
@@ -240,7 +264,8 @@ h2.widget-header a span.icon {
 
 .dragbox-content{
 	background:#fff;
-	min-height:100px; margin:5px;
+	/* min-height:100px; */
+	margin:5px;
 	font-family:'Lucida Grande', Verdana; font-size:0.8em; line-height:1.5em;
 }
 .column  .placeholder{
@@ -288,4 +313,13 @@ h2.widget-header a span.icon {
 	cursor: pointer;
 	/* box-shadow: 0 0 0 rgba(204,169,44, 0.4); */
 	animation: pulse 2s infinite;
+}
+
+.device-data-type-tag {
+    background-color: rgba(240, 240, 240, .9);
+    border-radius: 3px;
+	margin-bottom: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+	display: table;
 }

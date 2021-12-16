@@ -1,11 +1,27 @@
 <?php
-	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/createlog/';
+/**
+* POST fake data for a custom device/sensor
+* with a given device UUID
+*
+* NOTICE: Device registration ONLY REQUIRED if other than DHT22 (humidity and temperature) used
+*/
+
+	$host = 'http://localhost:8080'; // Default if https://github.com/sensorlogger/owncloud-docker-development used
+	$path = 'index.php/apps/sensorlogger';
+	$endpoint = 'api/v1/createlog';
+	$url = $host . DIRECTORY_SEPARATOR .
+		$path . DIRECTORY_SEPARATOR .
+		$endpoint . DIRECTORY_SEPARATOR;
+
+	$username = 'admin';
+	$token = 'EDDUA-BGCAA-WUNYU-AVYYY';
+	$deviceId = '20e643ee8-0f9f-11e7-93ae-92361f002675';
 
 	$humidity = mt_rand (1.00*10, 99.99*10) / 10;
 	$temperature = mt_rand (-9.00*10, 49.99*10) / 10;
 	$co2 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "0e643ee8-0f9f-11e7-93ae-92361f002675",
+	$array = array("deviceId" => $deviceId,
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(array(
 						"dataTypeId" => 1,
@@ -22,11 +38,6 @@
 					));
 
 	$data_json = json_encode($array);
-
-	$username = 'admin';
-	$token = 'ZOVOP-DABCK-ZGQMI-UDXKA';
-	//$username = 'test';
-	//$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
