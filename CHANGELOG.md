@@ -12,6 +12,9 @@
   * Changed DeviceTypeList request type to GET
   * Changed DeviceGroupList request type to GET
   * Changed DataTypeList request type to GET
+  
+### 0.1.0.1 RELEASED
+  * Fixed problem in deployment pipeline causing broken owncloud marketplace archive. #76 Thanx to @ibaranov-cp
 
 ### 0.1.0 RELEASED
   * Fixed GetDeviceDataTypes API call
