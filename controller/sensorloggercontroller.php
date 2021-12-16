@@ -113,18 +113,19 @@ class SensorLoggerController extends Controller
      * @param IUserSession $userSession
      * @param IAppManager $appManager
      */
-    public function __construct($AppName,
-                                Widgets $widgets,
-                                IRequest $request,
-                                IURLGenerator $urlGenerator,
-                                INavigationManager $navigationManager,
-                                IL10N $l10n,
-                                IDBConnection $connection,
-                                IConfig $config,
-                                EventDispatcherInterface $eventDispatcherInterface,
-                                IUserSession $userSession,
-                                IAppManager $appManager)
-    {
+    public function __construct(
+        $AppName,
+        Widgets $widgets,
+        IRequest $request,
+        IURLGenerator $urlGenerator,
+        INavigationManager $navigationManager,
+        IL10N $l10n,
+        IDBConnection $connection,
+        IConfig $config,
+        EventDispatcherInterface $eventDispatcherInterface,
+        IUserSession $userSession,
+        IAppManager $appManager
+    ) {
         parent::__construct($AppName, $request);
         $this->connection = $connection;
         $this->config = $config;
@@ -150,8 +151,9 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'dashboard',
             'widgets' => $widgets,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems('showDashboard')
         );
+
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -162,9 +164,12 @@ class SensorLoggerController extends Controller
         return $response;
     }
 
-    protected function getNavigationItems()
+	/**
+	 * @param null $active
+	 * @return mixed
+	 */
+    protected function getNavigationItems($active = null)
     {
-
         App::getNavigationManager()->add(
             [
                 'id' => 'showDashboard',
@@ -232,7 +237,6 @@ class SensorLoggerController extends Controller
         );
 
         if ($this->config->getAppValue('core', 'shareapi_enabled', 'yes') === 'yes') {
-
             App::getNavigationManager()->add(
                 array(
                     'id' => 'sharingin',
@@ -270,11 +274,16 @@ class SensorLoggerController extends Controller
             }
         }
 
-
         $navItems = App::getNavigationManager()->getAll();
         usort($navItems, function ($item1, $item2) {
             return $item1['order'] - $item2['order'];
         });
+
+		foreach ($navItems as $navKey => $navItem) {
+			if($navItem['id'] === $active) {
+				$navItems[$navKey]['active'] = true;
+			}
+        }
 
         return $navItems;
     }
@@ -290,7 +299,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharingin'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -312,7 +321,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharingout'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -334,7 +343,7 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'listSharedDevices',
             'devices' => [],
-            'navItems' => $this->getNavigationItems());
+            'navItems' => $this->getNavigationItems('sharinglinks'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
@@ -361,7 +370,8 @@ class SensorLoggerController extends Controller
             foreach ($widgetTypes as $key => $value) {
                 $widgetConfig = json_decode($this->getUserValue(
                     'widget-' . $key . '-' . $device->getId(),
-                    $this->userSession->getUser()->getUID()));
+                    $this->userSession->getUser()->getUID()
+                ));
 
                 if ($widgetConfig === null) {
                     continue;
@@ -372,7 +382,17 @@ class SensorLoggerController extends Controller
                     $device,
                     $widgetConfig,
                     $this->connection,
-                    $this->config);
+                    $this->config
+                );
+
+                if(!isset($customWidget->getOptions()['position'])) {
+                	$x = (count($widgets) - 1 ) + 1;
+					$y = (count($widgets) - 1 ) + 1;
+					$w = 4;
+					$h = 4;
+					$customWidget->setOptions('position',['x' => $x, 'y' => $y]);
+					$customWidget->setOptions('size',['w' => $w, 'h' => $h]);
+				}
 
                 //$buildWidget = Widgets::build($this->userSession->getUser()->getUID(), $device, $widgetConfig, $this->connection, $this->config);
                 $widgets[] = $customWidget;
@@ -383,18 +403,22 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
-    function showList()
+    public function showList()
     {
-        $templateName = 'part.list';  // will use templates/main.php
         $logs = SensorLogs::getLogs($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'list', 'logs' => $logs);
+        $templateName = 'main';
+        $parameters = array(
+            'part' => 'list',
+            'logs' => $logs,
+            'navItems' => $this->getNavigationItems('showList'));
 
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
 
-        $response = new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
         $response->setContentSecurityPolicy($policy);
 
         return $response;
@@ -462,7 +486,8 @@ class SensorLoggerController extends Controller
             try {
                 DataTypes::deleteDataType($userId, (int)$id, $this->connection);
                 return $this->returnJSON(array('success' => true));
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+            }
         }
         return $this->returnJSON(array('success' => false));
     }
@@ -479,7 +504,8 @@ class SensorLoggerController extends Controller
             try {
                 DeviceGroups::deleteDeviceGroup($userId, (int)$id, $this->connection);
                 return $this->returnJSON(array('success' => true));
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+            }
         }
         return $this->returnJSON(array('success' => false));
     }
@@ -496,7 +522,8 @@ class SensorLoggerController extends Controller
             try {
                 DeviceTypes::deleteDeviceType($userId, (int)$id, $this->connection);
                 return $this->returnJSON(array('success' => true));
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+            }
         }
         return $this->returnJSON(array('success' => false));
     }
@@ -609,14 +636,23 @@ class SensorLoggerController extends Controller
         $groups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
         $types = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
 
+        $dataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+            $this->userSession->getUser()->getUID(),
+            $id,
+            $this->connection
+        );
+
+
         $policy = new ContentSecurityPolicy();
         $policy->addAllowedFrameDomain("'self'");
 
-        $response = $this->returnJSON(array(
+        $deviceDetails->setId($id);
+        $response = $this->returnJSON([
             'deviceDetails' => $deviceDetails,
             'groups' => $groups,
-            'types' => $types
-        ));
+            'types' => $types,
+            'dataTypes' => $dataTypes
+        ]);
 
         $response->setContentSecurityPolicy($policy);
 
@@ -631,7 +667,38 @@ class SensorLoggerController extends Controller
     {
         $field = $this->request->getParam('name');
         $value = $this->request->getParam('value');
-        Devices::updateDevice($id, $field, $value, $this->connection);
+
+        if (($field === 'group_id' || $field === 'group_parent_id') && strpos($value, 'create_') !== false) {
+              $deviceGroupId = DeviceGroups::insertSensorGroup(
+                  $this->userSession->getUser()->getUID(),
+                  str_replace('create_', '', $value),
+                  $this->connection);
+              if (is_int($deviceGroupId)) {
+                  $value = $deviceGroupId;
+              } else {
+                  return $this->returnJSON(['success' => false]);
+              }
+        } else if ($field === 'type_id' && strpos($value, 'create_') !== false) {
+            $deviceTypeId = DeviceTypes::insertDeviceType(
+                $this->userSession->getUser()->getUID(),
+                str_replace('create_', '', $value),
+                $this->connection);
+            if (is_int($deviceTypeId)) {
+                $value = $deviceTypeId;
+            } else {
+                return $this->returnJSON(['success' => false]);
+            }
+        } else {
+
+        }
+
+        try {
+        		if(Devices::updateDevice($id, $field, $value, $this->connection)) {
+        			return $this->returnJSON(['success' => true]);
+        		}
+        	} catch (Exception $exception) {
+        	}
+        	return $this->returnJSON(['success' => false]);
     }
 
     /**
@@ -662,15 +729,28 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function showDashboard()
     {
-        $templateName = 'part.dashboard';
         $log = SensorLogs::getLastLog($this->userSession->getUser()->getUID(), $this->connection);
         $widgets = $this->getWidgets();
-        $parameters = array('part' => 'dashboard', 'log' => $log, 'widgets' => $widgets);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+        $parameters = [
+            'part' => 'dashboard',
+            'log' => $log,
+            'widgets' => $widgets,
+            'navItems' => $this->getNavigationItems('showDashboard')
+        ];
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**
@@ -711,11 +791,11 @@ class SensorLoggerController extends Controller
      * @NoAdminRequired
      * @param integer $id
      * @param integer $param
+     * @return DataResponse
      */
     public function maxLastLog($id, $param)
     {
         if (is_int($id) && (is_int($param) && $param !== 0)) {
-
             $device = Devices::getDevice(
                 $this->userSession->getUser()->getUID(),
                 $id,
@@ -735,56 +815,102 @@ class SensorLoggerController extends Controller
                 $logs = array('logs' => $logs, 'dataTypes' => $dataTypes);
             }
             return $this->returnJSON($logs);
-
         }
     }
 
     /**
+     * @NoCSRFRequired
      * @NoAdminRequired
      */
     public function deviceList()
     {
-        $templateName = 'part.listDevices';
         $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'list', 'devices' => $devices);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+        $parameters = [
+            'part' => 'listDevices',
+            'devices' => $devices,
+            'navItems' => $this->getNavigationItems('deviceList'),
+        ];
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function deviceTypeList()
     {
-        $templateName = 'part.listDeviceTypes';
         $deviceTypes = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'listDeviceTypes', 'deviceTypes' => $deviceTypes);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+        $parameters = [
+            'part' => 'listDeviceTypes',
+            'deviceTypes' => $deviceTypes,
+            'navItems' => $this->getNavigationItems('deviceTypeList')
+        ];
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function deviceGroupList()
     {
-        $templateName = 'part.listDeviceGroups';
         $deviceGroups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'listDeviceGroups', 'deviceGroups' => $deviceGroups);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $templateName = 'main';
+        $parameters = [
+            'part' => 'listDeviceGroups',
+            'deviceGroups' => $deviceGroups,
+            'navItems' => $this->getNavigationItems('deviceGroupList')
+        ];
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function dataTypeList()
     {
-        $templateName = 'part.listDataTypes';
         $dataTypes = DataTypes::getDataTypes($this->userSession->getUser()->getUID(), $this->connection);
+        $templateName = 'main';
+        $parameters = [
+            'part' => 'listDataTypes',
+            'dataTypes' => $dataTypes,
+            'navItems' => $this->getNavigationItems('dataTypeList')
+        ];
 
-        $parameters = array('part' => 'listDataTypes', 'dataTypes' => $dataTypes);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+
+        $response = new TemplateResponse($this->appName, $templateName, $parameters);
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**
@@ -797,6 +923,26 @@ class SensorLoggerController extends Controller
         return $this->config->getUserValue($userId, $this->appName, $key);
     }
 
+	/**
+	 * @NoAdminRequired
+	 * @return DataResponse
+	 * @throws \OCP\PreConditionNotMetException
+	 */
+    public function updateWidgetSettings() {
+		$array = $this->request->getParams();
+		foreach($array as $key => $widget) {
+			if(isset($widget['key']) && !is_array($widget['key']) && !empty($widget['key'])) {
+				$json = json_encode($widget);
+				try {
+					$this->updateUserValue($widget['key'], $this->userSession->getUser()->getUID(), $json);
+				} catch (Exception $e) {
+					return $this->returnJSON(array('errors' => 'Could not Update widget settings!'));
+				}
+			}
+		}
+		return $this->returnJSON(['msg' => 'Updated Widget Position and size']);
+	}
+
     /**
      * @param $key
      * @param $userId
@@ -807,6 +953,19 @@ class SensorLoggerController extends Controller
     {
         $this->config->setUserValue($userId, $this->appName, $key, $value);
     }
+
+	/**
+	 * @param $key
+	 * @param $userId
+	 * @param $value
+	 * @throws \OCP\PreConditionNotMetException
+	 */
+    protected function updateUserValue($key, $userId, $value) {
+    	if($this->config->getUserValue($userId, $this->appName, $key)
+			&& $this->config->deleteUserValue($userId, $this->appName, $key)) {
+    		$this->setUserValue($key, $userId, $value);
+		}
+	}
 
     /**
      * @param $array

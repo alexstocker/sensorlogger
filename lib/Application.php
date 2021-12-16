@@ -31,53 +31,51 @@ use OCP\IContainer;
  *
  * @package OCA\SensorLogger\AppInfo
  */
-class Application extends App {
+class Application extends App
+{
+    public function __construct(array $urlParams = array())
+    {
+        parent::__construct('sensorlogger', $urlParams);
+        $container = $this->getContainer();
+        $server = $container->getServer();
 
-	public function __construct(array $urlParams = array()) {
-		parent::__construct('sensorlogger', $urlParams);
-		$container = $this->getContainer();
-		$server = $container->getServer();
+        $container->registerService('sensorloggercontroller', function (IContainer $c) use ($server) {
+            return new SensorLoggerController(
+                $c->query('AppName'),
+                $c->query('Request'),
+                $server->getURLGenerator(),
+                $server->getNavigationManager(),
+                $c->query('L10N'),
+                $server->getDatabaseConnection(),
+                $server->getConfig(),
+                $server->getEventDispatcher(),
+                $server->getUserSession(),
+                $server->getAppManager()
+            );
+        });
 
-		$container->registerService('sensorloggercontroller', function (IContainer $c) use ($server) {
-			return new SensorLoggerController(
-				$c->query('AppName'),
-				$c->query('Request'),
-				$server->getURLGenerator(),
-				$server->getNavigationManager(),
-				$c->query('L10N'),
-				$server->getDatabaseConnection(),
-				$server->getConfig(),
-				$server->getEventDispatcher(),
-				$server->getUserSession(),
-				$server->getAppManager()
-			);
-		});
-
-		$container->registerService('apisensorloggercontroller', function (IContainer $c) use ($server) {
-			return new ApiSensorLoggerController(
-				$c->query('AppName'),
-				$c->query('Request'),
-				$server->getDatabaseConnection(),
-				$server->getConfig(),
-				$server->getShareManager(),
-				$server->getGroupManager(),
-				$server->getUserManager(),
-				$c->query('L10N'),
-				$server->getUserSession()
-			);
-		});
+        $container->registerService('apisensorloggercontroller', function (IContainer $c) use ($server) {
+            return new ApiSensorLoggerController(
+                $c->query('AppName'),
+                $c->query('Request'),
+                $server->getDatabaseConnection(),
+                $server->getConfig(),
+                $server->getShareManager(),
+                $server->getGroupManager(),
+                $server->getUserManager(),
+                $c->query('L10N'),
+                $server->getUserSession()
+            );
+        });
 
 
-		/**
-		 * Core
-		 */
-		$container->registerService('L10N', function (IContainer $c) {
-			return $c->query('ServerContainer')->getL10N($c->query('AppName'));
-		});
+        /**
+         * Core
+         */
+        $container->registerService('L10N', function (IContainer $c) {
+            return $c->query('ServerContainer')->getL10N($c->query('AppName'));
+        });
 
         $container->registerCapability('OCA\SensorLogger\Capabilities');
-	}
-
-
-
+    }
 }

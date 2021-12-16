@@ -15,33 +15,35 @@ use function Sabre\Event\Loop\stop;
  *
  * @package OCA\SensorLogger
  */
-class Widgets {
-
-	const WIDGET_TYPES = [
-		'list' => 'Data list',
-		'chart' => 'Chart',
-		'last'	=> 'Current data',
+class Widgets
+{
+    const WIDGET_TYPES = [
+        'list' => 'Data list',
+        'chart' => 'Chart',
+        'last'	=> 'Current data',
         'realTimeLast' => 'Live - Current Data',
         'realTimeChart' => 'Live - Chart'
-		];
+        ];
 
-	protected $deviceId;
+    protected $deviceId;
 
-	/**
-	 * Widgets constructor.
-	 *
-	 * @param $deviceId
-	 */
-	public function __construct($deviceId = null) {
-		$this->deviceId = $deviceId;
+    /**
+     * Widgets constructor.
+     *
+     * @param $deviceId
+     */
+    public function __construct($deviceId = null)
+    {
+        $this->deviceId = $deviceId;
 
         ClassFinder::customClassLoader(dirname(__FILE__).DIRECTORY_SEPARATOR.'Widgets');
-	}
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getWidgetTypes(){
+    /**
+     * @return array
+     */
+    public function getWidgetTypes()
+    {
 
         //ClassFinder::customClassLoader(dirname(__FILE__).DIRECTORY_SEPARATOR.'Widgets');
         $widgetClasses = [];
@@ -67,8 +69,8 @@ class Widgets {
             ];
         }
 
-		return $availableWidgets;
-	}
+        return $availableWidgets;
+    }
 
     /**
      * @param $userId
@@ -78,18 +80,19 @@ class Widgets {
      * @param $config
      * @return Widget|MaxValues24hWidget
      */
-	public function buildUserWidget($userId,
-                    $device,
-                    $widgetConfig,
-                    $connection,
-                    $config) {
-
-	    if($widgetConfig) {
-            if($widgetConfig->widget_type) {
-                $widgetClass = str_replace(' ','',ucwords(str_replace('_',' ',$widgetConfig->widget_type)));
+    public function buildUserWidget(
+        $userId,
+        $device,
+        $widgetConfig,
+        $connection,
+        $config
+    ) {
+        if ($widgetConfig) {
+            if ($widgetConfig->widget_type) {
+                $widgetClass = str_replace(' ', '', ucwords(str_replace('_', ' ', $widgetConfig->widget_type)));
 
                 $nameSpaced = 'OCA\\SensorLogger\\Widgets\\'.$widgetClass.'Widget';
-                if(class_exists($nameSpaced)) {
+                if (class_exists($nameSpaced)) {
                     /** @var Widget|MaxValues24hWidget $customWidget */
                     $customWidget = new $nameSpaced;
                     $customWidget->setDisplayName($customWidget->widgetDisplayName());
@@ -100,85 +103,94 @@ class Widgets {
                     );
                     $customWidget->setName($device->getName());
                     return $customWidget;
-
                 } else {
                     return self::build($userId, $device, $widgetConfig, $connection, $config);
                 }
-
             }
         }
-
     }
 
-	/**
-	 * @param string $userId
-	 * @param Device $device
-	 * @parem $config
-	 * @param IConfig $systemConfig
-	 * @param IDBConnection $connection
-	 * @return Widget
-	 */
-	public static function build($userId, $device, $config, $connection, $systemConfig) {
-		$userTimeZone = $systemConfig->getUserValueForUsers('core','timezone',[$userId]);
+    /**
+     * @param string $userId
+     * @param Device $device
+     * @parem $config
+     * @param IConfig $systemConfig
+     * @param IDBConnection $connection
+     * @return Widget
+     */
+    public static function build($userId, $device, $config, $connection, $systemConfig)
+    {
+        $userTimeZone = $systemConfig->getUserValueForUsers('core', 'timezone', [$userId]);
 
-		$widget = new Widget();
+        $widget = new Widget();
 
-		$log = '';
-		switch ($config->widget_type) {
-			case 'last':
+        $log = '';
+        switch ($config->widget_type) {
+            case 'last':
             case 'realTimeLast':
-				$log = SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $connection);
-				break;
-			case 'chart':
-				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection);
-				break;
+                $log = SensorLogs::getLastLogByUuid($userId, $device->getUuid(), $connection);
+                break;
+            case 'chart':
+                $log = SensorLogs::getLogsByUuId($userId, $device->getUuid(), $connection);
+                break;
             case 'realTimeChart':
-                if(!$config->limit && !$config->offset) {
+                if (!$config->limit && !$config->offset) {
                     $config->limit = 100;
                     $config->offset = 0;
                 }
-                $log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection,$config->limit,$config->offset);
+                $log = SensorLogs::getLogsByUuId($userId, $device->getUuid(), $connection, $config->limit, $config->offset);
                 break;
-			case 'list':
-				$log = SensorLogs::getLogsByUuId($userId,$device->getUuid(),$connection,10);
-				break;
-			default:
-				break;
-		}
-		
-		# TODO [GH8] makeover Widgets::build
-		
-		if($log && is_array($log)) {
-			/** @var Log $lg */
-			foreach ($log as $lg) {
-				if (is_array($lg->getData()) && !empty($lg->getData())) {
-					foreach ($lg->getData() as $extendLog) {
-						$dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
-						$extendLog->setDescription($dataType->getDescription());
-						$extendLog->setType($dataType->getType());
-						$extendLog->setShort($dataType->getShort());
-					}
-				}
-			}
-		}
+            case 'list':
+                $log = SensorLogs::getLogsByUuId($userId, $device->getUuid(), $connection, 10);
+                break;
+            default:
+                break;
+        }
+        
+        # TODO [GH8] makeover Widgets::build
+        
+        if ($log && is_array($log)) {
+            /** @var Log $lg */
+            foreach ($log as $lg) {
+                if (is_array($lg->getData()) && !empty($lg->getData())) {
+                    foreach ($lg->getData() as $extendLog) {
+                        $dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
+                        $extendLog->setDescription($dataType->getDescription());
+                        $extendLog->setType($dataType->getType());
+                        $extendLog->setShort($dataType->getShort());
+                    }
+                }
+            }
+        }
 
-		if($log && is_object($log)) {
-			if (is_array($log->getData()) && !empty($log->getData())) {
-				/** @var LogExtended $extendLog */
-				foreach ($log->getData() as $extendLog) {
-					$dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
-					$extendLog->setDescription($dataType->getDescription());
-					$extendLog->setType($dataType->getType());
-					$extendLog->setShort($dataType->getShort());
-				}
-			}
-		}
+        if ($log && is_object($log)) {
+            if (is_array($log->getData()) && !empty($log->getData())) {
+                /** @var LogExtended $extendLog */
+                foreach ($log->getData() as $extendLog) {
+                    $dataType = DataTypes::getDataTypeById($userId, $extendLog->getDataTypeId(), $connection);
+                    $extendLog->setDescription($dataType->getDescription());
+                    $extendLog->setType($dataType->getType());
+                    $extendLog->setShort($dataType->getShort());
+                }
+            }
+        }
 
-		$widget->setDeviceId($device->getId());
-		$widget->setType($config->widget_type);
-		$widget->setLog($log);
-		$widget->setName($device->getName());
-		$widget->setDisplayName(self::WIDGET_TYPES[$config->widget_type]);
-		return $widget;
-	}
+        $widget->setDeviceId($device->getId());
+        $widget->setType($config->widget_type);
+        $widget->setLog($log);
+        $widget->setName($device->getName());
+        $position = [
+        		'x' => $config->x ?: 0,
+				'y' => $config->y ?: 0
+			];
+		$widget->setOptions('position',$position);
+        $size = [
+				'w' => $config->w ?: 4,
+				'h' => $config->h ?: 6
+			];
+		$widget->setOptions('size',$size);
+
+        $widget->setDisplayName(self::WIDGET_TYPES[$config->widget_type]);
+        return $widget;
+    }
 }

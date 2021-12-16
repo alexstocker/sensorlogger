@@ -1,3 +1,7 @@
 bin/*
+vendor/*
+builds/*
 package.json
-
+composer.lock
+.php_cs.cache
+.php_cs.dist

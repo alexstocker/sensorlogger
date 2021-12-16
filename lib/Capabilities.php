@@ -22,7 +22,8 @@ class Capabilities implements ICapability
      *
      * @param IConfig $config
      */
-    public function __construct(IConfig $config) {
+    public function __construct(IConfig $config)
+    {
         $this->config = $config;
     }
 
@@ -32,7 +33,8 @@ class Capabilities implements ICapability
      * TODO: Define some use full capabilities
      * @return array
      */
-    public function getCapabilities() {
+    public function getCapabilities()
+    {
         return [
             'sensorlogger' => [
                 'someCapA' => true,
@@ -40,5 +42,4 @@ class Capabilities implements ICapability
             ],
         ];
     }
-
 }

@@ -1,9 +1,24 @@
 <?php
-	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+/**
+* Register a fake device/sensor
+* with a given device UUID
+*
+* NOTICE: Device registration ONLY REQUIRED if other than DHT22 (humidity and temperature) used
+*/
+
+	$host = 'http://localhost:8080'; // Default if https://github.com/sensorlogger/owncloud-docker-development used
+	$path = 'index.php/apps/sensorlogger';
+	$endpoint = 'api/v1/registerdevice';
+	$url = $host . DIRECTORY_SEPARATOR .
+		$path . DIRECTORY_SEPARATOR .
+		$endpoint . DIRECTORY_SEPARATOR;
+
+    $username = 'admin';
+    $token = 'EDDUA-BGCAA-WUNYU-AVYYY';
+	$deviceId = '20e643ee8-0f9f-11e7-93ae-92361f002675';
 
     $registerArray = [
-        //'_route' => 'sensorlogger.apisensorlogger.registerDevice',
-        'deviceId' => '0e643ee8-0f9f-11e7-93ae-92361f002675',
+        'deviceId' => $deviceId,
         'deviceName' => 'Multi data sensor V2',
         'deviceType' => 'Indoor',
         'deviceGroup' => 'Wohnzimmer',
@@ -28,11 +43,6 @@
     ];
 
     $data_json = json_encode($registerArray);
-
-	$username = 'admin';
-	$token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
-    //$username = 'test';
-    //$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

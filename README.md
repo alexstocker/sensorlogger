@@ -13,21 +13,23 @@
 - nextcloud [0.1-nc-devel](https://github.com/alexstocker/sensorlogger/tree/0.1-nc-devel)
 
 ### Upcoming Versions
-- owncloud 0.1.1
+- owncloud 0.1.2
 - nextcloud 0.1.4
+
+### Development Environments
+- SensorLogger for Owncloud (docker, composer) - https://github.com/alexstocker/owncloud-docker-development
+- SensorLogger for Nextcloud - n.a.
 
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
-![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_oc_dashboard_widget_livedata_001.png)
+![SensorLogger Dashboard](https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-dashboard_oc.png)
 
-![SensorLogger Chart](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_0.png)
+![SensorLogger List](https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-list-data_oc.png)
 
-![SensorLogger Chart1](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_1.png)
+![SensorLogger Devices](https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-devices_oc.png)
 
-![SensorLogger Chart2](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_2.png)
+![SensorLogger Device Details](https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-device-details_oc.png)
 
-![SensorLogger List](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_list-1.png)
+![SensorLogger Device Types](https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-device-types_oc.png)
 
-![SensorLogger Devices](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_devices-1.png)
-
-![SensorLogger Device details](http://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails_edit.png)
+![SensorLogger Device Groups](https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-device-groups_oc.png)

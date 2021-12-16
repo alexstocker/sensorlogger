@@ -1,13 +1,20 @@
 <?php
-	$url = 'http://owncloud10.loc/index.php/apps/sensorlogger/api/v1/getdevicedatatypes/';
 
-	$array = array("deviceId" => "0e643ee8-0f9f-11e7-93ae-92361f002675");
+	$host = 'http://localhost:8080'; // Default if https://github.com/sensorlogger/owncloud-docker-development used
+	$path = 'index.php/apps/sensorlogger';
+	$endpoint = 'api/v1/getdevicedatatypes';
+	$url = $host . DIRECTORY_SEPARATOR .
+		$path . DIRECTORY_SEPARATOR .
+		$endpoint . DIRECTORY_SEPARATOR;
+
+	$username = 'admin';
+	$token = 'TCQDX-RVAMN-TLKFS-ILSSZ';
+
+	$array = [
+		"deviceId" => '20e643ee8-0f9f-11e7-93ae-92361f002675'
+	];
+
 	$data_json = json_encode($array);
-
-    $username = 'admin';
-    $token = 'AZDMW-FWBYN-JLQAJ-YXHMD';
-    //$username = 'test';
-    //$token = 'GLOKN-ZRYIN-POCRJ-NFLYK';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

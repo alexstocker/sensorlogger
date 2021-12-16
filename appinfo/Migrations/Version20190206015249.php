@@ -7,7 +7,8 @@ use OCP\Migration\ISchemaMigration;
 /**
  * Auto-generated migration step: Please modify to your needs!
  */
-class Version20190206015249 implements ISchemaMigration {
+class Version20190206015249 implements ISchemaMigration
+{
 
     /** @var  string */
     private $prefix;
@@ -16,11 +17,12 @@ class Version20190206015249 implements ISchemaMigration {
      * @param array $options
      * @throws \Doctrine\DBAL\Schema\SchemaException
      */
-	public function changeSchema(Schema $schema, array $options) {
+    public function changeSchema(Schema $schema, array $options)
+    {
         $this->prefix = $options['tablePrefix'];
         if ($schema->hasTable("{$this->prefix}sensorlogger_devices")) {
             $table = $schema->getTable("{$this->prefix}sensorlogger_devices");
-            $table->addUniqueIndex(['user_id','uuid'],'sensorlogger_devices_unique_idx');
+            $table->addUniqueIndex(['user_id','uuid'], 'sensorlogger_devices_unique_idx');
         }
     }
 }
