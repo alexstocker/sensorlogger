@@ -28,19 +28,17 @@
     <website>https://www.html5live.at/sensorlogger/</website>
     <summary>Log data from any type of sensor and visualize it</summary>
 
-    <screenshot>https://www.html5live.at/wp-content/uploads/2018/05/sensorlogger_oc_dashboard_widget_livedata_001.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-dashboard_oc.png</screenshot>
 
-    <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_0.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-list-data_oc.png</screenshot>
 
-    <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_1.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-devices_oc.png</screenshot>
 
-    <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_chart_2.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-device-details_oc.png</screenshot>
 
-    <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_list-1.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-device-types_oc.png</screenshot>
 
-    <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_devices-1.png</screenshot>
-
-    <screenshot>https://www.html5live.at/wp-content/uploads/2017/03/sensorlogger_deviceDetails_edit.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2021/12/sensorlogger-device-groups_oc.png</screenshot>
 
     <dependencies>
         <owncloud min-version="10" max-version="11"/>
