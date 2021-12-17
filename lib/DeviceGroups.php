@@ -81,12 +81,9 @@ class DeviceGroups{
 		$query = $db->getQueryBuilder();
 		$query->select('id')
 			->from('sensorlogger_devices')
-			->where('user_id = :userId')
-			->andWhere('( group_id = :gid')
-			->orWhere('group_parent_id = :gpid )')
-			->setParameter(':userId', $userId)
-			->setParameter(':gid', $id)
-			->setParameter(':gpid', $id);
+			->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
+			->andWhere($query->expr()->eq('group_id', $query->createNamedParameter($id)))
+			->orWhere($query->expr()->eq('group_parent_id',$query->createNamedParameter($id)));
         $result = $query->execute();
 		if ($result)
 		{
@@ -157,27 +154,34 @@ class DeviceGroups{
 	 * @return int
 	 */
 	public static function insertSensorGroup($userId, $deviceGroupName, IDBConnection $db) {
-		// immer zuerst die Existenz pruefen
 		$devGroup = DeviceGroups::getDeviceGroupByName($userId, $deviceGroupName, $db);
-		if (is_numeric($devGroup['id']) && $devGroup['id'] > 0)
-			return (int)$devGroup['id'];
 
+        if(is_array($devGroup)) {
+            if (is_numeric($devGroup['id']) && $devGroup['id'] > 0) {
+                return (int)$devGroup['id'];
+            }
+        }
 		$lastId = 0;
 
-		//SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-		//START TRANSACTION;
+//		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';
+//		$stmt = $db->prepare($sql);
+//		$stmt->bindParam(1, $userId);
+//		$stmt->bindParam(2, $deviceGroupName);
 
-		$sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';
-		$stmt = $db->prepare($sql);
-		$stmt->bindParam(1, $userId);
-		$stmt->bindParam(2, $deviceGroupName);
-		if($stmt->execute()){
-			$lastId = (int)$db->lastInsertId();
-		}
+        //$userId = $this->userSession->getUser()->getUID();
+        $queryBuilder = $db->getQueryBuilder();
+        $queryBuilder->insert('sensorlogger_device_groups')
+            ->setValue('device_group_name', $queryBuilder->createNamedParameter($deviceGroupName))
+            ->setValue('user_id', $queryBuilder->createNamedParameter($userId));
+        if ($queryBuilder->execute()) {
+            return (int)$queryBuilder->getLastInsertId();
+        }
 
-		// COMMIT;
+//		if($stmt->execute()){
+//			$lastId = (int)$db->lastInsertId();
+//		}
 
-		return $lastId;
+//		return $lastId;
 	}
 
 }

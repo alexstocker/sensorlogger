@@ -25,7 +25,11 @@ class Devices extends QBMapper {
 	 */
 	public static function getDevices($userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->selectAlias('sd.user_id','user_id')
+		$query->addSelect('sd.uuid')
+            ->addSelect('sd.name')
+            ->addSelect('sd.group_id')
+            ->addSelect('sd.group_parent_id')
+            ->selectAlias('sd.user_id','user_id')
 			->selectAlias('sd.id','id')
 			->selectAlias('sdt.device_type_name','device_type_name')
 			->selectAlias('sdg0.device_group_name','device_group_name')
@@ -120,7 +124,12 @@ class Devices extends QBMapper {
 	 */
 	public static function getDeviceDetails($userId, $id, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->select('*')
+		$query->addSelect('sd.uuid')
+            ->addSelect('sd.name')
+            ->addSelect('sd.user_id')
+            ->addSelect('sd.type_id')
+            ->addSelect('sd.group_id')
+            ->addSelect('sd.group_parent_id')
 			->selectAlias('sdg0.device_group_name','device_group_name')
 			->selectAlias('sdg1.device_group_name','device_group_parent_name')
 			->from('sensorlogger_devices','sd')
@@ -129,9 +138,11 @@ class Devices extends QBMapper {
 			->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
 			->where('sd.id = "'.$id.'" ')
 			->andWhere('sd.user_id = "'.$userId.'"');
+
 		$result = $query->execute();
 		$data = $result->fetch();
 		$device = Device::fromRow($data);
+
 		return $device;
 	}
 

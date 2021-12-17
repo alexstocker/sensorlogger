@@ -1,6 +1,7 @@
 # SensorLogger
 
 ### 0.1.4nc UNRELEASED
+  * Fixed #101 DB Queries. Make use of queryBuilder. 
   * Fixed #103 Migration Version000010Date20190206183552. Drop index before setting new. Thanx @stefan123t for the hint
   * Fixed #103 Devices::getDevices contributed by @stefan123t
   * Added #101 PHP 8 and #100 NC23 Support
