@@ -25,8 +25,7 @@ class Devices extends QBMapper {
 	 */
 	public static function getDevices($userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->select('*')
-			->selectAlias('sd.user_id','user_id')
+		$query->selectAlias('sd.user_id','user_id')
 			->selectAlias('sd.id','id')
 			->selectAlias('sdt.device_type_name','device_type_name')
 			->selectAlias('sdg0.device_group_name','device_group_name')
