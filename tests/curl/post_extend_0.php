@@ -1,5 +1,5 @@
 <?php
-	$url = 'http://nextcloud-dev.loc/index.php/apps/sensorlogger/api/v1/createlog/';
+	$url = 'http://localhost:8081/apps/sensorlogger/api/v1/createlog/';
 
 	$co = mt_rand (1*10, 1000*10) / 10;
 	$co2 = mt_rand (1*10, 10000*10) / 10;
@@ -8,31 +8,31 @@
 	$nh3 = mt_rand (1*10, 500*10) / 10;
 	$ch4 = mt_rand (1*10, 1000*10) / 10;
 
-	$array = array("deviceId" => "abb7c850-fcc9-6a5b-3218-15cfbcdab8ce",
+	$array = array("deviceId" => "a1a5c096-0906-cd5a-a2f2-5530b65858gd",
 					"date" => date('Y-m-d H:i:s'),
 					"data" => array(
 						array(
-							"dataTypeId" => 6,
+							"dataTypeId" => 1,
 							"value" => $co
 						),
 						array(
-							"dataTypeId" => 7,
+							"dataTypeId" => 2,
 							"value" => $co2
 						),
 						array(
-							"dataTypeId" => 8,
+							"dataTypeId" => 3,
 							"value" => $c2h6oh
 						),
 						array(
-							"dataTypeId" => 9,
+							"dataTypeId" => 4,
 							"value" => $h,
 						),
 						array(
-							"dataTypeId" => 10,
+							"dataTypeId" => 5,
 							"value" => $nh3,
 						),
 						array(
-							"dataTypeId" => 11,
+							"dataTypeId" => 6,
 							"value" => $ch4,
 						)
 					));
@@ -40,7 +40,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'pTkkK-L843b-LDLp7-sSWPd-9m4pW';
+	$token = 'SjMMF-PdRnj-jrLmf-jxr6A-DEok5';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);

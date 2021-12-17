@@ -12,7 +12,7 @@ function genUniquID() {
 	return $uuid;
 }
 
-	$url = 'http://nextcloud-dev.loc/index.php/apps/sensorlogger/api/v1/registerdevice/';
+	$url = 'http://localhost:8081/apps/sensorlogger/api/v1/registerdevice/';
 
 	$registerArray = [
 		'_route' => 'sensorlogger.apisensorlogger.registerDevice',
@@ -56,7 +56,7 @@ function genUniquID() {
 	$data_json = json_encode($registerArray);
 
 	$username = 'admin';
-	$token = 'pTkkK-L843b-LDLp7-sSWPd-9m4pW';
+	$token = 'SjMMF-PdRnj-jrLmf-jxr6A-DEok5';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
