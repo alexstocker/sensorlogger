@@ -35,7 +35,6 @@ use OCP\Share\IShare;
  */
 class ApiSensorLoggerController extends ApiController
 {
-
     private $db;
 
     /**
@@ -62,23 +61,25 @@ class ApiSensorLoggerController extends ApiController
 
     protected $response;
 
-    public function __construct($AppName,
-                                IRequest $request,
-                                IDBConnection $db,
-                                IConfig $config,
-                                IManager $shareManager,
-                                IGroupManager $groupManager,
-                                IUserManager $userManager,
-                                IL10N $l10n,
-                                IUserSession $userSession,
-                                ILogger $logger)
-    {
+    public function __construct(
+        $AppName,
+        IRequest $request,
+        IDBConnection $db,
+        IConfig $config,
+        IManager $shareManager,
+        IGroupManager $groupManager,
+        IUserManager $userManager,
+        IL10N $l10n,
+        IUserSession $userSession,
+        ILogger $logger
+    ) {
         parent::__construct(
             $AppName,
             $request,
             'PUT, POST, GET, DELETE, PATCH',
             'Authorization, Content-Type, Accept',
-            1728000);
+            1728000
+        );
         $this->db = $db;
         $this->userSession = $userSession;
         $this->config = $config;
@@ -120,8 +121,10 @@ class ApiSensorLoggerController extends ApiController
             } else {
                 foreach ($params['data'] as $param) {
                     if (is_array($param)) {
-                        if (!array_key_exists('dataTypeId', $param)
-                            || !array_key_exists('value', $param)) {
+                        if (
+                            !array_key_exists('dataTypeId', $param)
+                            || !array_key_exists('value', $param)
+                        ) {
                             $this->errors[] = 'Data Array needs to contain dataTypeId AND value';
                         } else {
                             if (!(int)$param['dataTypeId']) {
@@ -143,8 +146,10 @@ class ApiSensorLoggerController extends ApiController
         }
 
         if (isset($params['data']) && empty($this->errors)) {
-            if ($this->checkRegisteredDataTypes($params)
-                && empty($this->errors)) {
+            if (
+                $this->checkRegisteredDataTypes($params)
+                && empty($this->errors)
+            ) {
                 $this->insertExtendedLog($params);
             }
         }
@@ -159,7 +164,8 @@ class ApiSensorLoggerController extends ApiController
             true,
             Http::STATUS_OK,
             'Sensor Log successfully stored',
-            $params['data']);
+            $params['data']
+        );
     }
 
     /**
@@ -168,8 +174,8 @@ class ApiSensorLoggerController extends ApiController
      */
     protected function insertExtendedLog($array)
     {
-        if(!$this->checkRegisteredDevice($array)) {
-            $this->errors[] = 'Device #'.$array['deviceId'].' not registered';
+        if (!$this->checkRegisteredDevice($array)) {
+            $this->errors[] = 'Device #' . $array['deviceId'] . ' not registered';
             return false;
         }
         if (!isset($array['date']) || empty($array['date'])) {
@@ -236,9 +242,11 @@ class ApiSensorLoggerController extends ApiController
      */
     public function registerDevice()
     {
-        if (!$this->checkRegisteredDevice($this->request->getParams()) &&
+        if (
+            !$this->checkRegisteredDevice($this->request->getParams()) &&
             $this->checkRequestParams($this->request->getParams()) &&
-            empty($this->errors)) {
+            empty($this->errors)
+        ) {
             $params = $this->request->getParams();
             $lastInsertId = $this->insertDevice($this->request->getParams());
             if (is_int($lastInsertId)) {
@@ -301,7 +309,8 @@ class ApiSensorLoggerController extends ApiController
                     true,
                     Http::STATUS_OK,
                     'Device successfully registered',
-                    $deviceDataTypes);
+                    $deviceDataTypes
+                );
             }
         } else if (!empty($this->errors)) {
             return $this->requestResponse(false, Error::MISSING_PARAM, implode(',', $this->errors));
@@ -340,7 +349,6 @@ class ApiSensorLoggerController extends ApiController
                 'message' => $message,
                 'data' => $data
             ];
-
         }
         $response->setData($array)->render();
         return $response;
@@ -495,7 +503,8 @@ class ApiSensorLoggerController extends ApiController
         if (isset($params['deviceId'])) {
             $device = Devices::getDeviceByUuid(
                 $this->userSession->getUser()->getUID(),
-                $params['deviceId'], $this->db
+                $params['deviceId'],
+                $this->db
             );
 
             if ($device) {
@@ -587,15 +596,16 @@ class ApiSensorLoggerController extends ApiController
 
         $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(), $device->getId(), $this->db);
         if ($deviceDataTypes === null || $deviceDataTypes === false) {
-            $this->errors[] = 'No DataTypes for Device #'.$params['deviceId'].' found';
+            $this->errors[] = 'No DataTypes for Device #' . $params['deviceId'] . ' found';
             return $this->requestResponse(false, Error::NOT_FOUND, implode(',', $this->errors));
         }
 
         return $this->requestResponse(
             true,
             Http::STATUS_OK,
-            'DataTypes for Device #'.$params['deviceId'],
-            $deviceDataTypes);
+            'DataTypes for Device #' . $params['deviceId'],
+            $deviceDataTypes
+        );
     }
 
     /**
@@ -692,15 +702,18 @@ class ApiSensorLoggerController extends ApiController
         }
 
         // Owner of the file and the sharer of the file can always get share
-        if ($share->getShareOwner() === $this->currentUser->getUID() ||
+        if (
+            $share->getShareOwner() === $this->currentUser->getUID() ||
             $share->getSharedBy() === $this->currentUser->getUID()
         ) {
             return true;
         }
 
         // If the share is shared with you (or a group you are a member of)
-        if ($share->getShareType() === Share::SHARE_TYPE_USER &&
-            $share->getSharedWith() === $this->currentUser->getUID()) {
+        if (
+            $share->getShareType() === Share::SHARE_TYPE_USER &&
+            $share->getSharedWith() === $this->currentUser->getUID()
+        ) {
             return true;
         }
 
