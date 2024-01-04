@@ -1,6 +1,8 @@
 # SensorLogger
 
 ### 0.1.4nc UNRELEASED
+  * Added [NOREF] NC24 Support. Closing #106 #100 #92 #80 #101
+  * Fixed [NOREF] Migration on dropping non exisiting sensorlogger_devices_unique_idx
   * [NOREF] Cleanup
   * Fixed #101 DB Queries. Make use of queryBuilder. 
   * Fixed #103 Migration Version000010Date20190206183552. Drop index before setting new. Thanx @stefan123t for the hint

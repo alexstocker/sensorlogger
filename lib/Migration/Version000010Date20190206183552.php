@@ -36,7 +36,9 @@ class Version000010Date20190206183552 extends SimpleMigrationStep {
 
 		if ($schema->hasTable("sensorlogger_devices")) {
 			$table = $schema->getTable("sensorlogger_devices");
-            $table->dropIndex('sensorlogger_devices_unique_idx');
+            if ($table->hasIndex('sensorlogger_devices_unique_idx')) {
+                $table->dropIndex('sensorlogger_devices_unique_idx');
+            }
 			$table->addUniqueIndex(['user_id','uuid'],'sensorlogger_devices_unique_idx');
 			return $schema;
 		}
