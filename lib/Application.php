@@ -48,7 +48,6 @@ class Application extends App {
 				$c->query('L10N'),
 				$server->getDatabaseConnection(),
 				$server->getConfig(),
-				$server->getEventDispatcher(),
 				$server->getUserSession(),
 				$server->getAppManager()
 			);

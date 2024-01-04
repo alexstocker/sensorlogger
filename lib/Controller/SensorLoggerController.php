@@ -82,11 +82,6 @@ class SensorLoggerController extends Controller
     protected $l10n;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
      * @var IUserSession
      */
     protected $userSession;
@@ -108,7 +103,6 @@ class SensorLoggerController extends Controller
      * @param IL10N $l10n
      * @param IDBConnection $connection
      * @param IConfig $config
-     * @param EventDispatcherInterface $eventDispatcherInterface
      * @param IUserSession $userSession
      * @param IAppManager $appManager
      */
@@ -121,7 +115,6 @@ class SensorLoggerController extends Controller
         IL10N $l10n,
         IDBConnection $connection,
         IConfig $config,
-        EventDispatcherInterface $eventDispatcherInterface,
         IUserSession $userSession,
         IAppManager $appManager
     ) {
@@ -131,7 +124,6 @@ class SensorLoggerController extends Controller
         $this->urlGenerator = $urlGenerator;
         $this->navigationManager = $navigationManager;
         $this->l10n = $l10n;
-        $this->eventDispatcher = $eventDispatcherInterface;
         $this->userSession = $userSession;
         $this->appManager = $appManager;
         $this->widgets = $widgets;

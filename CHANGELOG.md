@@ -1,6 +1,7 @@
 # SensorLogger
 
 ### 0.1.4nc UNRELEASED
+  * Added [NOREF] NC28 Support
   * Added [NOREF] NC27 Support
   * Added [NOREF] NC26 Support
   * Added [NOREF] NC25 Support
