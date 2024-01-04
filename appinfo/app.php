@@ -27,7 +27,7 @@ use OCP\Util;
 
 require_once __DIR__ . '/autoload.php';
 
-\OCP\App::registerAdmin('sensorlogger', 'admin');
+//\OCP\App::registerAdmin('sensorlogger', 'admin');
 
 \OC::$server->getNavigationManager()->add(function () {
 	$urlGenerator = \OC::$server->getURLGenerator();
