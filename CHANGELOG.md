@@ -1,7 +1,8 @@
 # SensorLogger
 
 ### 0.1.4nc UNRELEASED
-  * Added [NOREF] MC26 Support
+  * Added [NOREF] NC27 Support
+  * Added [NOREF] NC26 Support
   * Added [NOREF] NC25 Support
   * Added [NOREF] NC24 Support. Closing #106 #100 #92 #80 #101
   * Fixed [NOREF] Migration on dropping non exisiting sensorlogger_devices_unique_idx

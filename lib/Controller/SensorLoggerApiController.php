@@ -29,11 +29,11 @@ use OCP\Share\IManager;
 use OCP\Share\IShare;
 
 /**
- * Class ApiSensorLoggerController
+ * Class SensorLoggerApiController
  *
  * @package OCA\SensorLogger\Controller
  */
-class ApiSensorLoggerController extends ApiController
+class SensorLoggerApiController extends ApiController
 {
     private $db;
 

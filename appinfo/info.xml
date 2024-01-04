@@ -31,7 +31,7 @@
     <screenshot>https://www.html5live.at/wp-content/uploads/2019/05/sensorlogger-nc16-widget-sidebar.png</screenshot>
     <screenshot>https://www.html5live.at/wp-content/uploads/2019/05/sensorlogger-nc16-device-edit.png</screenshot>
     <dependencies>
-        <nextcloud min-version="15" max-version="26"/>
+        <nextcloud min-version="15" max-version="27"/>
         <database min-version="5.7">mysql</database>
         <php min-version="7.0" max-version="8.2"/>
     </dependencies>
