@@ -203,7 +203,7 @@ class Devices extends QBMapper {
 			$stmt->bindParam(4, $userId);
 
 			if($stmt->execute()){
-				return (int)$db->lastInsertId();
+				return (int)$db->lastInsertId('*PREFIX*sensorlogger_devices');
 			}
 		} else {
 			return 'Missing device ID';

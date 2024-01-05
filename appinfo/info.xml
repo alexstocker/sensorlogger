@@ -13,6 +13,15 @@
     <category>tools</category>
     <ocsid>174814</ocsid>
 
+    <navigations>
+        <navigation>
+            <name>SensorLogger</name>
+            <route>sensorlogger.SensorLogger.index</route>
+            <icon>app.svg</icon>
+            <order>10</order>
+        </navigation>
+    </navigations>
+
     <types>
         <logging/>
     </types>
@@ -27,9 +36,9 @@
     <bugs>https://github.com/alexstocker/sensorlogger/issues</bugs>
     <website>https://www.html5live.at/sensorlogger/</website>
     <summary>Log data from any type of sensor and visualize it</summary>
-    <screenshot>https://www.html5live.at/wp-content/uploads/2019/05/sensorlogger-nc14-dashboard.png</screenshot>
-    <screenshot>https://www.html5live.at/wp-content/uploads/2019/05/sensorlogger-nc16-widget-sidebar.png</screenshot>
-    <screenshot>https://www.html5live.at/wp-content/uploads/2019/05/sensorlogger-nc16-device-edit.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-dashboard.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-widget-sidebar.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-device-edit.png</screenshot>
     <dependencies>
         <nextcloud min-version="15" max-version="28"/>
         <database min-version="5.7">mysql</database>

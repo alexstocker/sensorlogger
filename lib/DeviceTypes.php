@@ -66,8 +66,8 @@ class DeviceTypes {
 			->from('sensorlogger_device_types')
 			->where('user_id = :userId')
 			->andWhere('device_type_name = :deviceTypeName')
-			->setParameter(':userId', $userId)
-			->setParameter(':deviceTypeName', $deviceTypeName);
+			->setParameter('userId', $userId)
+			->setParameter('deviceTypeName', $deviceTypeName);
 		$result = $query->execute();
 		if ($result)
 		{
@@ -120,7 +120,7 @@ class DeviceTypes {
 		$stmt->bindParam(1, $userId);
 		$stmt->bindParam(2, $deviceTypeName);
 		if($stmt->execute())
-			return (int)$db->lastInsertId();
+			return (int)$db->lastInsertId('*PREFIX*sensorlogger_device_types');
 
 		return -1;
 	}
