@@ -132,10 +132,7 @@ class SensorLogs {
     public static function deleteLogsByUuid($uuid, IDBConnection $db) {
         $query = $db->getQueryBuilder();
         $query->delete('sensorlogger_logs')
-            ->where('device_uuid = :uuid')
-            ->setParameters([
-                ':uuid' => $uuid
-            ]);
+            ->where($query->expr()->eq('device_uuid', $query->createNamedParameter($uuid)));
         return $query->execute();
     }
 }

@@ -18,14 +18,15 @@ class DeviceTypes {
 	 */
 	public static function getDeviceTypes($userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->select(array('sdt.user_id','sdt.id','sdt.device_type_name'))
+		$query->select(['sdt.user_id','sdt.id','sdt.device_type_name'])
 			->from('sensorlogger_device_types','sdt')
-			->leftJoin('sdt', 'sensorlogger_devices', 'sd', 'sdt.id = sd.type_id')
-			->where('sdt.user_id = :userId')
+			->leftJoin('sdt', 'sensorlogger_devices', 'sd', $query->expr()->eq('sdt.id', 'sd.type_id'))
+			->where($query->expr()->eq('sdt.user_id',$query->createNamedParameter($userId)))
 			->groupBy('sdt.id')
-			->orderBy('sdt.id', 'DESC')
-			->setParameter(':userId', $userId);
+			->orderBy('sdt.id', 'DESC');
 		$query->setMaxResults(100);
+
+
 		$result = $query->execute();
 		$data = $result->fetchAll();
 		return $data;
@@ -39,12 +40,10 @@ class DeviceTypes {
 	 */
 	public static function getDeviceType($userId, $deviceTypeId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
-		$query->select(array('id', 'user_id', 'device_type_name'))
+		$query->select(['id', 'user_id', 'device_type_name'])
 			->from('sensorlogger_device_types')
-			->where('user_id = :userId')
-			->andWhere('id = :deviceTypeId')
-			->setParameter(':userId', $userId)
-			->setParameter(':deviceTypeId', $deviceTypeId);
+			->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
+			->andWhere($query->expr()->eq('id', $deviceTypeId));
 		$result = $query->execute();
 		if ($result)
 		{
@@ -67,8 +66,8 @@ class DeviceTypes {
 			->from('sensorlogger_device_types')
 			->where('user_id = :userId')
 			->andWhere('device_type_name = :deviceTypeName')
-			->setParameter(':userId', $userId)
-			->setParameter(':deviceTypeName', $deviceTypeName);
+			->setParameter('userId', $userId)
+			->setParameter('deviceTypeName', $deviceTypeName);
 		$result = $query->execute();
 		if ($result)
 		{
@@ -121,7 +120,7 @@ class DeviceTypes {
 		$stmt->bindParam(1, $userId);
 		$stmt->bindParam(2, $deviceTypeName);
 		if($stmt->execute())
-			return (int)$db->lastInsertId();
+			return (int)$db->lastInsertId('*PREFIX*sensorlogger_device_types');
 
 		return -1;
 	}
@@ -136,10 +135,8 @@ class DeviceTypes {
 		$query = $db->getQueryBuilder();
 		$query->select('id')
 			->from('sensorlogger_devices')
-			->where('user_id = :userId')
-			->andWhere('type_id = :id')
-			->setParameter(':userId', $userId)
-			->setParameter(':id', $id);
+			->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
+			->andWhere($query->expr()->eq('type_id', $query->createNamedParameter($id)));
 		$result = $query->execute();
 		if ($result)
 		{
@@ -163,10 +160,9 @@ class DeviceTypes {
 
 		$query = $db->getQueryBuilder();
 		$query->delete('sensorlogger_device_types')
-			->where('user_id = :userId')
-			->andWhere('id = :typeId')
-			->setParameter(':userId', $userId)
-			->setParameter(':typeId', $typeId);
+            ->from('sensorlogger_devices')
+            ->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
+            ->andWhere($query->expr()->eq('id', $query->createNamedParameter($typeId)));
 		return $query->execute();
     }
 }

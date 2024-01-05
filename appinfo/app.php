@@ -25,18 +25,18 @@ use OCA\SensorLogger\SensorLogs;
 use OCP\AppFramework\App;
 use OCP\Util;
 
-require_once __DIR__ . '/autoload.php';
+//require_once __DIR__ . '/autoload.php';
 
-\OCP\App::registerAdmin('sensorlogger', 'admin');
+//\OCP\App::registerAdmin('sensorlogger', 'admin');
 
-\OC::$server->getNavigationManager()->add(function () {
-	$urlGenerator = \OC::$server->getURLGenerator();
-	$l = \OC::$server->getL10N('sensorlogger');
-	return [
-		'id' => 'sensorlogger',
-		'order' => 10,
-		'href' => $urlGenerator->linkToRoute('sensorlogger.sensorlogger.index'),
-		'icon' => $urlGenerator->imagePath('sensorlogger', 'app.svg'),
-		'name' => $l->t('SensorLogger'),
-	];
-});
+//\OC::$server->getNavigationManager()->add(function () {
+//	$urlGenerator = \OC::$server->getURLGenerator();
+//	$l = \OC::$server->getL10N('sensorlogger');
+//	return [
+//		'id' => 'sensorlogger',
+//		'order' => 10,
+//		'href' => $urlGenerator->linkToRoute('sensorlogger.sensorlogger.index'),
+//		'icon' => $urlGenerator->imagePath('sensorlogger', 'app.svg'),
+//		'name' => $l->t('SensorLogger'),
+//	];
+//});

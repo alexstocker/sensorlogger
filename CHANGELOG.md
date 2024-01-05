@@ -1,5 +1,21 @@
 # SensorLogger
 
+### 0.1.4nc UNRELEASED
+  * Fixed [NOREF] Error on create device type within device details sidebar
+  * Fixed [NOREF] Navigation
+  * Added [NOREF] NC28 Support
+  * Added [NOREF] NC27 Support
+  * Added [NOREF] NC26 Support
+  * Added [NOREF] NC25 Support
+  * Added [NOREF] NC24 Support. Closing #106 #100 #92 #80 #101
+  * Fixed [NOREF] Migration on dropping non exisiting sensorlogger_devices_unique_idx
+  * [NOREF] Cleanup
+  * Fixed #101 DB Queries. Make use of queryBuilder. 
+  * Fixed #103 Migration Version000010Date20190206183552. Drop index before setting new. Thanx @stefan123t for the hint
+  * Fixed #103 Devices::getDevices contributed by @stefan123t
+  * Added #101 PHP 8 and #100 NC23 Support
+  * #98 Modified App description
+
 ### 0.1.3nc RELEASED
   * updated to support Nextcloud 20
 
