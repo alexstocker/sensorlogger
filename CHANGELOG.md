@@ -1,6 +1,6 @@
 # SensorLogger
 
-### 0.1.4nc UNRELEASED
+### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar
   * Fixed [NOREF] Navigation
   * Added [NOREF] NC28 Support

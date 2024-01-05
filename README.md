@@ -23,3 +23,6 @@ Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 ![SensorLogger for nextcloud Widget Sidebar](https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-widget-sidebar.png)
 
 ![SensorLogger for nectcloud Device Details](https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-device-edit.png)
+
+## For Developers
+Checkout [Nextcloud Docker Development for SensorLogger](https://github.com/sensorlogger/nextcloud-docker-development)
