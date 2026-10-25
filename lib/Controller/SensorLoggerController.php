@@ -123,7 +123,8 @@ class SensorLoggerController extends Controller
         $parameters = array(
             'part' => 'dashboard',
             'widgets' => $widgets,
-            'navItems' => $this->getNavigationItems()
+            'navItems' => $this->getNavigationItems(),
+            'activeNavigation' => 'showDashboard',
         );
 
         $policy = new ContentSecurityPolicy();
@@ -226,6 +227,32 @@ class SensorLoggerController extends Controller
         }
 
         return $navItems;
+    }
+
+    /**
+     * Return a partial template for in-app AJAX navigation and a complete app
+     * page when the route is opened directly.
+     *
+     * @param string $templateName
+     * @param array $parameters
+     * @param string $activeNavigation
+     * @return TemplateResponse
+     */
+    private function getPageResponse($templateName, $parameters, $activeNavigation)
+    {
+        if ($this->request->getHeader('X-Requested-With') === 'XMLHttpRequest') {
+            $response = new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        } else {
+            $parameters['navItems'] = $this->getNavigationItems();
+            $parameters['activeNavigation'] = $activeNavigation;
+            $response = new TemplateResponse($this->appName, 'main', $parameters);
+        }
+
+        $policy = new ContentSecurityPolicy();
+        $policy->addAllowedFrameDomain("'self'");
+        $response->setContentSecurityPolicy($policy);
+
+        return $response;
     }
 
     /**
@@ -339,17 +366,10 @@ class SensorLoggerController extends Controller
      */
     public function showList()
     {
-        $templateName = 'part.list';  // will use templates/main.php
         $logs = SensorLogs::getLogs($this->userSession->getUser()->getUID(), $this->connection);
         $parameters = array('part' => 'list', 'logs' => $logs);
 
-        $policy = new ContentSecurityPolicy();
-        $policy->addAllowedFrameDomain("'self'");
-
-        $response = new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
-        $response->setContentSecurityPolicy($policy);
-
-        return $response;
+        return $this->getPageResponse('part.list', $parameters, 'showList');
     }
 
     /**
@@ -542,17 +562,10 @@ class SensorLoggerController extends Controller
         # TODO [GH26] Rework sensorloggercontroller::showDeviceData
         # and rework template too
 
-        $templateName = 'part.list';  // will use templates/main.php
         $logs = $this->getDeviceData($id);
         $parameters = array('part' => 'list', 'logs' => $logs);
 
-        $policy = new ContentSecurityPolicy();
-        $policy->addAllowedFrameDomain("'self'");
-
-        $response = new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
-        $response->setContentSecurityPolicy($policy);
-
-        return $response;
+        return $this->getPageResponse('part.list', $parameters, 'deviceList');
     }
 
     /**
@@ -625,11 +638,10 @@ class SensorLoggerController extends Controller
      */
     public function showDashboard()
     {
-        $templateName = 'part.dashboard';
         $log = SensorLogs::getLastLog($this->userSession->getUser()->getUID(), $this->connection);
         $widgets = $this->getWidgets();
         $parameters = array('part' => 'dashboard', 'log' => $log, 'widgets' => $widgets);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        return $this->getPageResponse('part.dashboard', $parameters, 'showDashboard');
     }
 
     /**
@@ -640,10 +652,9 @@ class SensorLoggerController extends Controller
      */
     public function deviceChart($id)
     {
-        $templateName = 'part.chart';
         $device = Devices::getDevice($this->userSession->getUser()->getUID(), $id, $this->connection);
         $parameters = array('part' => 'chart', 'device' => $device);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        return $this->getPageResponse('part.chart', $parameters, 'deviceList');
     }
 
     /**
@@ -705,10 +716,9 @@ class SensorLoggerController extends Controller
      */
     public function deviceList()
     {
-        $templateName = 'part.listDevices';
         $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
         $parameters = array('part' => 'list', 'devices' => $devices);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        return $this->getPageResponse('part.listDevices', $parameters, 'deviceList');
     }
 
     /**
@@ -718,10 +728,9 @@ class SensorLoggerController extends Controller
      */
     public function deviceTypeList()
     {
-        $templateName = 'part.listDeviceTypes';
         $deviceTypes = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
         $parameters = array('part' => 'listDeviceTypes', 'deviceTypes' => $deviceTypes);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        return $this->getPageResponse('part.listDeviceTypes', $parameters, 'deviceTypeList');
     }
 
     /**
@@ -731,10 +740,9 @@ class SensorLoggerController extends Controller
      */
     public function deviceGroupList()
     {
-        $templateName = 'part.listDeviceGroups';
         $deviceGroups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
         $parameters = array('part' => 'listDeviceGroups', 'deviceGroups' => $deviceGroups);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        return $this->getPageResponse('part.listDeviceGroups', $parameters, 'deviceGroupList');
     }
 
     /**
@@ -744,11 +752,10 @@ class SensorLoggerController extends Controller
      */
     public function dataTypeList()
     {
-        $templateName = 'part.listDataTypes';
         $dataTypes = DataTypes::getDataTypes($this->userSession->getUser()->getUID(), $this->connection);
 
         $parameters = array('part' => 'listDataTypes', 'dataTypes' => $dataTypes);
-        return new TemplateResponse($this->appName, $templateName, $parameters, 'blank');
+        return $this->getPageResponse('part.listDataTypes', $parameters, 'dataTypeList');
     }
 
     /**

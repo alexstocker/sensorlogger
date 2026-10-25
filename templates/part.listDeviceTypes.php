@@ -1,10 +1,11 @@
 <div class="content-wrapper">
 <table id="sensorDeviceTypesTable" style="width: 100%;">
 	<thead>
-		<th></th>
-		<th id="id"><span class="th-header">#</span></th>
-		<th id="deviceTypeName"><span class="th-header">Type Name</span></th>
-		<th><span class="th-header"></span></th>
+	<tr>
+		<th scope="col"><span class="th-header"><?php p($l->t('Actions')); ?></span></th>
+		<th scope="col"><span class="th-header">#</span></th>
+		<th scope="col"><span class="th-header"><?php p($l->t('Type name')); ?></span></th>
+	</tr>
 	</thead>
 	<tbody>
 <?php foreach($_['deviceTypes'] as $deviceType){ ?>
@@ -12,13 +13,14 @@
         <td class="td-data">
             <a href="#" class="devicetype-delete" title="<?php p($l->t('Delete Device Type')); ?>">
 				<span class="icon icon-delete"
+					  aria-hidden="true"
                       data-id="<?php p($deviceType['id']); ?>">
 				</span>
+				<span class="hidden-visually"><?php p($l->t('Delete Device Type')); ?></span>
             </a>
         </td>
 		<td class="td-data"><?php p($deviceType['id']); ?></td>
 		<td class="td-data"><?php p($deviceType['device_type_name']); ?></td>
-		<td class="td-data"></td>
 	</tr>
 <?php } ?>
 	</tbody>
@@ -27,7 +29,7 @@
 <?php if(is_array($_['deviceTypes']) && empty($_['deviceTypes'])) { ?>
 	<div id="emptycontent" class="">
 		<div class="icon-info"></div>
-		<h2>No Device types registered</h2>
+		<h2><?php p($l->t('No device types registered')); ?></h2>
 		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Users#device-types"
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki DeviceTypes</a></p>
 	</div>

@@ -4,6 +4,8 @@
   * Fixed [NOREF] Improved Nextcloud 34/PHP 8 compatibility across database queries, navigation, and template resources.
   * Fixed [NOREF] Use the PSR logger interface for API controller dependency injection on Nextcloud 34.
   * Fixed [NOREF] Allow CSRF-exempt read-only GET routes and decode persisted log data before rendering.
+  * Updated [NOREF] Modernize SensorLogger templates for the current Nextcloud layout with responsive and accessible controls.
+  * Fixed [NOREF] Render the complete Nextcloud app layout for direct visits to SensorLogger pages while retaining partial AJAX navigation.
 
 ### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar

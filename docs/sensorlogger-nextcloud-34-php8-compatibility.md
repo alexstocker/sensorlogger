@@ -58,6 +58,40 @@ requests uncovered additional compatibility failures:
    plugin is not bundled, so editor controls using Select2 remain a separate
    functional concern.
 
+### Frontend adaptation
+
+The server-rendered SensorLogger layout has been refreshed for current
+Nextcloud use without introducing a frontend framework or build pipeline.
+The main template now uses semantic navigation, main-content, and sidebar
+regions; removes unused Angular-style attributes and placeholder sidebar
+tabs; and exposes sidebar visibility to assistive technology. Management
+tables now have valid header rows and accessible labels, the device columns
+match their data, and the dashboard uses a responsive grid, Nextcloud theme
+colors, visible keyboard focus, and reduced-motion support.
+
+This is a compatibility-focused refresh, not a Vue rewrite. The repository
+has no frontend package manifest or build tooling, and a rewrite would affect
+the app's broad declared Nextcloud 14–34 support. Existing jQuery, jqPlot,
+inline editing, and Select2-dependent controls remain; the missing Select2
+asset described above is still an unresolved functional concern.
+
+### Direct page routes returned fragments without the Nextcloud shell
+
+The main `/apps/sensorlogger/` route renders `templates/main.php`, which
+provides Nextcloud's app navigation/content/sidebar structure and loads the
+app styles. Routes such as `/apps/sensorlogger/showList` instead returned a
+`blank`-layout `part.list` template unconditionally. That worked only when
+the JavaScript fetched the route and inserted the fragment into the existing
+app shell; opening the route directly rendered a bare table without the
+Nextcloud header, app navigation, or styles.
+
+Page responses now distinguish normal browser requests from AJAX requests
+using `X-Requested-With`: AJAX navigation still receives the same fragment,
+while direct page requests render the `main` template with the requested
+content and active navigation item. This behavior is shared by the related
+dashboard, device, and management-list routes. Standalone chart pages now
+initialize their chart after the full layout loads.
+
 ## Findings
 
 ### High: QueryBuilder calls use `execute()`
@@ -184,6 +218,11 @@ does not establish Nextcloud 34/PHP 8 coverage.
   extended-log JSON.
 - Read-only page GETs succeeded without a request token, and a state-changing
   POST without a token was still rejected with HTTP 412.
+- The frontend markup and styles were refreshed, but interactive browser
+  behavior and visual appearance were not verified in a browser.
+- Direct page routes now render the complete app shell while same-origin
+  AJAX navigation continues to return fragments; live browser verification
+  remains outstanding.
 - Dashboard navigation was exercised as part of that check; broader
   interactive/browser behavior remains unverified.
 - PHP syntax checks do not validate Nextcloud database API compatibility or

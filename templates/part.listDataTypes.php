@@ -1,11 +1,13 @@
 <div class="content-wrapper">
-<table id="sensorDeviceTypesTable" style="width: 100%;">
+<table id="sensorDataTypesTable" style="width: 100%;">
 	<thead>
-    <th></th>
-	<th id="id"><span class="th-header">#</span></th>
-	<th id="descprition"><span class="th-header">Description</span></th>
-	<th id="type"><span class="th-header">Data Type</span></th>
-	<th id="short"><span class="th-header">Unit</span></th>
+	<tr>
+		<th scope="col"><span class="th-header"><?php p($l->t('Actions')); ?></span></th>
+		<th scope="col"><span class="th-header">#</span></th>
+		<th scope="col"><span class="th-header"><?php p($l->t('Description')); ?></span></th>
+		<th scope="col"><span class="th-header"><?php p($l->t('Data type')); ?></span></th>
+		<th scope="col"><span class="th-header"><?php p($l->t('Unit')); ?></span></th>
+	</tr>
 	</thead>
 	<tbody>
 <?php foreach($_['dataTypes'] as $dataType){ ?>
@@ -24,7 +26,7 @@
 <?php if(is_array($_['dataTypes']) && empty($_['dataTypes'])) { ?>
 	<div id="emptycontent" class="">
 		<div class="icon-info"></div>
-		<h2>No Data types registered</h2>
+		<h2><?php p($l->t('No data types registered')); ?></h2>
 		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Users#data-types"
 				   title="SensorLogger Wiki" target="_blank">SensorLogger Wiki DataTypes</a></p>
 	</div>

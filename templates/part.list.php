@@ -1,14 +1,16 @@
 <div class="content-wrapper">
 <table id="sensorLogsTable" style="width: 100%;">
 	<thead>
-	<th></th>
-	<th id="id"><span class="th-header">#</span></th>
-	<th id="id"><span class="th-header">UUID</span></th>
-	<th id="temperature"><span class="th-header">°C</span></th>
-	<th id="humidity"><span class="th-header">% r.F.</span></th>
-	<th id="created_at"><span class="th-header">Created</span></th>
+	<tr>
+		<th scope="col"><span class="th-header"><?php p($l->t('Actions')); ?></span></th>
+		<th scope="col"><span class="th-header">#</span></th>
+		<th scope="col"><span class="th-header">UUID</span></th>
+		<th scope="col"><span class="th-header">°C</span></th>
+		<th scope="col"><span class="th-header">% r.F.</span></th>
+		<th scope="col"><span class="th-header"><?php p($l->t('Created')); ?></span></th>
+	</tr>
 	</thead>
-	<tbody id ="logList">
+	<tbody id="logList">
 <?php foreach($_['logs'] as $log){ ?>
 	<?php $valueString = ''; ?>
 
@@ -16,8 +18,10 @@
 		<td class="td-data">
 			<a href="#" class="log-delete" title="<?php p($l->t('Delete Record')); ?>">
 				<span class="icon icon-delete"
+					  aria-hidden="true"
 					  data-id="<?php p($log->getId()); ?>">
 				</span>
+				<span class="hidden-visually"><?php p($l->t('Delete Record')); ?></span>
 			</a>
 		</td>
 		<td class="td-data"><?php p($log->getId()); ?></td>
@@ -40,7 +44,7 @@
 <?php if(is_array($_['logs']) && empty($_['logs'])) { ?>
 	<div id="emptycontent" class="">
 		<div class="icon-info"></div>
-		<h2>No Sensor data</h2>
+		<h2><?php p($l->t('No sensor data')); ?></h2>
 		<p>Read <a href="https://github.com/alexstocker/sensorlogger/wiki/Users#list"
 				   title="SensorLogger Wiki Log List" target="_blank">SensorLogger Wiki Log List</a></p>
 	</div>

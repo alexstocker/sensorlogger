@@ -23,15 +23,21 @@
 		var appContentWrapper = $('#app-content-wrapper');
 		var chartBtns = $('.deviceChart');
 
+		var setSidebarVisible = function(visible) {
+			sidebar.attr('aria-hidden', visible ? 'false' : 'true');
+			sidebar.toggle(visible);
+		};
+
 		var _onClickAction = function(event) {
 			var $target = $(event.target);
 			if (!$target.hasClass('menuItem')) {
 				$target = $target.closest('.menuItem');
 			}
 			event.preventDefault();
-			$target.closest('ul').find('.menuItem.active').removeClass('active');
+			$target.closest('ul').find('li.active, .menuItem.active').removeClass('active');
 			$target.addClass('active');
-			sidebar.hide();
+			$target.closest('li').addClass('active');
+			setSidebarVisible(false);
 			saveBtn.hide();
 		};
 
@@ -96,7 +102,7 @@
 		});
 
 		appContentWrapper.on('click','.deviceChart',function (e) {
-			sidebar.hide();
+			setSidebarVisible(false);
 			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/deviceChart/'+id);
@@ -109,7 +115,7 @@
 		});
 
 		appContentWrapper.on('click','.deviceListData',function (e) {
-			sidebar.hide();
+			setSidebarVisible(false);
 			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+id);
@@ -202,14 +208,14 @@
 
 
 		sidebar.on('click','.icon-close',function(e) {
-			sidebar.hide();
+			setSidebarVisible(false);
 			saveBtn.hide();
 			wipeOutBtn.hide();
 		});
 
 		$(document.body).on('click','.actions',function(e) {
 			sidebarWidgets();
-			sidebar.show();
+			setSidebarVisible(true);
 		});
 
 		var sidebarWidgets = function (e) {
@@ -418,7 +424,7 @@
             //sidebarFooter.append(wipeOutDevice);
 
             if(sidebar.is(':visible')) {
-                sidebar.hide();
+                setSidebarVisible(false);
                 saveBtn.hide();
                 return;
             }
@@ -454,7 +460,7 @@
                         .success(function (response) {
                         	if(response.success) {
                                 deviceTr.remove();
-                                sidebar.hide();
+                                setSidebarVisible(false);
                                 spinner.remove();
                                 $(".confirm-container").remove();
                                 OC.Notification.showTemporary(t('sensorlogger', 'Wiped out your device completely!'));
@@ -722,10 +728,16 @@
 							});
 					}
 				});
-				sidebar.show();
+				setSidebarVisible(true);
 			});
 		});
 		dashboardWidgets();
+		var standaloneChart = $('#chart');
+		if (standaloneChart.length) {
+			var deviceId = standaloneChart.data('id');
+			var dataUrl = OC.generateUrl('/apps/sensorlogger/chartData/' + deviceId);
+			loadChart(standaloneChart, deviceId, dataUrl);
+		}
 	});
 	var drawableLines;
 	var plotArea;
