@@ -38,7 +38,7 @@
 		showList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/showList');
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				appContentWrapper.empty().append(response);
 			});
 		});
@@ -46,7 +46,7 @@
 		showDashboard.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/showDashboard');
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				appContentWrapper.empty().append(response);
 				dashboardWidgets(e);
 			});
@@ -55,7 +55,7 @@
 		deviceList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceList');
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				var $response = $(response).clone();
 				$.each($response
 					.find('.deviceChart > span, ' +
@@ -71,7 +71,7 @@
 		deviceTypeList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceTypeList');
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				appContentWrapper.empty().append(response);
 			});
 
@@ -80,7 +80,7 @@
 		deviceGroupList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/deviceGroupList');
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				appContentWrapper.empty().append(response);
 			});
 
@@ -89,7 +89,7 @@
 		dataTypeList.click(function (e) {
 			_onClickAction(e);
 			var url = OC.generateUrl('/apps/sensorlogger/dataTypeList');
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				appContentWrapper.empty().append(response);
 			});
 
@@ -113,7 +113,7 @@
 			saveBtn.hide();
 			var id = $(this).data('id');
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceData/'+id);
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				appContentWrapper.empty().append(response);
 			});
 		});
@@ -485,7 +485,7 @@
 			});
 
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+id);
-			$.post(url).success(function (response) {
+			$.get(url).success(function (response) {
 				$.fn.editable.defaults.mode = 'inline';
 
 				var sidebarBody = sidebar.find('.body');

@@ -612,6 +612,7 @@ class SensorLoggerApiController extends ApiController
 
     /**
      * Get all shared devices
+     * @NoCSRFRequired
      */
     public function getAllShares()
     {
@@ -629,6 +630,7 @@ class SensorLoggerApiController extends ApiController
     /**
      * Get a shared device by id
      * @param $id
+     * @NoCSRFRequired
      * @return Result
      */
     public function getShare($id)

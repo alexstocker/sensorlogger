@@ -22,6 +22,23 @@ authenticated request with an invalid, non-persisting payload reached the
 controller and returned its JSON validation error. No sensor data was
 submitted by that check.
 
+The local page-route check also confirmed that the read-only navigation
+routes, including `showList`, were registered as POST even though their
+links are GET URLs. These routes and their AJAX callers now use GET. Once the
+route was reached, `templates/part.list.php` exposed a PHP 8 `TypeError` by
+calling `sizeof()` on the raw JSON string stored in each log's `data` column.
+`Log::getData()` now decodes persisted JSON before returning extended log
+entries, while legacy scalar-log JSON produces an empty extended-data list.
+
+After changing the routes, a 412 response remained because Nextcloud 34's
+`SecurityMiddleware` enforces CSRF checks on controller methods regardless
+of HTTP verb unless the method is annotated `@NoCSRFRequired`. The app's
+read-only GET methods were missing that annotation, so ordinary browser GET
+requests without a request token were rejected. Added `@NoCSRFRequired` only
+to read-only GET handlers; state-changing POST handlers remain CSRF-protected.
+Local verification confirmed tokenless authenticated GETs succeed while a
+POST to the widget-creation route without a token still returns 412.
+
 After the QueryBuilder and widget connection fixes, two subsequent dashboard
 requests uncovered additional compatibility failures:
 
@@ -160,7 +177,15 @@ does not establish Nextcloud 34/PHP 8 coverage.
   Nextcloud 34.0.5 instance. The malformed-request check verified controller
   dispatch and validation response only; it did not verify successful device
   registration or sensor-data persistence.
-- Dashboard rendering was not re-tested during this API controller check.
+- The six read-only navigation pages returned HTTP 200 on local Nextcloud
+  34.0.5 using an authenticated request token. No data-changing requests were
+  sent.
+- A focused entity check verified decoding of both scalar-log JSON and
+  extended-log JSON.
+- Read-only page GETs succeeded without a request token, and a state-changing
+  POST without a token was still rejected with HTTP 412.
+- Dashboard navigation was exercised as part of that check; broader
+  interactive/browser behavior remains unverified.
 - PHP syntax checks do not validate Nextcloud database API compatibility or
   connection-type behavior.
 

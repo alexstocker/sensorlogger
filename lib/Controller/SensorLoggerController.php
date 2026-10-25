@@ -334,6 +334,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function showList()
@@ -353,6 +354,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return DataResponse
      */
     public function getWidgetTypes()
@@ -530,6 +532,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @param int $id
      * @return TemplateResponse
      */
@@ -554,6 +557,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @param int $id
      * @return DataResponse
      */
@@ -616,6 +620,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function showDashboard()
@@ -643,6 +648,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @param int $id
      * @return string
      */
@@ -653,6 +659,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @param int $id
      * @return string
      */
@@ -663,6 +670,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @param integer $id
      * @param integer $param
      */
@@ -693,6 +701,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      */
     public function deviceList()
     {
@@ -704,6 +713,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function deviceTypeList()
@@ -716,6 +726,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function deviceGroupList()
@@ -728,6 +739,7 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
+     * @NoCSRFRequired
      * @return TemplateResponse
      */
     public function dataTypeList()

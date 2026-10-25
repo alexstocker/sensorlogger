@@ -65,23 +65,37 @@ class Log extends Entity implements \JsonSerializable {
 	 * @return LogExtended[]
 	 */
 	public function getData() {
-		return $this->data;
+		if (is_string($this->data)) {
+			return $this->decodeData($this->data);
+		}
+
+		return is_array($this->data) ? $this->data : [];
 	}
 
 	/**
 	 * @param mixed $data
 	 */
 	public function setData($data) {
+		$this->data = $this->decodeData($data);
+	}
+
+	private function decodeData($data) {
 		$dataTypes = json_decode($data);
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			throw new \UnexpectedValueException('Sensor log data contains invalid JSON.');
+		}
+		if (!is_iterable($dataTypes)) {
+			return [];
+		}
 
 		$array = [];
-		foreach($dataTypes as $dataType) {
-			if(isset($dataType->value)) {
+		foreach ($dataTypes as $dataType) {
+			if (is_object($dataType) && isset($dataType->dataTypeId, $dataType->value)) {
 				$array[] = new LogExtended($dataType);
 			}
 		}
-		
-		$this->data = $array;
+
+		return $array;
 	}
 
 	/**
