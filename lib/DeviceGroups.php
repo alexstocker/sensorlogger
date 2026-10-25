@@ -84,7 +84,7 @@ class DeviceGroups{
 			->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
 			->andWhere($query->expr()->eq('group_id', $query->createNamedParameter($id)))
 			->orWhere($query->expr()->eq('group_parent_id',$query->createNamedParameter($id)));
-        $result = $query->execute();
+        $result = QueryBuilderCompat::executeQuery($query);
 		if ($result)
 		{
 			$data = $result->fetch();
@@ -173,7 +173,7 @@ class DeviceGroups{
         $queryBuilder->insert('sensorlogger_device_groups')
             ->setValue('device_group_name', $queryBuilder->createNamedParameter($deviceGroupName))
             ->setValue('user_id', $queryBuilder->createNamedParameter($userId));
-        if ($queryBuilder->execute()) {
+        if (QueryBuilderCompat::executeStatement($queryBuilder)) {
             return (int)$queryBuilder->getLastInsertId();
         }
 

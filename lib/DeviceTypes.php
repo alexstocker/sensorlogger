@@ -27,7 +27,7 @@ class DeviceTypes {
 		$query->setMaxResults(100);
 
 
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 		$data = $result->fetchAll();
 		return $data;
 	}
@@ -44,7 +44,7 @@ class DeviceTypes {
 			->from('sensorlogger_device_types')
 			->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
 			->andWhere($query->expr()->eq('id', $deviceTypeId));
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 		if ($result)
 		{
 			$data = $result->fetch();
@@ -68,7 +68,7 @@ class DeviceTypes {
 			->andWhere('device_type_name = :deviceTypeName')
 			->setParameter('userId', $userId)
 			->setParameter('deviceTypeName', $deviceTypeName);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 		if ($result)
 		{
 			$data = $result->fetch();
@@ -97,7 +97,7 @@ class DeviceTypes {
 			->setParameter(':deviceId', $deviceId);
 
 		$query->setMaxResults(100);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 		if ($result)
 			return $result->fetchAll();
 		return null;
@@ -137,7 +137,7 @@ class DeviceTypes {
 			->from('sensorlogger_devices')
 			->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
 			->andWhere($query->expr()->eq('type_id', $query->createNamedParameter($id)));
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 		if ($result)
 		{
 			$data = $result->fetch();
@@ -163,6 +163,6 @@ class DeviceTypes {
             ->from('sensorlogger_devices')
             ->where($query->expr()->eq('user_id', $query->createNamedParameter($userId)))
             ->andWhere($query->expr()->eq('id', $query->createNamedParameter($typeId)));
-		return $query->execute();
+		return QueryBuilderCompat::executeStatement($query);
     }
 }

@@ -33,9 +33,4 @@ class AppTest extends TestCase {
         $this->assertTrue($appManager->isInstalled('sensorlogger'));
     }
 
-    public function testAppRemove() {
-        $appManager = $this->container->query('OCP\App\IAppManager');
-        $this->testAppRemove();
-    }
-
 }

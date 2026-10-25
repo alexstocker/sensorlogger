@@ -1,5 +1,8 @@
 # SensorLogger
 
+### 0.1.5nc UNRELEASED
+  * Fixed [NOREF] Improved Nextcloud 34/PHP 8 compatibility across database queries, navigation, and template resources.
+
 ### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar
   * Fixed [NOREF] Navigation

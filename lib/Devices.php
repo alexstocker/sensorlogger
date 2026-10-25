@@ -41,7 +41,7 @@ class Devices extends QBMapper {
 			->where('sd.user_id = "'.$userId.'"')
 			->orderBy('sd.id', 'DESC');
 		$query->setMaxResults(100);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$rows = $result->fetchAll();
 
@@ -65,7 +65,7 @@ class Devices extends QBMapper {
 			->from('sensorlogger_devices')
 			->where('id = "'.$id.'" ')
 			->andWhere('user_id = "'.$userId.'"');
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetch();
 
@@ -104,7 +104,7 @@ class Devices extends QBMapper {
 			->from('sensorlogger_devices')
 			->where('uuid = "'.$uuid.'" ')
 			->andWhere('user_id = "'.$userId.'"');
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetch();
 		if($data) {
@@ -139,7 +139,7 @@ class Devices extends QBMapper {
 			->where('sd.id = "'.$id.'" ')
 			->andWhere('sd.user_id = "'.$userId.'"');
 
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 		$data = $result->fetch();
 		$device = Device::fromRow($data);
 
@@ -158,7 +158,7 @@ class Devices extends QBMapper {
 		$query->update('sensorlogger_devices')
 			->set($field,$query->expr()->literal($value))
 			->where('id = "'.$id.'" ');
-		if($query->execute()) {
+		if(QueryBuilderCompat::executeStatement($query)) {
 			return true;
 		}
 	}

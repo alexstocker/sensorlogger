@@ -10,6 +10,7 @@ use OCA\SensorLogger\DataType;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Error;
 use OCA\SensorLogger\Devices;
+use OCA\SensorLogger\QueryBuilderCompat;
 use OCP\API;
 use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
@@ -192,8 +193,8 @@ class SensorLoggerApiController extends ApiController
                 'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
                 'device_uuid' => $query->createNamedParameter($deviceId),
                 'data' => $query->createNamedParameter($dataJson)
-            ])
-            ->execute();
+            ]);
+        QueryBuilderCompat::executeStatement($query);
     }
 
     /**
@@ -227,8 +228,8 @@ class SensorLoggerApiController extends ApiController
                     'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
                     'device_uuid' => $query->createNamedParameter($deviceId),
                     'data' => $query->createNamedParameter($dataJson)
-                ])
-                ->execute();
+                ]);
+            QueryBuilderCompat::executeStatement($query);
         }
         return true;
     }
@@ -366,7 +367,7 @@ class SensorLoggerApiController extends ApiController
             ->setValue('device_type_name', $queryBuilder->createNamedParameter($deviceType))
             ->setValue('user_id', $queryBuilder->createNamedParameter($userId));
 
-        if ($queryBuilder->execute()) {
+        if (QueryBuilderCompat::executeStatement($queryBuilder)) {
             return (int)$queryBuilder->getLastInsertId();
         }
         return false;
@@ -384,7 +385,7 @@ class SensorLoggerApiController extends ApiController
             ->setValue('device_group_name', $queryBuilder->createNamedParameter($string))
             ->setValue('user_id', $queryBuilder->createNamedParameter($userId));
 
-        if ($queryBuilder->execute()) {
+        if (QueryBuilderCompat::executeStatement($queryBuilder)) {
             return (int)$queryBuilder->getLastInsertId();
         }
         return false;
@@ -425,7 +426,7 @@ class SensorLoggerApiController extends ApiController
             ->setValue('type', $queryBuilder->createNamedParameter($type))
             ->setValue('short', $queryBuilder->createNamedParameter($unit));
 
-        if ($queryBuilder->execute()) {
+        if (QueryBuilderCompat::executeStatement($queryBuilder)) {
             return (int)$queryBuilder->getLastInsertId();
         }
         return false;
@@ -491,7 +492,7 @@ class SensorLoggerApiController extends ApiController
             ->setValue('data_type_id', $queryBuilder->createNamedParameter($dataTypeId))
             ->setValue('user_id', $queryBuilder->createNamedParameter($userId));
 
-        $queryBuilder->execute();
+        QueryBuilderCompat::executeStatement($queryBuilder);
     }
 
     /**
@@ -563,7 +564,7 @@ class SensorLoggerApiController extends ApiController
                 ->setValue('type_id', $queryBuilder->createNamedParameter($array['deviceTypeId']))
                 ->setValue('user_id', $queryBuilder->createNamedParameter($userId));
 
-            if ($queryBuilder->execute()) {
+            if (QueryBuilderCompat::executeStatement($queryBuilder)) {
                 return (int)$queryBuilder->getLastInsertId();
             }
         } else {

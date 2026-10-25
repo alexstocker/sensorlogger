@@ -18,11 +18,6 @@ style('sensorlogger', 'jquery-editable');
 # TODO [GH11] Rebuild JS
 # Rewrite JS and split it into smaller files
 
-//\OC_Util::addScript('sensorlogger','app');
-//\OC_Util::addScript('sensorlogger','navigation');
-//\OC_Util::addScript('sensorlogger','deviceactions');
-vendor_style('select2/select2');
-vendor_script('select2/select2');
 ?>
 
 	<div id="app-navigation">
@@ -84,4 +79,3 @@ vendor_script('select2/select2');
 
 		</div>
 	</div>
-

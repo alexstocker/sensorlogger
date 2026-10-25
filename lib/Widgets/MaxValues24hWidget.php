@@ -2,13 +2,14 @@
 
 namespace OCA\SensorLogger\Widgets;
 
-use OC\DB\Connection;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
 use OCA\SensorLogger\Log;
 use OCA\SensorLogger\LogExtended;
+use OCA\SensorLogger\QueryBuilderCompat;
 use OCA\SensorLogger\Widget;
 use OCA\SensorLogger\Widgets\iWidget;
+use OCP\IDBConnection;
 
 /**
  * Class MaxValues24hWidget
@@ -38,7 +39,7 @@ class MaxValues24hWidget extends Widget implements iWidget
         return $this->templateName;
     }
 
-    public function widgetData($userId, Device $device, Connection $connection)
+    public function widgetData($userId, Device $device, IDBConnection $connection)
     {
         $this->userId = $userId;
         $this->connection = $connection;
@@ -140,7 +141,7 @@ class MaxValues24hWidget extends Widget implements iWidget
     /**
      * @param $userId
      * @param $deviceUuid
-     * @param Connection $db
+     * @param IDBConnection $db
      * @return mixed
      */
     protected function getLogsByDeviceId($userId, $deviceUuid, $db) {
@@ -150,7 +151,7 @@ class MaxValues24hWidget extends Widget implements iWidget
             ->where('user_id = "'.$userId.'"')
             ->andWhere('device_uuid = "'.$deviceUuid.'"')
             ->andWhere('created_at >= now() - INTERVAL 1 DAY');
-        $result = $query->execute();
+        $result = QueryBuilderCompat::executeQuery($query);
 
         $data = $result->fetchAll();
 

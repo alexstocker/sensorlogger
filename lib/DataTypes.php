@@ -19,7 +19,7 @@ class DataTypes {
 			->where('user_id = "'.$userId.'"')
 			->orderBy('id', 'DESC');
 		$query->setMaxResults(100);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetchAll();
 
@@ -39,7 +39,7 @@ class DataTypes {
 			->where('user_id = "'.$userId.'"')
 			->andWhere('id = "'.$dataTypeId.'"');
 		$query->setMaxResults(100);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetch();
 		
@@ -60,7 +60,7 @@ class DataTypes {
 		$query->select('*')
 			->from('sensorlogger_data_types')
 			->where('user_id = "'.$userId.'"');
-		$results = $query->execute();
+		$results = QueryBuilderCompat::executeQuery($query);
 		$data = [];
 		foreach($results->fetchAll() as $result) {
 			$data[] = DataType::fromRow($result);
@@ -83,7 +83,7 @@ class DataTypes {
 			->andWhere('sddt.device_id = "'.$deviceId.'" ')
 			->orderBy('sddt.id', 'ASC');
 		$query->setMaxResults(100);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetchAll();
 

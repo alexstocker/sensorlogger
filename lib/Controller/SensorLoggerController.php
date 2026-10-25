@@ -23,7 +23,6 @@ namespace OCA\SensorLogger\Controller;
 
 use OC\OCS\Exception;
 use OC\Security\CSP\ContentSecurityPolicy;
-use OCA\SensorLogger\App;
 use OCA\SensorLogger\DataTypes;
 use OCA\SensorLogger\Device;
 use OCA\SensorLogger\DeviceTypes;
@@ -32,7 +31,6 @@ use OCA\SensorLogger\Devices;
 use OCA\SensorLogger\DeviceGroups;
 use OCA\SensorLogger\SensorLogs;
 use OCA\SensorLogger\Widgets;
-use OCP\App\IAppManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -40,7 +38,6 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IL10N;
-use OCP\INavigationManager;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
@@ -72,11 +69,6 @@ class SensorLoggerController extends Controller
     protected $urlGenerator;
 
     /**
-     * @var INavigationManager
-     */
-    protected $navigationManager;
-
-    /**
      * @var IL10N
      */
     protected $l10n;
@@ -86,11 +78,6 @@ class SensorLoggerController extends Controller
      */
     protected $userSession;
 
-    /**
-     * @var IAppManager
-     */
-    protected $appManager;
-
     protected $widgets;
 
     /**
@@ -99,33 +86,27 @@ class SensorLoggerController extends Controller
      * @param $AppName
      * @param IRequest $request
      * @param IURLGenerator $urlGenerator
-     * @param INavigationManager $navigationManager
      * @param IL10N $l10n
      * @param IDBConnection $connection
      * @param IConfig $config
      * @param IUserSession $userSession
-     * @param IAppManager $appManager
      */
     public function __construct(
         $AppName,
         Widgets $widgets,
         IRequest $request,
         IURLGenerator $urlGenerator,
-        INavigationManager $navigationManager,
         IL10N $l10n,
         IDBConnection $connection,
         IConfig $config,
-        IUserSession $userSession,
-        IAppManager $appManager
+        IUserSession $userSession
     ) {
         parent::__construct($AppName, $request);
         $this->connection = $connection;
         $this->config = $config;
         $this->urlGenerator = $urlGenerator;
-        $this->navigationManager = $navigationManager;
         $this->l10n = $l10n;
         $this->userSession = $userSession;
-        $this->appManager = $appManager;
         $this->widgets = $widgets;
     }
 
@@ -156,117 +137,93 @@ class SensorLoggerController extends Controller
 
     protected function getNavigationItems()
     {
+        $navItems = [];
 
-        App::getNavigationManager()->clear(false);
-
-        App::getNavigationManager()->add(
-            [
+        $navItems[] = [
                 'id' => 'showDashboard',
-                'appName' => 'sensorlogger',
+                'app' => 'sensorlogger',
                 'order' => 0,
                 'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.showDashboard'),
                 'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                 'name' => $this->l10n->t('Dashboard'),
-            ]
-        );
+            ];
 
-        App::getNavigationManager()->add(
-            array(
+        $navItems[] = [
                 'id' => 'showList',
-                'appName' => 'sensorlogger',
+                'app' => 'sensorlogger',
                 'order' => 1,
                 'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.showList'),
                 'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                 'name' => $this->l10n->t('List'),
-            )
-        );
+            ];
 
-        App::getNavigationManager()->add(
-            array(
+        $navItems[] = [
                 'id' => 'deviceList',
-                'appName' => 'sensorlogger',
+                'app' => 'sensorlogger',
                 'order' => 2,
                 'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.deviceList'),
                 'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                 'name' => $this->l10n->t('Devices'),
-            )
-        );
+            ];
 
-        App::getNavigationManager()->add(
-            array(
+        $navItems[] = [
                 'id' => 'deviceTypeList',
-                'appName' => 'sensorlogger',
+                'app' => 'sensorlogger',
                 'order' => 3,
                 'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.deviceTypeList'),
                 'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                 'name' => $this->l10n->t('Device Types'),
-            )
-        );
+            ];
 
-        App::getNavigationManager()->add(
-            array(
+        $navItems[] = [
                 'id' => 'deviceGroupList',
-                'appName' => 'sensorlogger',
+                'app' => 'sensorlogger',
                 'order' => 4,
                 'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.deviceGroupList'),
                 'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                 'name' => $this->l10n->t('Device Groups'),
-            )
-        );
+            ];
 
-        App::getNavigationManager()->add(
-            array(
+        $navItems[] = [
                 'id' => 'dataTypeList',
-                'appName' => 'sensorlogger',
+                'app' => 'sensorlogger',
                 'order' => 5,
                 'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.dataTypeList'),
                 'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                 'name' => $this->l10n->t('Data Types'),
-            )
-        );
+            ];
 
         if ($this->config->getAppValue('core', 'shareapi_enabled', 'yes') === 'yes') {
-            App::getNavigationManager()->add(
-                array(
+            $navItems[] = [
                     'id' => 'sharingin',
-                    'appName' => 'sensorlogger',
+                    'app' => 'sensorlogger',
                     'order' => 10,
                     'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.sharingIn'),
                     'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                     'name' => $this->l10n->t('Shared with you'),
-                )
-            );
+                ];
 
-            App::getNavigationManager()->add(
-                [
+            $navItems[] = [
                     'id' => 'sharingout',
-                    'appName' => 'sensorlogger',
+                    'app' => 'sensorlogger',
                     'order' => 10,
                     'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.sharingOut'),
                     'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                     'name' => $this->l10n->t('Shared with others'),
-                ]
-            );
+                ];
 
 
             if ($this->config->getAppValue('core', 'shareapi_allow_links', 'yes') === 'yes') {
-                App::getNavigationManager()->add(
-                    [
+                $navItems[] = [
                         'id' => 'sharinglinks',
-                        'appName' => 'sensorlogger',
+                        'app' => 'sensorlogger',
                         'order' => 10,
                         'href' => $this->urlGenerator->linkToRoute('sensorlogger.sensorlogger.sharedLink'),
                         'icon' => $this->urlGenerator->imagePath('sensorlogger', 'app.svg'),
                         'name' => $this->l10n->t('Shared by link'),
-                    ]
-                );
+                    ];
             }
         }
-
-        $navItems = App::getNavigationManager()->getAll();
-        usort($navItems, function ($item1, $item2) {
-            return $item1['order'] - $item2['order'];
-        });
 
         return $navItems;
     }

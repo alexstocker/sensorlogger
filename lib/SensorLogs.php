@@ -23,7 +23,7 @@ class SensorLogs {
 			->where('user_id = "'.$userId.'"')
 			->orderBy('id', 'DESC');
 		$query->setMaxResults(1);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetch();
 
@@ -41,7 +41,7 @@ class SensorLogs {
 			->andWhere('device_uuid = "'.$deviceId.'"')
 			->orderBy('id', 'DESC');
 		$query->setMaxResults(1);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetch();
 
@@ -63,7 +63,7 @@ class SensorLogs {
 			->where('user_id = "'.$userId.'"')
 			->orderBy('id', 'DESC');
 		$query->setMaxResults(100);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 		$data = $result->fetchAll();
 
 		$logs = [];
@@ -93,7 +93,7 @@ class SensorLogs {
 			->orderBy('id', 'DESC');
 		$query->setMaxResults($limit);
 		$query->setFirstResult($offset);
-		$result = $query->execute();
+		$result = QueryBuilderCompat::executeQuery($query);
 
 		$data = $result->fetchAll();
 
@@ -121,7 +121,7 @@ class SensorLogs {
 			->setParameters([
 				':log_id' => $id
 			]);
-		return $query->execute();
+		return QueryBuilderCompat::executeStatement($query);
 	}
 
     /**
@@ -133,6 +133,6 @@ class SensorLogs {
         $query = $db->getQueryBuilder();
         $query->delete('sensorlogger_logs')
             ->where($query->expr()->eq('device_uuid', $query->createNamedParameter($uuid)));
-        return $query->execute();
+        return QueryBuilderCompat::executeStatement($query);
     }
 }
