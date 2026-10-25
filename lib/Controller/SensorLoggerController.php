@@ -717,7 +717,7 @@ class SensorLoggerController extends Controller
     public function deviceList()
     {
         $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
-        $parameters = array('part' => 'list', 'devices' => $devices);
+        $parameters = array('part' => 'listDevices', 'devices' => $devices);
         return $this->getPageResponse('part.listDevices', $parameters, 'deviceList');
     }
 

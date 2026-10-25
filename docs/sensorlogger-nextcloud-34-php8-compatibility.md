@@ -92,6 +92,12 @@ content and active navigation item. This behavior is shared by the related
 dashboard, device, and management-list routes. Standalone chart pages now
 initialize their chart after the full layout loads.
 
+The first direct device-list response then exposed a mismatched template
+parameter: the controller selected `part.list` even though the response data
+and AJAX template were for `part.listDevices`. The main layout consequently
+included the log table template without its required `logs` data. The
+controller now selects `part.listDevices` for full-page rendering as well.
+
 ## Findings
 
 ### High: QueryBuilder calls use `execute()`
