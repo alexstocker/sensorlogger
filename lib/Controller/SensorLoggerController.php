@@ -596,13 +596,47 @@ class SensorLoggerController extends Controller
 
     /**
      * @NoAdminRequired
-     * @param $id
+     * @param int $id
+     * @return DataResponse
      */
     public function updateDevice($id)
     {
         $field = $this->request->getParam('name');
         $value = $this->request->getParam('value');
-        Devices::updateDevice($id, $field, $value, $this->connection);
+        $editableFields = ['name', 'type_id', 'group_id', 'group_parent_id'];
+        if (!in_array($field, $editableFields, true)) {
+            return $this->returnJSON(['success' => false]);
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        if ($field === 'name') {
+            if (!is_string($value) || trim($value) === '') {
+                return $this->returnJSON(['success' => false]);
+            }
+            $value = trim($value);
+        } elseif ($value === '' || $value === null) {
+            $value = 0;
+        } else {
+            if (!is_string($value) && !is_int($value)) {
+                return $this->returnJSON(['success' => false]);
+            }
+            $value = filter_var($value, FILTER_VALIDATE_INT);
+            if ($value === false || $value < 0) {
+                return $this->returnJSON(['success' => false]);
+            }
+
+            if ($value > 0) {
+                $optionExists = $field === 'type_id'
+                    ? DeviceTypes::getDeviceType($userId, $value, $this->connection)
+                    : DeviceGroups::getDeviceGroupById($userId, $value, $this->connection);
+                if (!$optionExists) {
+                    return $this->returnJSON(['success' => false]);
+                }
+            }
+        }
+
+        $updated = Devices::updateDevice($id, $field, $value, $userId, $this->connection);
+        return $this->returnJSON(['success' => $updated]);
     }
 
     /**

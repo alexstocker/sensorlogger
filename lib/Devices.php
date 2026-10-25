@@ -153,14 +153,14 @@ class Devices extends QBMapper {
 	 * @param IDBConnection $db
 	 * @return bool
 	 */
-	public static function updateDevice($id,$field,$value, IDBConnection $db) {
+	public static function updateDevice($id, $field, $value, $userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->update('sensorlogger_devices')
-			->set($field,$query->expr()->literal($value))
-			->where('id = "'.$id.'" ');
-		if(QueryBuilderCompat::executeStatement($query)) {
-			return true;
-		}
+			->set($field, $query->createNamedParameter($value))
+			->where($query->expr()->eq('id', $query->createNamedParameter($id)))
+			->andWhere($query->expr()->eq('user_id', $query->createNamedParameter($userId)));
+
+		return QueryBuilderCompat::executeStatement($query) !== false;
 	}
 
 	/**

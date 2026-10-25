@@ -10,6 +10,21 @@
 	margin: 0;
 }
 
+#app-sidebar .content-wrapper {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+}
+
+#app-sidebar .detailDeviceInfoContainer,
+#app-sidebar .mainDeviceInfoView {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-height: 0;
+}
+
 #app-content div.content-wrapper {
 	overflow-x: auto;
 }
@@ -20,11 +35,9 @@
 }
 
 #app-sidebar div.content-wrapper .body {
-	bottom: 65px;
-	left: 0;
+	flex: 1 1 auto;
+	min-height: 0;
 	overflow: auto;
-	right: 0;
-	top: 15px;
 }
 
 div.right,
@@ -42,15 +55,17 @@ span.center {
 #app-sidebar {
 	z-index: 1000 !important;
 	position: absolute;
+	height: 100%;
+	max-height: 100%;
+	background: var(--color-main-background, #fff);
+	color: var(--color-main-text, #222);
 }
 
 #app-sidebar div.content-wrapper div.footer {
 	border-top: 1px solid var(--color-border, #D3D3D3);
 	box-shadow: 0 1px 0 var(--color-main-background, rgba(255, 255, 255, 0.5)) inset;
-	height: 65px;
-	left: 0;
-	position: absolute;
-	right: 0;
+	flex: 0 0 65px;
+	position: relative;
 }
 
 #app-sidebar .footer button {
@@ -87,6 +102,23 @@ a:focus-visible {
 .bodyDetails > .widget-type,
 .bodyDetails > .device {
 	display: block;
+}
+
+.bodyDetails input,
+.bodyDetails select,
+.device-option-create-control input {
+	box-sizing: border-box;
+	max-width: 100%;
+	width: 100%;
+}
+
+.bodyDetails button,
+.device-option-create-control button {
+	margin-top: 8px;
+}
+
+.device-option-create-control {
+	padding: 8px 20px 8px 15px;
 }
 
 #content .icon {

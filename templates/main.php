@@ -1,5 +1,6 @@
 <?php
 script('sensorlogger', [
+	'jquery-3.7.1.min',
 	'app',
 	'script',
 	'jquery.poshytip.min',

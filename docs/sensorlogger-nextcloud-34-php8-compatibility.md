@@ -98,6 +98,48 @@ and AJAX template were for `part.listDevices`. The main layout consequently
 included the log table template without its required `logs` data. The
 controller now selects `part.listDevices` for full-page rendering as well.
 
+### Device-list sidebar interaction and layout
+
+The browser console reported `$ is not defined` in `js/app.js` and
+`jQuery is not defined` in `js/script.js`. SensorLogger relies on jQuery
+throughout its legacy frontend and plugins, but Nextcloud 34 does not provide
+the old global jQuery dependency. The app now bundles the jQuery 3.7.1
+distribution already present in the local Nextcloud 34 installation,
+preserving its upstream license header, and loads it before app scripts and
+jQuery plugins. This avoids a runtime dependency on the separately installed
+Serverinfo app.
+
+After jQuery loaded, the sidebar code failed on `$(...).tooltip is not a
+function`. Nextcloud 34 does not provide the old jQuery tooltip extension, and
+the bundled Poshytip plugin does not add that API. Removed these unsupported
+calls and now copy tooltip text to standard `title` attributes for browser
+native tooltips.
+
+The next sidebar request returned the device details JSON successfully, but
+the panel remained at “Loading device details”. The response handler tried to
+initialize X-editable fields using the Select2 editor type, which is not
+bundled with SensorLogger. That JavaScript exception occurred before the
+device title and details were inserted. Device details now render with native
+inputs and selects, and device-field updates use an explicit allowlist and a
+parameterized update scoped to the signed-in user's device. Type/group
+assignments are checked against the signed-in user's own options; clearing an
+assignment uses the schema's existing `0` sentinel. Device type/group creation
+controls remain available and assign the new value to the device.
+
+The device-details handler was delegated to both each device row and its
+share/menu action links. Since clicks bubble, a click on an action link could
+run the same handler twice, toggling the sidebar open and then closed. The
+sidebar also retained previous device details when switching rows, and its
+body/footer sizing relied on absolute-position rules that did not provide a
+usable scrolling content area after the markup refresh.
+
+Device-row clicks and action-link clicks now open the details panel through a
+single handler; clicks on chart/data links do not trigger it. The panel
+toggles closed only when selecting the already-open device, replaces stale
+details while loading another device, aborts stale requests, and displays a
+visible error if details cannot load. The sidebar content now uses a
+constrained flex layout so its body can scroll independently of the footer.
+
 ## Findings
 
 ### High: QueryBuilder calls use `execute()`
@@ -229,6 +271,16 @@ does not establish Nextcloud 34/PHP 8 coverage.
 - Direct page routes now render the complete app shell while same-origin
   AJAX navigation continues to return fragments; live browser verification
   remains outstanding.
+- Device sidebar event handling and layout have been corrected; interactive
+  browser verification remains outstanding.
+- The missing global jQuery dependency is bundled with SensorLogger and loaded
+  before its jQuery-dependent scripts; browser-console verification remains
+  outstanding.
+- Unsupported jQuery tooltip calls are removed; device actions use native
+  browser tooltips. Browser verification remains outstanding.
+- Device details now use native controls rather than the missing Select2
+  editor. The update endpoint accepts only the intended device fields and
+  checks device ownership; browser interaction remains unverified.
 - Dashboard navigation was exercised as part of that check; broader
   interactive/browser behavior remains unverified.
 - PHP syntax checks do not validate Nextcloud database API compatibility or

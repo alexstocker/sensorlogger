@@ -258,7 +258,7 @@ class SensorLoggerApiController extends ApiController
                     $deviceTypeId = $this->insertDeviceType($params['deviceType']);
                     if (is_int($deviceTypeId)) {
                         try {
-                            Devices::updateDevice($lastInsertId, 'type_id', (string)$deviceTypeId, $this->db);
+                            Devices::updateDevice($lastInsertId, 'type_id', (string)$deviceTypeId, $this->userSession->getUser()->getUID(), $this->db);
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }
@@ -270,7 +270,7 @@ class SensorLoggerApiController extends ApiController
                     $deviceGroupId = $this->insertDeviceGroup($params['deviceGroup']);
                     if (is_int($deviceGroupId)) {
                         try {
-                            Devices::updateDevice($lastInsertId, 'group_id', $deviceGroupId, $this->db);
+                            Devices::updateDevice($lastInsertId, 'group_id', $deviceGroupId, $this->userSession->getUser()->getUID(), $this->db);
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }
@@ -282,7 +282,7 @@ class SensorLoggerApiController extends ApiController
                     $deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
                     if (is_int($deviceGroupParentId)) {
                         try {
-                            Devices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
+                            Devices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->userSession->getUser()->getUID(), $this->db);
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }

@@ -22,10 +22,20 @@
 		var dataTypeList = $('#dataTypeList');
 		var appContentWrapper = $('#app-content-wrapper');
 		var chartBtns = $('.deviceChart');
+		var deviceDetailsRequest = null;
 
 		var setSidebarVisible = function(visible) {
 			sidebar.attr('aria-hidden', visible ? 'false' : 'true');
 			sidebar.toggle(visible);
+		};
+
+		var setNativeTooltip = function(element) {
+			var $element = $(element);
+			var title = $element.attr('data-original-title') ||
+				$element.find('[data-original-title]').attr('data-original-title');
+			if (title) {
+				$element.attr('title', title);
+			}
 		};
 
 		var _onClickAction = function(event) {
@@ -64,11 +74,10 @@
 			$.get(url).success(function (response) {
 				var $response = $(response).clone();
 				$.each($response
-					.find('.deviceChart > span, ' +
-						'.deviceListData > span, ' +
+					.find('a.device-datalist, ' +
 						'.deviceactions > a.action-share, ' +
 						'.deviceactions > a.action-menu'),function(idx,element){
-					$(element).tooltip({placement:'right'})
+					setNativeTooltip(element);
 				});
 				appContentWrapper.empty().append($response);
 			});
@@ -209,6 +218,11 @@
 
 		sidebar.on('click','.icon-close',function(e) {
 			setSidebarVisible(false);
+			sidebar.removeAttr('data-device-id');
+			if (deviceDetailsRequest) {
+				deviceDetailsRequest.abort();
+				deviceDetailsRequest = null;
+			}
 			saveBtn.hide();
 			wipeOutBtn.hide();
 		});
@@ -394,45 +408,46 @@
 			});
 		};
 
-		appContentWrapper.on('click','.deviceEdit, ' +
-			'.deviceactions > a.action-share, ' +
-			'.deviceactions > a.action-menu', function(e) {
-			var target = $(e.target);
+		appContentWrapper.on('click', '.deviceEdit', function(e) {
+			if ($(e.target).closest('a, button').length) {
+				return;
+			}
+
+			var id = $(this).closest('tr').data('id');
+			if (sidebar.is(':visible') && String(sidebar.data('device-id')) === String(id)) {
+				setSidebarVisible(false);
+				sidebar.removeAttr('data-device-id');
+				if (deviceDetailsRequest) {
+					deviceDetailsRequest.abort();
+					deviceDetailsRequest = null;
+				}
+				saveBtn.hide();
+				wipeOutBtn.hide();
+				return;
+			}
+
+			openDeviceSidebar(id);
+		});
+
+		appContentWrapper.on('click', '.deviceactions > a.action-share, .deviceactions > a.action-menu', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$(this).closest('tr').trigger('click');
+		});
+
+		var openDeviceSidebar = function(id) {
 			$(".confirm-container").remove();
 
-			$(target).parent().tooltip('hide');
-
-            var id = $(this).closest('tr').data('id');
-
-            var sidebarFooter = sidebar.find('.footer');
-
-            var wipeOutDevicetest = $('<a/>', {
-                'id':'wipeout',
-                'href': '#',
-                'data-type': 'text',
-                'data-field': 'wipeout',
-                'data-pk': id,
-                'data-url': wipeOutUrl,
-                'data-title': 'response.name',
-                'text': 'wipeOut'
-			});
-
-            //wipeOutDevice.text('wipeOut');
-
-            //console.log(sidebarFooter);
-
-            //sidebarFooter.append(wipeOutDevice);
-
-            if(sidebar.is(':visible')) {
-                setSidebarVisible(false);
-                saveBtn.hide();
-                return;
-            }
+			sidebar.attr('data-device-id', id);
+			sidebar.find('.bodyDetails').remove();
+			sidebar.find('.title').text(t('sensorlogger', 'Loading device details'));
+			sidebar.find('.body').attr('aria-busy', 'true');
+			setSidebarVisible(true);
 
             var wipeOutUrl = OC.generateUrl('/apps/sensorlogger/wipeOutDevice');
 
             var wipeOutDevice = $('#wipeout-btn').show();
-            wipeOutDevice.find('span').attr('data-original-title','Wipe out device!').tooltip({placement:'right'});
+			wipeOutDevice.attr('title', t('sensorlogger', 'Wipe out device'));
 
             var wipeOutDeviceConfirm = $('<button/>',{
                 "text": t('sensorlogger', 'Yes')
@@ -442,7 +457,8 @@
                 "text": t('sensorlogger', 'No')
             });
 
-            $(wipeOutDevice).on('click',function(e){
+            wipeOutDevice.off('click.sensorlogger').on('click.sensorlogger',function(e){
+				e.preventDefault();
                 $(".confirm-container").remove();
             	var confirmContainer = $('<div/>',{
             		"class": "confirm-container",
@@ -491,246 +507,192 @@
 			});
 
 			var url = OC.generateUrl('/apps/sensorlogger/showDeviceDetails/'+id);
-			$.get(url).success(function (response) {
-				$.fn.editable.defaults.mode = 'inline';
+			if (deviceDetailsRequest) {
+				deviceDetailsRequest.abort();
+			}
+			deviceDetailsRequest = $.get(url).done(function (response) {
+				if (String(sidebar.data('device-id')) !== String(id)) {
+					return;
+				}
 
 				var sidebarBody = sidebar.find('.body');
-				var sidebarTitle = sidebar.find('.title')
-
+				var sidebarTitle = sidebar.find('.title');
 				var updateUrl = OC.generateUrl('/apps/sensorlogger/updateDevice/'+id);
 				var createDeviceTypeUrl = OC.generateUrl('/apps/sensorlogger/createDeviceType');
 				var createDeviceGroupUrl = OC.generateUrl('/apps/sensorlogger/createDeviceGroup');
-
-				var title = $('<a/>',{
-					'id':'name',
-					'href': '#',
-					'data-type': 'text',
-					'data-field': 'name',
-					'data-pk': id,
-					'data-url': updateUrl,
-					'data-title': 'response.name',
-					'text': response.deviceDetails.name
-				}).editable();
+				var device = response.deviceDetails;
+				if (!device) {
+					sidebarTitle.text(t('sensorlogger', 'Could not load device details'));
+					sidebarBody.attr('aria-busy', 'false');
+					return;
+				}
 
 				var groupSource = [];
-				for (group in response.groups) {
+				for (var group in (response.groups || [])) {
 					groupSource.push({
-						value : response.groups[group].id,
-						text: response.groups[group].device_group_name,
-						id : response.groups[group].id
-					}
-					);
+						value: response.groups[group].id,
+						text: response.groups[group].device_group_name
+					});
 				}
 
 				var typeSource = [];
-				for (type in response.types) {
+				for (var type in (response.types || [])) {
 					typeSource.push({
 						value: response.types[type].id,
-						text: response.types[type].device_type_name,
-						id : response.types[type].id
-					}
-					);
-
+						text: response.types[type].device_type_name
+					});
 				}
 
-				var groupSelect = $('<a/>',{
-					'id':'group_id',
-					'href': '#',
-					'data-type': 'select2',
-					'data-field': 'group',
-					'data-pk': id,
-					'data-url': updateUrl,
-					'data-title': response.deviceGroupName
-				}).editable({
-					value: response.deviceDetails.group,
-					source: groupSource,
-					select2: {
-						multiple: false,
-						data: groupSource,
-						dropdownAutoWidth: true,
-						initSelection: function(element, callback) {
-							callback({ 'id': response.deviceDetails.group, 'text': response.deviceDetails.deviceGroupName })
-						},
-						createSearchChoice: function(term, data) {
-							if ($(data).filter(
-									function() {
-										return this.text.localeCompare(term)===0;
-									}).length===0) {
-								return {id:'create_'+term, text:'Create '+term, data:term};
+				var updateDeviceField = function(field, value, onSuccess, onFailure) {
+					$.post(updateUrl, {name: field, value: value})
+						.done(function(result) {
+							if (!result || !result.success) {
+								OC.Notification.showTemporary(t('sensorlogger', 'Could not update device'));
+								if (onFailure) {
+									onFailure();
+								}
+								return;
 							}
-						}
-					}
-				});
-
-				var groupParentSelect = $('<a/>',{
-					'id':'group_parent_id',
-					'href': '#',
-					'data-type': 'select2',
-					'data-field': 'group',
-					'data-pk': id,
-					'data-url': updateUrl,
-					'data-title': response.deviceGroupParentName
-				}).editable({
-					value: response.deviceDetails.groupParent,
-					source: groupSource,
-					select2: {
-						multiple: false,
-						data: groupSource,
-						dropdownAutoWidth: true,
-						initSelection: function(element, callback) {
-							callback({ 'id': response.deviceDetails.groupParent, 'text': response.deviceDetails.deviceGroupParentName })
-						},
-						createSearchChoice: function(term, data) {
-							if ($(data).filter(
-									function() {
-										return this.text.localeCompare(term)===0;
-									}).length===0) {
-								return {id:'create_'+term, text:'Create '+term, data:term};
+							if (onSuccess) {
+								onSuccess(result);
 							}
-						}
-					}
-				});
-
-				var typeSelect = $('<a/>',{
-					'id':'type_id',
-					'href': '#',
-					'data-type': 'select2',
-					'data-field': 'type',
-					'data-pk': id,
-					'data-url': updateUrl,
-					'data-title': response.deviceTypeName
-				}).editable({
-					value: response.deviceDetails.type,
-					source: typeSource,
-					select2: {
-						multiple: false,
-						data: typeSource,
-						dropdownAutoWidth: true,
-						initSelection: function(element, callback) {
-							callback({ 'id': response.deviceDetails.type, 'text': response.deviceDetails.deviceTypeName })
-						},
-						createSearchChoice: function(term, data) {
-							if ($(data).filter(
-									function() {
-										return this.text.localeCompare(term) === 0;
-									}).length === 0 ) {
-								return {
-									id:'create_'+term, text:'Create '+term, data:term
-								};
+						})
+						.fail(function() {
+							OC.Notification.showTemporary(t('sensorlogger', 'Could not update device'));
+							if (onFailure) {
+								onFailure();
 							}
+						});
+				};
+
+				var addDetail = function(labelText, fieldName, value, options) {
+					var row = $('<div/>', {'class': 'bodyDetails'});
+					var label = $('<label/>', {text: labelText});
+					var control;
+					if (options) {
+						control = $('<select/>', {'aria-label': labelText});
+						control.append($('<option/>', {
+							value: '0',
+							text: t('sensorlogger', 'None')
+						}));
+						$.each(options, function(index, option) {
+							control.append($('<option/>', {
+								value: option.value,
+								text: option.text
+							}));
+						});
+						control.val(value === null || value === undefined ? '0' : String(value));
+						var savedValue = control.val();
+						control.on('change', function() {
+							var selectedValue = $(this).val();
+							updateDeviceField(fieldName, selectedValue, function() {
+								savedValue = selectedValue;
+							}, function() {
+								control.val(savedValue);
+							});
+						});
+					} else {
+						control = $('<input/>', {
+							type: 'text',
+							'aria-label': labelText,
+							value: value || ''
+						});
+						var save = $('<button/>', {
+							type: 'button',
+							text: t('sensorlogger', 'Save')
+						}).on('click', function() {
+							var newName = control.val().trim();
+							if (!newName) {
+								control.trigger('focus');
+								return;
+							}
+							updateDeviceField(fieldName, newName, function() {
+								sidebarTitle.text(newName);
+								$('table#sensorDevicesTable tr[data-id="' + id + '"] td').eq(3).text(newName);
+							});
+						});
+						row.append(label, control, save);
+					}
+					if (options) {
+						row.append(label, control);
+					}
+					sidebarBody.append(row);
+					return control;
+				};
+
+				sidebarTitle.text(device.name);
+				sidebarBody.empty();
+				addDetail(t('sensorlogger', 'Device name'), 'name', device.name);
+				var uuidRow = $('<div/>', {'class': 'bodyDetails'});
+				uuidRow.append(
+					$('<label/>', {text: t('sensorlogger', 'Device Unique Id')}),
+					$('<span/>', {'class': 'unique-id', text: device.uuid || ''})
+				);
+				sidebarBody.append(uuidRow);
+				var groupSelect = addDetail(t('sensorlogger', 'Device Group'), 'group_id', device.group, groupSource);
+				var groupParentSelect = addDetail(t('sensorlogger', 'Device Parent Group'), 'group_parent_id', device.groupParent, groupSource);
+				var typeSelect = addDetail(t('sensorlogger', 'Device Type'), 'type_id', device.type, typeSource);
+				sidebarBody.attr('aria-busy', 'false');
+
+				var createControl = function(label, url, parameterName, select, relatedSelects, fieldName) {
+					var input = $('<input/>', {
+						type: 'text',
+						'class': 'device-option-create',
+						'aria-label': label
+					});
+					var button = $('<button/>', {
+						type: 'button',
+						text: t('sensorlogger', 'Create')
+					});
+					button.on('click', function() {
+						var value = input.val();
+						if (!value || !value.trim()) {
+							input.trigger('focus');
+							return;
 						}
-					}
-				});
 
-				var bodyDetailsContainer = sidebar.find('.tpl_bodyDetails').clone();
-				bodyDetailsContainer.removeClass('tpl_bodyDetails').addClass('bodyDetails');
-
-				sidebar.find('.bodyDetails').remove();
-
-				var uuidLabel = $('<label/>', {
-					'class':'unique-id'
-				}).text('Device Unique Id');
-				var uuidContentSpan = $('<span/>', {
-					'class':'unique-id-content'
-				}).text(response.deviceDetails.uuid);
-
-
-				var groupLabel = $('<label/>', {
-					'class':'group'
-				}).text('Device Group');
-				var groupContentSpan = $('<span/>', {
-					'class':'group-content'
-				}).append(groupSelect);
-
-				var parentGroupLabel = $('<label/>', {
-					'class':'parent-group'
-				}).text('Device Parent Group');
-				var parentGroupContentSpan = $('<span/>', {
-					'class':'parent-group-content'
-				}).append(groupParentSelect);
-
-				var typeLabel = $('<label/>', {
-					'class':'type'
-				}).text('Device Type');
-				var typeContentSpan = $('<span/>', {
-					'class':'type-content'
-				}).append(typeSelect);
-
-				var uuid = bodyDetailsContainer
-					.clone()
-					.append(uuidLabel)
-					.append(uuidContentSpan);
-
-				var group = bodyDetailsContainer
-					.clone()
-					.append(groupLabel)
-					.append(groupContentSpan);
-
-				var groupParent = bodyDetailsContainer
-					.clone()
-					.append(parentGroupLabel)
-					.append(parentGroupContentSpan);
-				var type = bodyDetailsContainer
-					.clone()
-					.append(typeLabel)
-					.append(typeContentSpan);
-
-				sidebarTitle.empty().append(title);
-				sidebarBody.append(uuid);
-				sidebarBody.append(group);
-				sidebarBody.append(groupParent);
-				sidebarBody.append(type);
-
-				$(type).on('select2-selecting',function(e){
-					var string = e.object.id,
-						substring = "create_";
-					if(string.includes(substring)) {
-						$.post(createDeviceTypeUrl, {'device_id':id,'device_type_name':e.object.data} )
-							.success(function (response) {
-								$(e.target).val(response.deviceTypeId);
-								typeSource.push({
-									value: response.deviceTypeId,
-									text: e.object.data,
-									id : response.deviceTypeId
-								})
+						var data = {'device_id': id};
+						data[parameterName] = value.trim();
+						$.post(url, data).done(function(result) {
+							var optionId = result.deviceTypeId || result.deviceGroupId;
+							if (!optionId) {
+								OC.Notification.showTemporary(t('sensorlogger', 'Could not create option'));
+								return;
+							}
+							$.each(relatedSelects, function(index, relatedSelect) {
+								var exists = relatedSelect.find('option').filter(function() {
+									return String(this.value) === String(optionId);
+								}).length > 0;
+								if (!exists) {
+									relatedSelect.append($('<option/>', {
+										value: optionId,
+										text: value.trim()
+									}));
+								}
 							});
-					}
-				});
+							select.val(String(optionId)).trigger('change');
+							input.val('');
+						}).fail(function() {
+							OC.Notification.showTemporary(t('sensorlogger', 'Could not create option'));
+						});
+					});
+					$('<div/>', {'class': 'device-option-create-control'})
+						.append(input, button)
+						.appendTo(sidebarBody);
+				};
 
-				$(groupParent).on('select2-selecting',function(e){
-					var string = e.object.id,
-						substring = "create_";
-					if(string.includes(substring)) {
-						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.data} )
-							.success(function (response) {
-								$(e.target).val(response.deviceGroupId);
-								groupSource.push({
-									value: response.deviceGroupId,
-									text: e.object.data,
-									id : response.deviceGroupId
-								})
-							});
-					}
-				});
-
-				$(group).on('select2-selecting',function(e){
-					var string = e.object.id,
-						substring = "create_";
-					if(string.includes(substring)) {
-						$.post(createDeviceGroupUrl, {'device_id':id,'device_group_name':e.object.data} )
-							.success(function (response) {
-								$(e.target).val(response.deviceGroupId);
-								groupSource.push({
-									value: response.deviceGroupId,
-									text: e.object.data,
-									id : response.deviceGroupId
-								})
-							});
-					}
-				});
-				setSidebarVisible(true);
+				createControl(t('sensorlogger', 'Create device type'), createDeviceTypeUrl, 'device_type_name', typeSelect, [typeSelect], 'type_id');
+				createControl(t('sensorlogger', 'Create device group'), createDeviceGroupUrl, 'device_group_name', groupSelect, [groupSelect, groupParentSelect], 'group_id');
+				createControl(t('sensorlogger', 'Create parent device group'), createDeviceGroupUrl, 'device_group_name', groupParentSelect, [groupSelect, groupParentSelect], 'group_parent_id');
+			}).fail(function (request, status) {
+				if (status === 'abort') {
+					return;
+				}
+				sidebar.find('.body').attr('aria-busy', 'false');
+				sidebar.find('.title').text(t('sensorlogger', 'Could not load device details'));
+				OC.Notification.showTemporary(t('sensorlogger', 'Could not load device details'));
 			});
-		});
+		};
 		dashboardWidgets();
 		var standaloneChart = $('#chart');
 		if (standaloneChart.length) {
