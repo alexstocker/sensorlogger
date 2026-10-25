@@ -14,6 +14,14 @@ Nextcloud 34 integration test is still needed to verify runtime behavior.
 
 ## Follow-up runtime errors
 
+The local Nextcloud 34 API test also exposed a controller dependency issue:
+`SensorLoggerApiController` requested `OCP\ILogger`, whose logging methods
+were removed in Nextcloud 31, so the framework could not instantiate that
+interface. The controller now injects `Psr\Log\LoggerInterface`; a local
+authenticated request with an invalid, non-persisting payload reached the
+controller and returned its JSON validation error. No sensor data was
+submitted by that check.
+
 After the QueryBuilder and widget connection fixes, two subsequent dashboard
 requests uncovered additional compatibility failures:
 
@@ -148,9 +156,11 @@ does not establish Nextcloud 34/PHP 8 coverage.
   `vendor_style()`.
 - PHPUnit is not installed in the environment; the app Makefile test target
   downloads PHPUnit if missing, so it was not run.
-- No live Nextcloud 34 instance was available for runtime verification.
-- The configured `nextcloud-dev.loc` test URL does not resolve from this
-  environment, so the updated dashboard could not be exercised here.
+- The API controller's PSR logger dependency was resolved on the local
+  Nextcloud 34.0.5 instance. The malformed-request check verified controller
+  dispatch and validation response only; it did not verify successful device
+  registration or sensor-data persistence.
+- Dashboard rendering was not re-tested during this API controller check.
 - PHP syntax checks do not validate Nextcloud database API compatibility or
   connection-type behavior.
 

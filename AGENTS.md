@@ -52,6 +52,7 @@ supported Nextcloud versions, and development workflow.
 * Validate and constrain user-supplied input.
 * Use parameterized database queries and safe output handling.
 * Never expose credentials, tokens, private configuration, or sensitive sensor data in logs.
+* Never display, log, copy into chat, or send values from `.env` to MCP or any external service. Load such values only into a local process when required for an explicitly requested local task.
 * Do not introduce public endpoints or weaken CSRF protection without an explicit requirement.
 * Never commit secrets or production data.
 

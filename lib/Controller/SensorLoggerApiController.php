@@ -20,11 +20,11 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
@@ -54,6 +54,7 @@ class SensorLoggerApiController extends ApiController
     /** @var IL10N */
     private $l;
 
+    /** @var LoggerInterface */
     private $logger;
 
     protected $errors = [];
@@ -72,7 +73,7 @@ class SensorLoggerApiController extends ApiController
         IUserManager $userManager,
         IL10N $l10n,
         IUserSession $userSession,
-        ILogger $logger
+        LoggerInterface $logger
     ) {
         parent::__construct(
             $AppName,
