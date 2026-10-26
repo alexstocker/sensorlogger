@@ -19,6 +19,8 @@
   * Fixed [NOREF] response contract saveWidget
   * Fixed [NOREF] Parse extended sensor log data so chart widgets can plot multisensor measurements.
   * Updated [NOREF] Refine dashboard widget action menus and drag-handle placement to better match Nextcloud's interface.
+  * Updated [NOREF] Move device, log, and management row actions into compact Nextcloud action menus.
+  * Fixed [NOREF] Show delete icons and replace browser confirmation prompts with a Nextcloud confirmation dialog.
 
 ### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar

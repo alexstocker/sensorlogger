@@ -4,6 +4,7 @@ import { generateUrl } from '@nextcloud/router'
 import NcActions from '@nextcloud/vue/components/NcActions'
 import NcActionButton from '@nextcloud/vue/components/NcActionButton'
 import NcButton from '@nextcloud/vue/components/NcButton'
+import NcDialog from '@nextcloud/vue/components/NcDialog'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { translate as t } from '@nextcloud/l10n'
@@ -50,6 +51,8 @@ const result = ref({})
 const loading = ref(false)
 const error = ref('')
 const sidebar = ref('')
+const pendingDeletion = ref(null)
+const deletionDialogOpen = ref(false)
 const selectedDevice = ref(null)
 const deviceDetails = ref(null)
 const groups = ref([])
@@ -67,6 +70,16 @@ let dashboardResizeObserver = null
 let currentPageRequest = 0
 
 const title = computed(() => titleByView[view.value] || t('sensorlogger', 'SensorLogger'))
+const deletionDialogButtons = computed(() => [
+	{
+		label: t('sensorlogger', 'Cancel'),
+	},
+	{
+		label: t('sensorlogger', 'Delete'),
+		type: 'error',
+		callback: confirmDeletion,
+	},
+])
 const dashboardWidgets = computed(() => {
 	const widgets = result.value.widgets || []
 	const positions = new Map(dashboardLayout.value.order.map((id, index) => [id, index]))
@@ -342,12 +355,25 @@ async function removeItem(row) {
 		dataTypes: `deleteDataType/${row.id}`,
 	}
 	const endpoint = routes[view.value]
-	if (!endpoint || !window.confirm(t('sensorlogger', 'Are you sure you want to delete this item?'))) {
+	if (!endpoint) {
 		return
 	}
-	if (await postAction(endpoint)) {
-		await loadPage(view.value, itemId.value)
+	const targetView = view.value
+	const targetId = itemId.value
+	requestDeletion(endpoint, t('sensorlogger', 'Are you sure you want to delete this item?'), {}, () => loadPage(targetView, targetId))
+}
+
+function requestDeletion(endpoint, message, payload, onSuccess) {
+	pendingDeletion.value = { endpoint, message, payload, onSuccess }
+	deletionDialogOpen.value = true
+}
+
+async function confirmDeletion() {
+	const deletion = pendingDeletion.value
+	if (!deletion || !await postAction(deletion.endpoint, deletion.payload)) {
+		return false
 	}
+	await deletion.onSuccess()
 }
 
 async function deleteWidget(widget) {
@@ -500,14 +526,25 @@ async function saveWidget() {
 }
 
 async function wipeDevice() {
-	if (!selectedDevice.value || !window.confirm(t('sensorlogger', 'Delete this device and all its logs?'))) {
+	if (!selectedDevice.value) {
 		return
 	}
-	if (await postAction('wipeOutDevice', { device_id: selectedDevice.value.id })) {
-		closeSidebar()
-		await loadPage('devices')
-	}
+	requestDeletion(
+		'wipeOutDevice',
+		t('sensorlogger', 'Delete this device and all its logs?'),
+		{ device_id: selectedDevice.value.id },
+		async () => {
+			closeSidebar()
+			await loadPage('devices')
+		},
+	)
 }
+
+watch(deletionDialogOpen, (open) => {
+	if (!open) {
+		pendingDeletion.value = null
+	}
+})
 
 onMounted(() => {
 	window.addEventListener('popstate', onPopState)
@@ -651,9 +688,11 @@ watch(dashboardGrid, (grid) => {
 							<tr v-for="device in result.devices" :key="device.id">
 								<td>{{ device.uuid }}</td><td>{{ device.name }}</td><td>{{ device.deviceTypeName }}</td><td>{{ device.deviceGroupName }}</td>
 								<td class="sensorlogger-actions">
-									<NcButton @click="openDevice(device)">{{ t('sensorlogger', 'Details') }}</NcButton>
-									<NcButton @click="navigate('deviceChart', routeFor('deviceChart', device.id), device.id)">{{ t('sensorlogger', 'Chart') }}</NcButton>
-									<NcButton @click="navigate('deviceLogs', routeFor('deviceLogs', device.id), device.id)">{{ t('sensorlogger', 'Data') }}</NcButton>
+									<NcActions :aria-label="t('sensorlogger', 'Device actions')">
+										<NcActionButton @click="openDevice(device)">{{ t('sensorlogger', 'Details') }}</NcActionButton>
+										<NcActionButton @click="navigate('deviceChart', routeFor('deviceChart', device.id), device.id)">{{ t('sensorlogger', 'Chart') }}</NcActionButton>
+										<NcActionButton @click="navigate('deviceLogs', routeFor('deviceLogs', device.id), device.id)">{{ t('sensorlogger', 'Data') }}</NcActionButton>
+									</NcActions>
 								</td>
 							</tr>
 						</tbody>
@@ -668,7 +707,17 @@ watch(dashboardGrid, (grid) => {
 							<tr v-for="log in result.logs" :key="log.id">
 								<td>{{ log.id }}</td><td>{{ log.deviceUuid }}</td><td>{{ log.temperature }}</td><td>{{ log.humidity }}</td>
 								<td><span v-for="entry in log.data" :key="entry.dataTypeId">{{ entry.value }} {{ entry.short }} </span></td>
-								<td>{{ log.createdAt }}</td><td><NcButton @click="removeItem(log)">{{ t('sensorlogger', 'Delete') }}</NcButton></td>
+								<td>{{ log.createdAt }}</td>
+								<td class="sensorlogger-actions">
+									<NcActions :aria-label="t('sensorlogger', 'Log actions')">
+										<NcActionButton :close-after-click="true" @click="removeItem(log)">
+											<template #icon>
+												<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12ZM8 9h8v10H8V9Zm7.5-5-1-1h-5l-1 1H5v2h14V4h-3.5Z" /></svg>
+											</template>
+											{{ t('sensorlogger', 'Delete') }}
+										</NcActionButton>
+									</NcActions>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -686,7 +735,16 @@ watch(dashboardGrid, (grid) => {
 						<tbody>
 							<tr v-for="row in managementRows" :key="row.id">
 								<td v-for="column in managementColumns" :key="column.key">{{ row[column.key] }}</td>
-								<td><NcButton @click="removeItem(row)">{{ t('sensorlogger', 'Delete') }}</NcButton></td>
+								<td class="sensorlogger-actions">
+									<NcActions :aria-label="t('sensorlogger', 'Entry actions')">
+										<NcActionButton :close-after-click="true" @click="removeItem(row)">
+											<template #icon>
+												<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12ZM8 9h8v10H8V9Zm7.5-5-1-1h-5l-1 1H5v2h14V4h-3.5Z" /></svg>
+											</template>
+											{{ t('sensorlogger', 'Delete') }}
+										</NcActionButton>
+									</NcActions>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -732,7 +790,12 @@ watch(dashboardGrid, (grid) => {
 						<NcButton @click="createDeviceOption('parent', creating.parent)">{{ t('sensorlogger', 'Create parent group') }}</NcButton>
 						<label>{{ t('sensorlogger', 'Create device type') }}<input v-model="creating.type"></label>
 						<NcButton @click="createDeviceOption('type', creating.type)">{{ t('sensorlogger', 'Create device type') }}</NcButton>
-						<NcButton type="error" @click="wipeDevice">{{ t('sensorlogger', 'Delete device and logs') }}</NcButton>
+						<NcButton type="error" @click="wipeDevice">
+							<template #icon>
+								<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12ZM8 9h8v10H8V9Zm7.5-5-1-1h-5l-1 1H5v2h14V4h-3.5Z" /></svg>
+							</template>
+							{{ t('sensorlogger', 'Delete device and logs') }}
+						</NcButton>
 					</template>
 				</div>
 				<div v-else-if="sidebar === 'widget'" class="sensorlogger-sidebar-body">
@@ -752,5 +815,11 @@ watch(dashboardGrid, (grid) => {
 				</div>
 			</div>
 		</aside>
+		<NcDialog
+			v-if="pendingDeletion"
+			v-model:open="deletionDialogOpen"
+			:name="t('sensorlogger', 'Confirm deletion')"
+			:message="pendingDeletion.message"
+			:buttons="deletionDialogButtons" />
 	</div>
 </template>

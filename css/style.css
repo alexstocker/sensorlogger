@@ -564,9 +564,9 @@ table td {
 }
 
 .sensorlogger-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
+	text-align: end !important;
+	white-space: nowrap;
+	width: 1%;
 }
 
 .sensorlogger-empty,
