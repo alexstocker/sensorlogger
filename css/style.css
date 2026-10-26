@@ -409,6 +409,11 @@ table td {
 	width: auto;
 }
 
+#sensorlogger-app #app-content-wrapper {
+	flex: 1 1 0;
+	width: 100%;
+}
+
 #sensorlogger-app #navigation-list {
 	list-style: none;
 	margin: 0;
@@ -452,30 +457,12 @@ table td {
 }
 
 .sensorlogger-dashboard {
+	box-sizing: border-box;
 	display: grid;
 	gap: 16px;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-@media (max-width: 1199px) {
-	.sensorlogger-dashboard {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.sensorlogger-dashboard .sensorlogger-card.widget-span-2,
-	.sensorlogger-dashboard .sensorlogger-card.widget-span-3 {
-		grid-column: span 2 !important;
-	}
-}
-
-@media (max-width: 760px) {
-	.sensorlogger-dashboard {
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	.sensorlogger-dashboard .sensorlogger-card {
-		grid-column: span 1 !important;
-	}
+	grid-auto-flow: row dense;
+	grid-template-columns: repeat(var(--dashboard-columns, 1), minmax(0, 1fr));
+	width: 100%;
 }
 
 .sensorlogger-card {
@@ -490,18 +477,6 @@ table td {
 	position: relative;
 	scrollbar-width: thin;
 	transition: opacity 120ms ease, box-shadow 120ms ease;
-}
-
-.sensorlogger-card.widget-span-1 {
-	grid-column: span 1;
-}
-
-.sensorlogger-card.widget-span-2 {
-	grid-column: span 2;
-}
-
-.sensorlogger-card.widget-span-3 {
-	grid-column: span 3;
 }
 
 .sensorlogger-widget-drag-handle {
@@ -553,6 +528,16 @@ table td {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 6px;
+}
+
+.sensorlogger-widget-width {
+	align-items: center;
+	display: inline-flex;
+	gap: 6px;
+}
+
+.sensorlogger-widget-width select {
+	max-width: 140px;
 }
 
 .sensorlogger-card-header h2 {

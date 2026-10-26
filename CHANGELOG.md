@@ -13,6 +13,9 @@
   * Fixed [NOREF] Replace legacy jQuery, jqPlot, X-editable, and Select2 frontend dependencies.
   * Fixed [NOREF] Keep app navigation and content visible across desktop and mobile viewport widths.
   * Added [NOREF] Allow users to reorder and resize dashboard widgets, with heights and widths saved per user and up to three responsive columns.
+  * Fixed [NOREF] Apply widget column spans to the available dashboard width and densely arrange widgets around multi-column cards.
+  * Fixed [NOREF] Choose a dashboard widget's column span directly when corner resizing is not convenient.
+  * Fixed [NOREF] Allow a single widget to use all three dashboard columns at narrower viewport widths.
   * Fixed [NOREF] response contract saveWidget
   * Fixed [NOREF] Parse extended sensor log data so chart widgets can plot multisensor measurements.
 

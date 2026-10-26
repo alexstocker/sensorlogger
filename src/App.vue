@@ -3,7 +3,7 @@ import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { translate as t } from '@nextcloud/l10n'
 import SensorChart from './components/SensorChart.vue'
 import SensorLatest from './components/SensorLatest.vue'
@@ -58,7 +58,10 @@ const widgetDevice = ref('')
 const dashboardLayout = ref({ order: [], heights: {}, spans: {} })
 const draggedWidgetId = ref('')
 const resizingWidget = ref(null)
+const dashboardGrid = ref(null)
+const dashboardColumnCount = ref(1)
 let dashboardLayoutSaveQueue = Promise.resolve()
+let dashboardResizeObserver = null
 let currentPageRequest = 0
 
 const title = computed(() => titleByView[view.value] || t('sensorlogger', 'SensorLogger'))
@@ -414,18 +417,28 @@ function startWidgetDrag(event, widget) {
 function dropWidget(event, targetWidget) {
 	const draggedId = event.dataTransfer.getData('text/plain') || draggedWidgetId.value
 	const bounds = event.currentTarget.getBoundingClientRect()
-	moveWidget(draggedId, targetWidget.id, event.clientY >= bounds.top + bounds.height / 2)
+	const isAfter = event.clientY > bounds.top + bounds.height / 2
+	moveWidget(draggedId, targetWidget.id, isAfter)
 	draggedWidgetId.value = ''
 }
 
+function updateDashboardColumns() {
+	if (!dashboardGrid.value) {
+		dashboardColumnCount.value = 1
+		return
+	}
+	const width = dashboardGrid.value.clientWidth
+	const gap = Number.parseFloat(window.getComputedStyle(dashboardGrid.value).columnGap) || 0
+	dashboardColumnCount.value = Math.max(1, Math.min(3, Math.floor((width + gap) / (200 + gap))))
+}
+
 function getDashboardColumns() {
-	const grid = document.querySelector('.sensorlogger-dashboard')
+	const grid = dashboardGrid.value
 	if (!grid) {
 		return { count: 1, width: 280 }
 	}
-	const styles = window.getComputedStyle(grid)
-	const columns = styles.gridTemplateColumns.split(' ').length
-	const gap = Number.parseFloat(styles.columnGap) || 0
+	const columns = dashboardColumnCount.value
+	const gap = Number.parseFloat(window.getComputedStyle(grid).columnGap) || 0
 	return {
 		count: columns,
 		width: (grid.clientWidth - gap * (columns - 1)) / columns,
@@ -453,12 +466,18 @@ function resizeWidget(event, widget) {
 	}
 	const isLeftHandle = event.currentTarget.classList.contains('resize-left')
 	const horizontalDelta = (event.clientX - resizingWidget.value.startX) * (isLeftHandle ? -1 : 1)
-	const spanDelta = Math.round(horizontalDelta / resizingWidget.value.columnWidth)
+	const spanDelta = horizontalDelta >= 0
+		? Math.floor(horizontalDelta / resizingWidget.value.columnWidth + 0.5)
+		: Math.ceil(horizontalDelta / resizingWidget.value.columnWidth - 0.5)
 	widget.height = Math.max(180, Math.min(800, resizingWidget.value.startHeight + event.clientY - resizingWidget.value.startY))
-	if (resizingWidget.value.maxSpan > 1
-		&& Math.abs(horizontalDelta) >= resizingWidget.value.columnWidth / 2) {
+	if (resizingWidget.value.maxSpan > 1) {
 		widget.span = Math.max(1, Math.min(resizingWidget.value.maxSpan, resizingWidget.value.startSpan + spanDelta))
 	}
+}
+
+function updateWidgetSpan(widget, event) {
+	widget.span = Number(event.target.value)
+	persistDashboardLayout()
 }
 
 function endWidgetResize(event, widget) {
@@ -495,9 +514,25 @@ async function wipeDevice() {
 
 onMounted(() => {
 	window.addEventListener('popstate', onPopState)
+	dashboardResizeObserver = new ResizeObserver(updateDashboardColumns)
+	if (dashboardGrid.value) {
+		dashboardResizeObserver.observe(dashboardGrid.value)
+		updateDashboardColumns()
+	}
 	loadPage(props.initialView, props.initialId)
 })
-onUnmounted(() => window.removeEventListener('popstate', onPopState))
+onUnmounted(() => {
+	window.removeEventListener('popstate', onPopState)
+	dashboardResizeObserver?.disconnect()
+})
+
+watch(dashboardGrid, (grid) => {
+	dashboardResizeObserver?.disconnect()
+	if (grid) {
+		dashboardResizeObserver?.observe(grid)
+		updateDashboardColumns()
+	}
+}, { flush: 'post' })
 </script>
 
 <template>
@@ -528,7 +563,12 @@ onUnmounted(() => window.removeEventListener('popstate', onPopState))
 					{{ t('sensorlogger', 'Loading…') }}
 				</div>
 
-				<section v-else-if="view === 'dashboard'" class="sensorlogger-dashboard">
+				<section
+					v-else-if="view === 'dashboard'"
+					ref="dashboardGrid"
+					class="sensorlogger-dashboard"
+					:style="{ '--dashboard-columns': dashboardColumnCount }"
+				>
 					<div v-if="!result.widgets?.length" class="sensorlogger-empty">
 						<h2>{{ t('sensorlogger', 'No dashboard widgets configured') }}</h2>
 						<p>{{ t('sensorlogger', 'Add a widget to see your sensor data here.') }}</p>
@@ -537,8 +577,10 @@ onUnmounted(() => window.removeEventListener('popstate', onPopState))
 						v-for="widget in dashboardWidgets"
 						:key="widget.id"
 						class="sensorlogger-card"
-						:class="[`widget-span-${widget.span}`, { 'is-dragged': draggedWidgetId === widget.id }]"
-						:style="{ height: `${widget.height}px` }"
+						:class="{ 'is-dragged': draggedWidgetId === widget.id }"
+						:style="{ height: `${widget.height}px`, gridColumn: `span ${Math.min(widget.span, dashboardColumnCount)}` }"
+						:data-widget-id="widget.id"
+						@dragenter.prevent.stop
 						@dragover.prevent.stop
 						@drop.prevent.stop="dropWidget($event, widget)"
 					>
@@ -555,6 +597,12 @@ onUnmounted(() => window.removeEventListener('popstate', onPopState))
 								<h2>{{ widget.name }} <small>{{ widget.displayName }}</small></h2>
 							</div>
 							<div class="sensorlogger-widget-controls">
+								<label class="sensorlogger-widget-width">
+									{{ t('sensorlogger', 'Width') }}
+									<select :value="Math.min(widget.span, dashboardColumnCount)" @change="updateWidgetSpan(widget, $event)">
+										<option v-for="span in dashboardColumnCount" :key="span" :value="span">{{ span }} {{ span === 1 ? t('sensorlogger', 'column') : t('sensorlogger', 'columns') }}</option>
+									</select>
+								</label>
 								<NcButton :disabled="dashboardWidgets.indexOf(widget) === 0" :aria-label="t('sensorlogger', 'Move widget earlier')" @click="moveWidget(widget.id, dashboardWidgets[Math.max(0, dashboardWidgets.indexOf(widget) - 1)]?.id)">{{ t('sensorlogger', 'Move earlier') }}</NcButton>
 								<NcButton :disabled="dashboardWidgets.indexOf(widget) === dashboardWidgets.length - 1" :aria-label="t('sensorlogger', 'Move widget later')" @click="moveWidget(widget.id, dashboardWidgets[Math.min(dashboardWidgets.length - 1, dashboardWidgets.indexOf(widget) + 1)]?.id)">{{ t('sensorlogger', 'Move later') }}</NcButton>
 								<NcButton @click="deleteWidget(widget)">{{ t('sensorlogger', 'Remove') }}</NcButton>
