@@ -12,6 +12,12 @@ SensorLogger does not depend on core-provided jQuery or implicit global
 frontend libraries. The `@nextcloud/axios` and `@nextcloud/router` packages
 provide authenticated requests and Nextcloud-aware URLs.
 
+Dashboard widgets can be reordered by dragging them or using the move buttons.
+Their heights are adjustable per widget, and their widths can span available
+dashboard columns by dragging either bottom corner. The grid adapts to the
+viewport width with a maximum of three columns. Each user's order, heights,
+and widths are saved in Nextcloud user configuration.
+
 ## Development build
 
 Install Node.js 20.19 or newer (or 22.12 or newer) and npm, then run these

@@ -318,6 +318,10 @@ class SensorLoggerController extends Controller
                 $widgets = array_map([$this, 'serializeWidgetForUi'], array_filter($this->getWidgets()));
                 return $this->returnJSON([
                     'widgets' => array_values($widgets),
+                    'layout' => json_decode($this->getUserValue(
+                        'dashboard-layout',
+                        $userId
+                    ), true) ?: ['order' => [], 'heights' => [], 'spans' => []],
                     'widgetTypes' => (new Widgets())->getWidgetTypes(),
                     'devices' => Devices::getDevices($userId, $this->connection),
                 ]);
@@ -361,6 +365,7 @@ class SensorLoggerController extends Controller
         }
 
         return [
+            'id' => $widget->getType() . '-' . $widget->getDeviceId(),
             'deviceId' => $widget->getDeviceId(),
             'type' => $widget->getType(),
             'name' => $widget->getName(),
@@ -449,6 +454,57 @@ class SensorLoggerController extends Controller
         } catch (Exception $e) {
             return $this->returnJSON(array('success' => false));
         }
+    }
+
+    /**
+     * @NoAdminRequired
+     * @return DataResponse
+     */
+    public function saveDashboardLayout()
+    {
+        $layoutJson = $this->request->getParam('layout', '');
+        $layout = is_string($layoutJson) ? json_decode($layoutJson, true) : null;
+        if (!is_array($layout)
+            || !is_array($layout['order'] ?? [])
+            || !is_array($layout['heights'] ?? [])
+            || !is_array($layout['spans'] ?? [])) {
+            return $this->returnJSON(['success' => false, 'errors' => 'Invalid dashboard layout']);
+        }
+
+        $userId = $this->userSession->getUser()->getUID();
+        $availableWidgets = array_map(
+            static function ($widget) {
+                return $widget->getType() . '-' . $widget->getDeviceId();
+            },
+            array_filter($this->getWidgets())
+        );
+        $order = [];
+        foreach ($layout['order'] ?? [] as $widgetId) {
+            if (is_string($widgetId) && in_array($widgetId, $availableWidgets, true) && !in_array($widgetId, $order, true)) {
+                $order[] = $widgetId;
+            }
+        }
+
+        $heights = [];
+        foreach ($layout['heights'] ?? [] as $widgetId => $height) {
+            if (in_array($widgetId, $availableWidgets, true) && is_numeric($height)) {
+                $heights[$widgetId] = max(180, min(800, (int)$height));
+            }
+        }
+
+        $spans = [];
+        foreach ($layout['spans'] ?? [] as $widgetId => $span) {
+            if (in_array($widgetId, $availableWidgets, true) && is_numeric($span)) {
+                $spans[$widgetId] = max(1, min(3, (int)$span));
+            }
+        }
+
+        $this->setUserValue(
+            'dashboard-layout',
+            $userId,
+            json_encode(['order' => $order, 'heights' => $heights, 'spans' => $spans])
+        );
+        return $this->returnJSON(['success' => true]);
     }
 
     /**

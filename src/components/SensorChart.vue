@@ -17,11 +17,43 @@ const refreshSeconds = ref(5)
 let refreshTimer = null
 let isMounted = false
 
+function normalizeLog(log) {
+	if (!log || typeof log !== 'object') {
+		return { data: [] }
+	}
+
+	let data = log.data
+	if (typeof data === 'string') {
+		try {
+			data = JSON.parse(data)
+		} catch {
+			data = []
+		}
+	}
+	if (data && !Array.isArray(data) && typeof data === 'object') {
+		data = data.dataTypeId !== undefined && data.value !== undefined
+			? [data]
+			: Object.values(data)
+	}
+	if (!Array.isArray(data)) {
+		data = []
+	}
+
+	return {
+		...log,
+		data: data.filter((entry) => entry && typeof entry === 'object'
+			&& entry.dataTypeId !== undefined
+			&& entry.value !== undefined
+			&& entry.value !== null
+			&& Number.isFinite(Number(entry.value))),
+	}
+}
+
 const logs = computed(() => {
 	if (Array.isArray(payload.value?.logs)) {
-		return [...payload.value.logs].reverse()
+		return [...payload.value.logs].map(normalizeLog).reverse()
 	}
-	return Array.isArray(payload.value) ? [...payload.value].reverse() : []
+	return Array.isArray(payload.value) ? [...payload.value].map(normalizeLog).reverse() : []
 })
 
 const dataTypes = computed(() => payload.value?.dataTypes || [])

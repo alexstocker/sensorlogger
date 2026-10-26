@@ -55,9 +55,22 @@ const types = ref([])
 const creating = ref({ group: '', parent: '', type: '' })
 const widgetType = ref('')
 const widgetDevice = ref('')
+const dashboardLayout = ref({ order: [], heights: {}, spans: {} })
+const draggedWidgetId = ref('')
+const resizingWidget = ref(null)
+let dashboardLayoutSaveQueue = Promise.resolve()
 let currentPageRequest = 0
 
 const title = computed(() => titleByView[view.value] || t('sensorlogger', 'SensorLogger'))
+const dashboardWidgets = computed(() => {
+	const widgets = result.value.widgets || []
+	const positions = new Map(dashboardLayout.value.order.map((id, index) => [id, index]))
+	return [...widgets].sort((left, right) => {
+		const leftPosition = positions.get(left.id)
+		const rightPosition = positions.get(right.id)
+		return (leftPosition ?? Number.MAX_SAFE_INTEGER) - (rightPosition ?? Number.MAX_SAFE_INTEGER)
+	})
+})
 const managementRows = computed(() => ({
 	deviceTypes: result.value.deviceTypes || [],
 	deviceGroups: result.value.deviceGroups || [],
@@ -146,6 +159,17 @@ async function loadPage(viewName, id = '') {
 	try {
 		const pageData = await fetchPageData(viewName, id)
 		if (requestId === currentPageRequest) {
+			if (viewName === 'dashboard') {
+				dashboardLayout.value = {
+					order: pageData.layout?.order || [],
+					heights: pageData.layout?.heights || {},
+					spans: pageData.layout?.spans || {},
+				}
+				for (const widget of pageData.widgets || []) {
+					widget.height = dashboardLayout.value.heights[widget.id] || 300
+					widget.span = dashboardLayout.value.spans[widget.id] || 1
+				}
+			}
 			result.value = pageData
 		}
 	} catch (exception) {
@@ -325,7 +349,124 @@ async function deleteWidget(widget) {
 	const id = `widget-${widget.type}-${widget.deviceId}`
 	if (await postAction(`deleteWidget/${encodeURIComponent(id)}`)) {
 		await loadPage('dashboard')
+		const currentIds = new Set((result.value.widgets || []).map((entry) => entry.id))
+		dashboardLayout.value.order = dashboardLayout.value.order.filter((widgetId) => currentIds.has(widgetId))
+		for (const widgetId of Object.keys(dashboardLayout.value.heights)) {
+			if (!currentIds.has(widgetId)) {
+				delete dashboardLayout.value.heights[widgetId]
+			}
+		}
+		for (const widgetId of Object.keys(dashboardLayout.value.spans)) {
+			if (!currentIds.has(widgetId)) {
+				delete dashboardLayout.value.spans[widgetId]
+			}
+		}
+		await persistDashboardLayout()
 	}
+}
+
+async function persistDashboardLayout() {
+	const layout = {
+		order: dashboardWidgets.value.map((widget) => widget.id),
+		heights: Object.fromEntries(dashboardWidgets.value.map((widget) => [widget.id, widget.height])),
+		spans: Object.fromEntries(dashboardWidgets.value.map((widget) => [widget.id, widget.span])),
+	}
+	const save = async () => {
+		try {
+			const { data } = await axios.post(appUrl('saveDashboardLayout'), {
+				layout: JSON.stringify(layout),
+			})
+			if (!data.success) {
+				throw new Error(data.errors || t('sensorlogger', 'Could not save dashboard layout'))
+			}
+			dashboardLayout.value = layout
+		} catch (exception) {
+			error.value = exception.response?.data?.error || exception.message || t('sensorlogger', 'Could not save dashboard layout')
+		}
+	}
+	dashboardLayoutSaveQueue = dashboardLayoutSaveQueue.then(save, save)
+	await dashboardLayoutSaveQueue
+}
+
+function moveWidget(draggedId, targetId, insertAfter = false) {
+	if (!draggedId || !targetId || draggedId === targetId) {
+		return
+	}
+	const order = dashboardWidgets.value.map((widget) => widget.id)
+	const fromIndex = order.indexOf(draggedId)
+	const targetIndex = order.indexOf(targetId)
+	if (fromIndex < 0 || targetIndex < 0) {
+		return
+	}
+	const [movedId] = order.splice(fromIndex, 1)
+	const insertionIndex = order.indexOf(targetId) + (insertAfter ? 1 : 0)
+	order.splice(insertionIndex, 0, movedId)
+	dashboardLayout.value.order = order
+	persistDashboardLayout()
+}
+
+function startWidgetDrag(event, widget) {
+	draggedWidgetId.value = widget.id
+	event.dataTransfer.effectAllowed = 'move'
+	event.dataTransfer.setData('text/plain', widget.id)
+}
+
+function dropWidget(event, targetWidget) {
+	const draggedId = event.dataTransfer.getData('text/plain') || draggedWidgetId.value
+	const bounds = event.currentTarget.getBoundingClientRect()
+	moveWidget(draggedId, targetWidget.id, event.clientY >= bounds.top + bounds.height / 2)
+	draggedWidgetId.value = ''
+}
+
+function getDashboardColumns() {
+	const grid = document.querySelector('.sensorlogger-dashboard')
+	if (!grid) {
+		return { count: 1, width: 280 }
+	}
+	const styles = window.getComputedStyle(grid)
+	const columns = styles.gridTemplateColumns.split(' ').length
+	const gap = Number.parseFloat(styles.columnGap) || 0
+	return {
+		count: columns,
+		width: (grid.clientWidth - gap * (columns - 1)) / columns,
+	}
+}
+
+function startWidgetResize(event, widget) {
+	const { count, width } = getDashboardColumns()
+	resizingWidget.value = {
+		id: widget.id,
+		pointerId: event.pointerId,
+		startX: event.clientX,
+		startY: event.clientY,
+		startHeight: widget.height,
+		startSpan: Math.min(widget.span, count),
+		columnWidth: width,
+		maxSpan: Math.min(3, count),
+	}
+	event.currentTarget.setPointerCapture(event.pointerId)
+}
+
+function resizeWidget(event, widget) {
+	if (resizingWidget.value?.id !== widget.id || resizingWidget.value.pointerId !== event.pointerId) {
+		return
+	}
+	const isLeftHandle = event.currentTarget.classList.contains('resize-left')
+	const horizontalDelta = (event.clientX - resizingWidget.value.startX) * (isLeftHandle ? -1 : 1)
+	const spanDelta = Math.round(horizontalDelta / resizingWidget.value.columnWidth)
+	widget.height = Math.max(180, Math.min(800, resizingWidget.value.startHeight + event.clientY - resizingWidget.value.startY))
+	if (resizingWidget.value.maxSpan > 1
+		&& Math.abs(horizontalDelta) >= resizingWidget.value.columnWidth / 2) {
+		widget.span = Math.max(1, Math.min(resizingWidget.value.maxSpan, resizingWidget.value.startSpan + spanDelta))
+	}
+}
+
+function endWidgetResize(event, widget) {
+	if (resizingWidget.value?.id !== widget.id || resizingWidget.value.pointerId !== event.pointerId) {
+		return
+	}
+	resizingWidget.value = null
+	persistDashboardLayout()
 }
 
 async function saveWidget() {
@@ -392,10 +533,32 @@ onUnmounted(() => window.removeEventListener('popstate', onPopState))
 						<h2>{{ t('sensorlogger', 'No dashboard widgets configured') }}</h2>
 						<p>{{ t('sensorlogger', 'Add a widget to see your sensor data here.') }}</p>
 					</div>
-					<article v-for="widget in result.widgets" :key="`${widget.type}-${widget.deviceId}`" class="sensorlogger-card">
+					<article
+						v-for="widget in dashboardWidgets"
+						:key="widget.id"
+						class="sensorlogger-card"
+						:class="[`widget-span-${widget.span}`, { 'is-dragged': draggedWidgetId === widget.id }]"
+						:style="{ height: `${widget.height}px` }"
+						@dragover.prevent.stop
+						@drop.prevent.stop="dropWidget($event, widget)"
+					>
 						<header class="sensorlogger-card-header">
-							<h2>{{ widget.name }} <small>{{ widget.displayName }}</small></h2>
-							<NcButton @click="deleteWidget(widget)">{{ t('sensorlogger', 'Remove') }}</NcButton>
+							<div>
+								<span
+									class="sensorlogger-widget-drag-handle"
+									draggable="true"
+									:title="t('sensorlogger', 'Drag to reorder')"
+									:aria-label="t('sensorlogger', 'Drag to reorder')"
+									@dragstart.stop="startWidgetDrag($event, widget)"
+									@dragend="draggedWidgetId = ''"
+								>Move</span>
+								<h2>{{ widget.name }} <small>{{ widget.displayName }}</small></h2>
+							</div>
+							<div class="sensorlogger-widget-controls">
+								<NcButton :disabled="dashboardWidgets.indexOf(widget) === 0" :aria-label="t('sensorlogger', 'Move widget earlier')" @click="moveWidget(widget.id, dashboardWidgets[Math.max(0, dashboardWidgets.indexOf(widget) - 1)]?.id)">{{ t('sensorlogger', 'Move earlier') }}</NcButton>
+								<NcButton :disabled="dashboardWidgets.indexOf(widget) === dashboardWidgets.length - 1" :aria-label="t('sensorlogger', 'Move widget later')" @click="moveWidget(widget.id, dashboardWidgets[Math.min(dashboardWidgets.length - 1, dashboardWidgets.indexOf(widget) + 1)]?.id)">{{ t('sensorlogger', 'Move later') }}</NcButton>
+								<NcButton @click="deleteWidget(widget)">{{ t('sensorlogger', 'Remove') }}</NcButton>
+							</div>
 						</header>
 						<SensorChart v-if="['chart', 'realTimeChart'].includes(widget.type)" :device-id="widget.deviceId" :live="widget.type === 'realTimeChart'" />
 						<template v-else-if="widget.type === 'list'">
@@ -417,6 +580,22 @@ onUnmounted(() => window.removeEventListener('popstate', onPopState))
 							<time>{{ widget.log.createdAt }}</time>
 						</template>
 						<p v-else class="sensorlogger-empty">{{ t('sensorlogger', 'No data available') }}</p>
+						<span
+							class="sensorlogger-widget-resize resize-left"
+							:title="t('sensorlogger', 'Drag to resize widget height')"
+							@pointerdown.stop.prevent="startWidgetResize($event, widget)"
+							@pointermove="resizeWidget($event, widget)"
+							@pointerup="endWidgetResize($event, widget)"
+							@pointercancel="endWidgetResize($event, widget)"
+						></span>
+						<span
+							class="sensorlogger-widget-resize resize-right"
+							:title="t('sensorlogger', 'Drag to resize widget height')"
+							@pointerdown.stop.prevent="startWidgetResize($event, widget)"
+							@pointermove="resizeWidget($event, widget)"
+							@pointerup="endWidgetResize($event, widget)"
+							@pointercancel="endWidgetResize($event, widget)"
+						></span>
 					</article>
 				</section>
 

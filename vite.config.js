@@ -26,6 +26,7 @@ export default defineConfig({
 		rollupOptions: {
 			input: 'src/main.js',
 			output: {
+				format: 'iife',
 				entryFileNames: 'sensorlogger.js',
 				chunkFileNames: 'sensorlogger-[name].js',
 				assetFileNames: 'sensorlogger-[name][extname]',

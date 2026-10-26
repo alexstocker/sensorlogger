@@ -12,7 +12,9 @@
   * Fixed [NOREF] Render all SensorLogger views inside one Nextcloud shell and Vue app.
   * Fixed [NOREF] Replace legacy jQuery, jqPlot, X-editable, and Select2 frontend dependencies.
   * Fixed [NOREF] Keep app navigation and content visible across desktop and mobile viewport widths.
+  * Added [NOREF] Allow users to reorder and resize dashboard widgets, with heights and widths saved per user and up to three responsive columns.
   * Fixed [NOREF] response contract saveWidget
+  * Fixed [NOREF] Parse extended sensor log data so chart widgets can plot multisensor measurements.
 
 ### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar
