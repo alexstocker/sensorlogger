@@ -423,13 +423,16 @@ class SensorLoggerController extends Controller
         $widgetType = $this->request->getParam('widget_type');
         $json = json_encode($array);
         if (!$widgetId || !$widgetType) {
-            return $this->returnJSON(array('errors' => 'Could not create widget!'));
+            return $this->returnJSON(array('success' => false, 'errors' => 'Could not create widget!'));
         }
         try {
             $this->setUserValue('widget-' . $widgetType . '-' . $widgetId, $this->userSession->getUser()->getUID(), $json);
-            return $this->returnJSON(array('id' => 'widget-' . $widgetType . '-' . $widgetId));
+            return $this->returnJSON(array(
+                'success' => true,
+                'id' => 'widget-' . $widgetType . '-' . $widgetId,
+            ));
         } catch (Exception $e) {
-            return $this->returnJSON(array('errors' => 'Could not create widget!'));
+            return $this->returnJSON(array('success' => false, 'errors' => 'Could not create widget!'));
         }
     }
 
