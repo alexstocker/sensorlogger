@@ -36,11 +36,11 @@
     <bugs>https://github.com/alexstocker/sensorlogger/issues</bugs>
     <website>https://www.html5live.at/sensorlogger/</website>
     <summary>Log data from any type of sensor and visualize it</summary>
-    <screenshot>https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-dashboard.png</screenshot>
-    <screenshot>https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-widget-sidebar.png</screenshot>
-    <screenshot>https://www.html5live.at/wp-content/uploads/2024/01/sensorlogger-nc28-device-edit.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2026/10/sensorlogger-nc35-dashboard.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2026/10/sensorlogger-nc35-widget-sidebar.png</screenshot>
+    <screenshot>https://www.html5live.at/wp-content/uploads/2026/10/sensorlogger-nc35-device-edit.png</screenshot>
     <dependencies>
-        <nextcloud min-version="34"/>
+        <nextcloud min-version="28" max-version="35"/>
         <database min-version="8.0">mysql</database>
         <php min-version="8.2"/>
     </dependencies>

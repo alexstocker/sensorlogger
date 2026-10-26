@@ -1,6 +1,6 @@
 # SensorLogger
 
-### 0.2.0nc UNRELEASED
+### 0.2.0nc 2026-10-26
   * Changed [NOREF] Rebuild the app frontend as a Vue SPA for Nextcloud 34 and newer.
   * Added [NOREF] Serve authenticated JSON view data while preserving sensor-client API routes.
   * Fixed [NOREF] Unify direct routes and in-app navigation with browser history support.

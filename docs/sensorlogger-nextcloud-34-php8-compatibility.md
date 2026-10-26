@@ -20,6 +20,20 @@ Nextcloud 34 baseline also raises the declared PHP minimum to 8.2 and MySQL
 minimum to 8.0. See `frontend-architecture.md` for frontend development and
 build details.
 
+## Compatibility Matrix
+
+
+| Major version | Latest release | SensorLogger for NC | PHP Version |
+| ------------- | -------------- | :------------: | :--------------: |
+| 35.x          | **35.0.2**     | 0.2.0nc | 8.5      |
+| 34.x          | **34.0.5**     | 0.2.0nc  | 8.3      |
+| 33.x          | **33.0.10**    |   |       |
+| 32.x          | **32.0.15**    |   |     |
+| 31.x          | **31.0.14**    | 0.2.0nc |  8.3   |
+| 30.x          | **30.0.17**    |   |     |
+| 29.x          | **29.0.16**    |   |     |
+| 28.x          | **28.0.14**    | 0.2.0nc  | 8.2    |
+
 ## Follow-up runtime errors
 
 The local Nextcloud 34 API test also exposed a controller dependency issue:
