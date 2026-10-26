@@ -18,6 +18,7 @@
   * Fixed [NOREF] Allow a single widget to use all three dashboard columns at narrower viewport widths.
   * Fixed [NOREF] response contract saveWidget
   * Fixed [NOREF] Parse extended sensor log data so chart widgets can plot multisensor measurements.
+  * Updated [NOREF] Refine dashboard widget action menus and drag-handle placement to better match Nextcloud's interface.
 
 ### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar

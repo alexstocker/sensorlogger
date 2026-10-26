@@ -1,6 +1,8 @@
 <script setup>
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import NcActions from '@nextcloud/vue/components/NcActions'
+import NcActionButton from '@nextcloud/vue/components/NcActionButton'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
@@ -475,11 +477,6 @@ function resizeWidget(event, widget) {
 	}
 }
 
-function updateWidgetSpan(widget, event) {
-	widget.span = Number(event.target.value)
-	persistDashboardLayout()
-}
-
 function endWidgetResize(event, widget) {
 	if (resizingWidget.value?.id !== widget.id || resizingWidget.value.pointerId !== event.pointerId) {
 		return
@@ -585,29 +582,29 @@ watch(dashboardGrid, (grid) => {
 						@drop.prevent.stop="dropWidget($event, widget)"
 					>
 						<header class="sensorlogger-card-header">
-							<div>
-								<span
-									class="sensorlogger-widget-drag-handle"
-									draggable="true"
-									:title="t('sensorlogger', 'Drag to reorder')"
-									:aria-label="t('sensorlogger', 'Drag to reorder')"
-									@dragstart.stop="startWidgetDrag($event, widget)"
-									@dragend="draggedWidgetId = ''"
-								>Move</span>
-								<h2>{{ widget.name }} <small>{{ widget.displayName }}</small></h2>
-							</div>
-							<div class="sensorlogger-widget-controls">
-								<label class="sensorlogger-widget-width">
-									{{ t('sensorlogger', 'Width') }}
-									<select :value="Math.min(widget.span, dashboardColumnCount)" @change="updateWidgetSpan(widget, $event)">
-										<option v-for="span in dashboardColumnCount" :key="span" :value="span">{{ span }} {{ span === 1 ? t('sensorlogger', 'column') : t('sensorlogger', 'columns') }}</option>
-									</select>
-								</label>
-								<NcButton :disabled="dashboardWidgets.indexOf(widget) === 0" :aria-label="t('sensorlogger', 'Move widget earlier')" @click="moveWidget(widget.id, dashboardWidgets[Math.max(0, dashboardWidgets.indexOf(widget) - 1)]?.id)">{{ t('sensorlogger', 'Move earlier') }}</NcButton>
-								<NcButton :disabled="dashboardWidgets.indexOf(widget) === dashboardWidgets.length - 1" :aria-label="t('sensorlogger', 'Move widget later')" @click="moveWidget(widget.id, dashboardWidgets[Math.min(dashboardWidgets.length - 1, dashboardWidgets.indexOf(widget) + 1)]?.id)">{{ t('sensorlogger', 'Move later') }}</NcButton>
-								<NcButton @click="deleteWidget(widget)">{{ t('sensorlogger', 'Remove') }}</NcButton>
-							</div>
+							<h2>{{ widget.name }} <small>{{ widget.displayName }}</small></h2>
+							<NcActions :aria-label="t('sensorlogger', 'Widget actions')">
+								<NcActionButton
+									:disabled="dashboardWidgets.indexOf(widget) === 0"
+									:aria-label="t('sensorlogger', 'Move widget earlier')"
+									@click="moveWidget(widget.id, dashboardWidgets[Math.max(0, dashboardWidgets.indexOf(widget) - 1)]?.id)"
+								>{{ t('sensorlogger', 'Move earlier') }}</NcActionButton>
+								<NcActionButton
+									:disabled="dashboardWidgets.indexOf(widget) === dashboardWidgets.length - 1"
+									:aria-label="t('sensorlogger', 'Move widget later')"
+									@click="moveWidget(widget.id, dashboardWidgets[Math.min(dashboardWidgets.length - 1, dashboardWidgets.indexOf(widget) + 1)]?.id)"
+								>{{ t('sensorlogger', 'Move later') }}</NcActionButton>
+								<NcActionButton @click="deleteWidget(widget)">{{ t('sensorlogger', 'Remove') }}</NcActionButton>
+							</NcActions>
 						</header>
+						<span
+							class="sensorlogger-widget-drag-handle"
+							draggable="true"
+							:title="t('sensorlogger', 'Drag to reorder')"
+							:aria-label="t('sensorlogger', 'Drag to reorder')"
+							@dragstart.stop="startWidgetDrag($event, widget)"
+							@dragend="draggedWidgetId = ''"
+						></span>
 						<SensorChart v-if="['chart', 'realTimeChart'].includes(widget.type)" :device-id="widget.deviceId" :live="widget.type === 'realTimeChart'" />
 						<template v-else-if="widget.type === 'list'">
 							<p v-if="!widget.log?.length" class="sensorlogger-empty">{{ t('sensorlogger', 'No data available') }}</p>

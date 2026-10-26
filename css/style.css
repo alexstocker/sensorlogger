@@ -480,19 +480,29 @@ table td {
 }
 
 .sensorlogger-widget-drag-handle {
-	border: 1px solid var(--color-border, #ddd);
+	background:
+		radial-gradient(circle, currentColor 1.5px, transparent 1.7px) 0 0 / 6px 6px;
 	border-radius: var(--border-radius, 6px);
 	color: var(--color-text-maxcontrast, #666);
 	cursor: grab;
-	display: inline-block;
-	margin-inline-end: 8px;
-	padding: 4px 8px;
+	height: 16px;
+	margin-top: 7px;
+	inset-block-start: 16px;
+	inset-inline-start: 8px;
+	position: absolute;
 	touch-action: none;
 	user-select: none;
+	width: 12px;
+	z-index: 1;
+}
+
+.sensorlogger-card-header {
+	margin-left: 5px;
 }
 
 .sensorlogger-widget-drag-handle:hover {
-	background: var(--color-background-hover, #f5f5f5);
+	background-color: var(--color-background-hover, #f5f5f5);
+	color: var(--color-main-text, #222);
 }
 
 .sensorlogger-widget-drag-handle:active {
@@ -522,22 +532,6 @@ table td {
 
 .sensorlogger-widget-resize.resize-right {
 	inset-inline-end: 4px;
-}
-
-.sensorlogger-widget-controls {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
-}
-
-.sensorlogger-widget-width {
-	align-items: center;
-	display: inline-flex;
-	gap: 6px;
-}
-
-.sensorlogger-widget-width select {
-	max-width: 140px;
 }
 
 .sensorlogger-card-header h2 {
