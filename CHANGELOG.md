@@ -11,6 +11,7 @@
   * Updated [NOREF] Modernize SensorLogger templates for the current Nextcloud layout with responsive and accessible controls.
   * Fixed [NOREF] Render all SensorLogger views inside one Nextcloud shell and Vue app.
   * Fixed [NOREF] Replace legacy jQuery, jqPlot, X-editable, and Select2 frontend dependencies.
+  * Fixed [NOREF] Keep app navigation and content visible across desktop and mobile viewport widths.
 
 ### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar

@@ -378,9 +378,6 @@ onUnmounted(() => window.removeEventListener('popstate', onPopState))
 
 		<div id="app-content">
 			<main id="app-content-wrapper" class="sensorlogger-content">
-				<header class="sensorlogger-page-header">
-					<h1>{{ title }}</h1>
-				</header>
 				<div v-if="error" class="sensorlogger-error" role="alert">
 					{{ error }}
 					<NcButton @click="error = ''">{{ t('sensorlogger', 'Dismiss') }}</NcButton>
