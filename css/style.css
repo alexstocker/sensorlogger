@@ -546,7 +546,12 @@ table td {
 }
 
 .sensorlogger-table-wrap {
+	align-self: stretch;
+	box-sizing: border-box;
+	flex: 1 1 auto;
+	min-width: 0;
 	overflow-x: auto;
+	width: 100%;
 }
 
 .sensorlogger-table {
@@ -557,16 +562,55 @@ table td {
 
 .sensorlogger-table th,
 .sensorlogger-table td {
-	border-bottom: 1px solid var(--color-border, #ddd);
-	padding: 10px;
 	text-align: start;
-	vertical-align: top;
+	vertical-align: middle;
+}
+
+.sensorlogger-table thead tr {
+	background: var(--color-main-background, #fff);
+	border-bottom: 1px solid var(--color-border, #ddd);
+	height: 44px;
+}
+
+.sensorlogger-table thead th {
+	color: var(--color-text-maxcontrast, #666);
+	font-size: 14px;
+	font-weight: normal;
+	padding: 0 12px;
+	white-space: nowrap;
+}
+
+.sensorlogger-table tbody tr {
+	background: transparent;
+	border-bottom: 1px solid var(--color-border, #ddd);
+	height: 44px;
+	transition: background-color 100ms ease;
+}
+
+.sensorlogger-table tbody tr:hover,
+.sensorlogger-table tbody tr:focus-within {
+	background: var(--color-background-hover, #f5f5f5);
+}
+
+.sensorlogger-table tbody td {
+	color: var(--color-main-text, inherit);
+	padding: 0 12px;
 }
 
 .sensorlogger-actions {
 	text-align: end !important;
 	white-space: nowrap;
 	width: 1%;
+}
+
+.sensorlogger-visually-hidden {
+	clip: rect(0, 0, 0, 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
 }
 
 .sensorlogger-empty,

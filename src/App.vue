@@ -683,7 +683,16 @@ watch(dashboardGrid, (grid) => {
 
 				<section v-else-if="view === 'devices'" class="sensorlogger-table-wrap">
 					<table class="sensorlogger-table">
-						<thead><tr><th>{{ t('sensorlogger', 'UUID') }}</th><th>{{ t('sensorlogger', 'Name') }}</th><th>{{ t('sensorlogger', 'Type') }}</th><th>{{ t('sensorlogger', 'Group') }}</th><th>{{ t('sensorlogger', 'Actions') }}</th></tr></thead>
+						<caption class="sensorlogger-visually-hidden">{{ t('sensorlogger', 'Devices') }}</caption>
+						<thead>
+							<tr>
+								<th scope="col">{{ t('sensorlogger', 'UUID') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Name') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Type') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Group') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Actions') }}</th>
+							</tr>
+						</thead>
 						<tbody>
 							<tr v-for="device in result.devices" :key="device.id">
 								<td>{{ device.uuid }}</td><td>{{ device.name }}</td><td>{{ device.deviceTypeName }}</td><td>{{ device.deviceGroupName }}</td>
@@ -702,7 +711,18 @@ watch(dashboardGrid, (grid) => {
 
 				<section v-else-if="view === 'logs' || view === 'deviceLogs'" class="sensorlogger-table-wrap">
 					<table class="sensorlogger-table">
-						<thead><tr><th>#</th><th>{{ t('sensorlogger', 'UUID') }}</th><th>{{ t('sensorlogger', 'Temperature') }}</th><th>{{ t('sensorlogger', 'Humidity') }}</th><th>{{ t('sensorlogger', 'Additional data') }}</th><th>{{ t('sensorlogger', 'Created') }}</th><th>{{ t('sensorlogger', 'Actions') }}</th></tr></thead>
+						<caption class="sensorlogger-visually-hidden">{{ title }}</caption>
+						<thead>
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">{{ t('sensorlogger', 'UUID') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Temperature') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Humidity') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Additional data') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Created') }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Actions') }}</th>
+							</tr>
+						</thead>
 						<tbody>
 							<tr v-for="log in result.logs" :key="log.id">
 								<td>{{ log.id }}</td><td>{{ log.deviceUuid }}</td><td>{{ log.temperature }}</td><td>{{ log.humidity }}</td>
@@ -731,7 +751,13 @@ watch(dashboardGrid, (grid) => {
 
 				<section v-else-if="managementColumns.length" class="sensorlogger-table-wrap">
 					<table class="sensorlogger-table">
-						<thead><tr><th v-for="column in managementColumns" :key="column.key">{{ column.label }}</th><th>{{ t('sensorlogger', 'Actions') }}</th></tr></thead>
+						<caption class="sensorlogger-visually-hidden">{{ title }}</caption>
+						<thead>
+							<tr>
+								<th v-for="column in managementColumns" :key="column.key" scope="col">{{ column.label }}</th>
+								<th scope="col">{{ t('sensorlogger', 'Actions') }}</th>
+							</tr>
+						</thead>
 						<tbody>
 							<tr v-for="row in managementRows" :key="row.id">
 								<td v-for="column in managementColumns" :key="column.key">{{ row[column.key] }}</td>
