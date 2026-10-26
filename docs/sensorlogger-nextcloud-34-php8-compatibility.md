@@ -12,6 +12,14 @@ other SensorLogger paths.
 The compatibility fixes described below have since been applied. A live
 Nextcloud 34 integration test is still needed to verify runtime behavior.
 
+The app's new frontend targets Nextcloud 34 and newer. It is a bundled Vue
+single-page app with a single server-rendered Nextcloud shell and authenticated
+JSON data endpoint; it no longer relies on core-provided jQuery, Select2,
+X-editable, or jqPlot. The current app release target is `0.2.0nc`. The
+Nextcloud 34 baseline also raises the declared PHP minimum to 8.2 and MySQL
+minimum to 8.0. See `frontend-architecture.md` for frontend development and
+build details.
+
 ## Follow-up runtime errors
 
 The local Nextcloud 34 API test also exposed a controller dependency issue:
@@ -58,22 +66,28 @@ requests uncovered additional compatibility failures:
    plugin is not bundled, so editor controls using Select2 remain a separate
    functional concern.
 
-### Frontend adaptation
+### Frontend adaptation and navigation rework
 
-The server-rendered SensorLogger layout has been refreshed for current
-Nextcloud use without introducing a frontend framework or build pipeline.
-The main template now uses semantic navigation, main-content, and sidebar
-regions; removes unused Angular-style attributes and placeholder sidebar
-tabs; and exposes sidebar visibility to assistive technology. Management
-tables now have valid header rows and accessible labels, the device columns
-match their data, and the dashboard uses a responsive grid, Nextcloud theme
-colors, visible keyboard focus, and reduced-motion support.
+Nextcloud 34 removed jQuery and jQuery UI from core after deprecating jQuery
+for multiple releases. The previous SensorLogger code depended on global
+jQuery, jqPlot, X-editable, and Select2. A short-lived compatibility patch
+bundled jQuery, but this retained the legacy dependency graph and continued to
+leave page navigation split between full-page and AJAX-fragment rendering.
 
-This is a compatibility-focused refresh, not a Vue rewrite. The repository
-has no frontend package manifest or build tooling, and a rewrite would affect
-the app's broad declared Nextcloud 14–34 support. Existing jQuery, jqPlot,
-inline editing, and Select2-dependent controls remain; the missing Select2
-asset described above is still an unresolved functional concern.
+The frontend is now a Vue single-page app, built with Vite and bundled with
+the app. PHP renders one Nextcloud shell; Vue owns the app navigation, page
+content, browser history, and sidebars. Read-only UI data is delivered by an
+authenticated, allowlisted JSON endpoint. Firmware-facing API routes remain
+separate. Views use the existing domain queries and serialize explicit
+frontend data shapes. The dashboard charts are rendered as SVG, avoiding the
+old jqPlot runtime. PHP remains responsible for authorization, persistence,
+and write validation.
+
+The app now declares Nextcloud 34 as its minimum and has no maximum version
+cap. Its release target is `0.2.0nc` (the app metadata version is `0.2.0`).
+Building the frontend requires Node.js and npm; generated JS/CSS are included
+so an installed app does not need Node. Browser integration and visual
+verification are still outstanding.
 
 ### Direct page routes returned fragments without the Nextcloud shell
 
@@ -85,46 +99,19 @@ the JavaScript fetched the route and inserted the fragment into the existing
 app shell; opening the route directly rendered a bare table without the
 Nextcloud header, app navigation, or styles.
 
-Page responses now distinguish normal browser requests from AJAX requests
-using `X-Requested-With`: AJAX navigation still receives the same fragment,
-while direct page requests render the `main` template with the requested
-content and active navigation item. This behavior is shared by the related
-dashboard, device, and management-list routes. Standalone chart pages now
-initialize their chart after the full layout loads.
-
-The first direct device-list response then exposed a mismatched template
-parameter: the controller selected `part.list` even though the response data
-and AJAX template were for `part.listDevices`. The main layout consequently
-included the log table template without its required `logs` data. The
-controller now selects `part.listDevices` for full-page rendering as well.
+That interim fragment/full-page behavior has been removed. All app-view
+routes now render the same shell and initial route state; Vue requests view
+data from the JSON endpoint and updates URL/history centrally. This also
+removes the previous device-list template parameter mismatch.
 
 ### Device-list sidebar interaction and layout
 
-The browser console reported `$ is not defined` in `js/app.js` and
-`jQuery is not defined` in `js/script.js`. SensorLogger relies on jQuery
-throughout its legacy frontend and plugins, but Nextcloud 34 does not provide
-the old global jQuery dependency. The app now bundles the jQuery 3.7.1
-distribution already present in the local Nextcloud 34 installation,
-preserving its upstream license header, and loads it before app scripts and
-jQuery plugins. This avoids a runtime dependency on the separately installed
-Serverinfo app.
-
-After jQuery loaded, the sidebar code failed on `$(...).tooltip is not a
-function`. Nextcloud 34 does not provide the old jQuery tooltip extension, and
-the bundled Poshytip plugin does not add that API. Removed these unsupported
-calls and now copy tooltip text to standard `title` attributes for browser
-native tooltips.
-
-The next sidebar request returned the device details JSON successfully, but
-the panel remained at “Loading device details”. The response handler tried to
-initialize X-editable fields using the Select2 editor type, which is not
-bundled with SensorLogger. That JavaScript exception occurred before the
-device title and details were inserted. Device details now render with native
-inputs and selects, and device-field updates use an explicit allowlist and a
-parameterized update scoped to the signed-in user's device. Type/group
-assignments are checked against the signed-in user's own options; clearing an
-assignment uses the schema's existing `0` sentinel. Device type/group creation
-controls remain available and assign the new value to the device.
+These reports identify the legacy dependency failures that prompted the
+rewrite. The Vue sidebar loads device detail JSON, renders native inputs and
+selects, and sends changes through the existing allowlisted device-update
+endpoint. The endpoint uses a parameterized write scoped to the signed-in
+user's device. Type/group assignments are checked against the user's own
+options; clearing an assignment uses the schema's existing `0` sentinel.
 
 The device-details handler was delegated to both each device row and its
 share/menu action links. Since clicks bubble, a click on an action link could
@@ -225,11 +212,11 @@ behavior remains unverified.
 
 ### Low: Declared compatibility exceeds demonstrated test coverage
 
-The current `appinfo/info.xml` advertises Nextcloud 14–34 and
-PHP 7.4–8.5. Nextcloud 34's published system requirements list PHP 8.2–8.5
-and MySQL 8.0 as the MySQL option, while the app metadata still declares MySQL
-5.7. The existing `.travis.yml` matrix tests PHP 5.6/7 against old ownCloud
-branches rather than Nextcloud 34 and PHP 8.
+The app previously advertised Nextcloud 14–34 and PHP 7.4–8.5. The frontend
+and compatibility work now targets Nextcloud 34 and newer; metadata declares
+Nextcloud 34+, PHP 8.2–8.5, and MySQL 8.0+. The existing `.travis.yml` matrix
+still tests PHP 5.6/7 against old ownCloud branches rather than Nextcloud 34
+and PHP 8.
 
 The integration test previously had `testAppRemove()` recursively call
 itself instead of testing app removal. That broken test was removed so the
@@ -237,11 +224,9 @@ integration test runner cannot recurse indefinitely.
 
 **Severity:** Low  
 **Confidence:** 9/10  
-**Status:** The app metadata and legacy CI matrix were not changed. The
-database minimum applies across the app's full declared Nextcloud support
-range, so raising it based only on Nextcloud 34's requirements could
-misrepresent compatibility with older supported releases. The CI matrix still
-does not establish Nextcloud 34/PHP 8 coverage.
+**Status:** Metadata now reflects the Nextcloud 34+ target and its PHP/MySQL
+minimums. The legacy CI matrix still does not establish Nextcloud 34/PHP 8
+coverage.
 
 ## Validation and limitations
 
@@ -266,23 +251,14 @@ does not establish Nextcloud 34/PHP 8 coverage.
   extended-log JSON.
 - Read-only page GETs succeeded without a request token, and a state-changing
   POST without a token was still rejected with HTTP 412.
-- The frontend markup and styles were refreshed, but interactive browser
-  behavior and visual appearance were not verified in a browser.
-- Direct page routes now render the complete app shell while same-origin
-  AJAX navigation continues to return fragments; live browser verification
-  remains outstanding.
-- Device sidebar event handling and layout have been corrected; interactive
-  browser verification remains outstanding.
-- The missing global jQuery dependency is bundled with SensorLogger and loaded
-  before its jQuery-dependent scripts; browser-console verification remains
-  outstanding.
-- Unsupported jQuery tooltip calls are removed; device actions use native
-  browser tooltips. Browser verification remains outstanding.
-- Device details now use native controls rather than the missing Select2
-  editor. The update endpoint accepts only the intended device fields and
-  checks device ownership; browser interaction remains unverified.
-- Dashboard navigation was exercised as part of that check; broader
-  interactive/browser behavior remains unverified.
+- The Vue bundle builds successfully, but interactive browser behavior and
+  visual appearance have not been verified in a browser.
+- The frontend no longer loads the previous jQuery, X-editable, Select2, or
+  jqPlot scripts. The generated bundle and CSS are committed app assets.
+- Read-only frontend data is served through the authenticated JSON route;
+  write actions continue to use POST endpoints and CSRF protection.
+- Browser checks of navigation/history, direct routes, device switching, and
+  CRUD behavior remain outstanding.
 - PHP syntax checks do not validate Nextcloud database API compatibility or
   connection-type behavior.
 

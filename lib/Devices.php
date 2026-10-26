@@ -120,7 +120,7 @@ class Devices extends QBMapper {
 	 * @param $userId
 	 * @param $id
 	 * @param IDBConnection $db
-	 * @return Device
+	 * @return Device|null
 	 */
 	public static function getDeviceDetails($userId, $id, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
@@ -141,6 +141,9 @@ class Devices extends QBMapper {
 
 		$result = QueryBuilderCompat::executeQuery($query);
 		$data = $result->fetch();
+		if (!$data) {
+			return null;
+		}
 		$device = Device::fromRow($data);
 
 		return $device;
@@ -168,13 +171,12 @@ class Devices extends QBMapper {
 	 * @param IDBConnection $db
 	 * @return bool
 	 */
-	public static function deleteDevice($id, IDBConnection $db) {
-		$sql = 'DELETE FROM `*PREFIX*sensorlogger_devices` WHERE *PREFIX*sensorlogger_devices.id = ?';
-		$stmt = $db->prepare($sql);
-		$stmt->bindParam(1, $id);
-		if($stmt->execute()){
-			return true;
-		}
+	public static function deleteDevice($id, $userId, IDBConnection $db) {
+		$query = $db->getQueryBuilder();
+		$query->delete('sensorlogger_devices')
+			->where($query->expr()->eq('id', $query->createNamedParameter($id)))
+			->andWhere($query->expr()->eq('user_id', $query->createNamedParameter($userId)));
+		return QueryBuilderCompat::executeStatement($query) !== false;
 	}
 
 	/**

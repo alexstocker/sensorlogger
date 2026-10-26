@@ -15,6 +15,7 @@ return [
         ['name' => 'SensorLogger#showList', 'url' => 'showList', 'verb' => 'GET'],
         ['name' => 'SensorLogger#showDeviceData', 'url' => 'showDeviceData/{id}', 'verb' => 'GET'],
         ['name' => 'SensorLogger#showDeviceDetails', 'url' => 'showDeviceDetails/{id}', 'verb' => 'GET'],
+        ['name' => 'SensorLogger#frontendData', 'url' => 'frontendData/{view}', 'verb' => 'GET'],
         ['name' => 'SensorLogger#updateDevice', 'url' => 'updateDevice/{id}', 'verb' => 'POST'],
         ['name' => 'SensorLogger#createDeviceType', 'url' => 'createDeviceType', 'verb' => 'POST'],
         ['name' => 'SensorLogger#createDeviceGroup', 'url' => 'createDeviceGroup', 'verb' => 'POST'],

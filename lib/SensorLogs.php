@@ -112,27 +112,25 @@ class SensorLogs {
 	 * @param IDBConnection $db
 	 * @return \Doctrine\DBAL\Driver\Statement|int
 	 */
-	public static function deleteLogById($id, IDBConnection $db) {
+	public static function deleteLogById($id, $userId, IDBConnection $db) {
 		$query = $db->getQueryBuilder();
 		$query->delete('sensorlogger_logs')
-			//->where('id = :log_id')
-			//->setParameter([':log_id' => ''])
-			->where('id = :log_id')
-			->setParameters([
-				':log_id' => $id
-			]);
+			->where($query->expr()->eq('id', $query->createNamedParameter($id)))
+			->andWhere($query->expr()->eq('user_id', $query->createNamedParameter($userId)));
 		return QueryBuilderCompat::executeStatement($query);
 	}
 
     /**
      * @param $uuid
+     * @param $userId
      * @param IDBConnection $db
      * @return \Doctrine\DBAL\Driver\Statement|int
      */
-    public static function deleteLogsByUuid($uuid, IDBConnection $db) {
+    public static function deleteLogsByUuid($uuid, $userId, IDBConnection $db) {
         $query = $db->getQueryBuilder();
         $query->delete('sensorlogger_logs')
-            ->where($query->expr()->eq('device_uuid', $query->createNamedParameter($uuid)));
+            ->where($query->expr()->eq('device_uuid', $query->createNamedParameter($uuid)))
+            ->andWhere($query->expr()->eq('user_id', $query->createNamedParameter($userId)));
         return QueryBuilderCompat::executeStatement($query);
     }
 }

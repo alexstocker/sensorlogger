@@ -1,16 +1,16 @@
 # SensorLogger
 
-### 0.1.5nc UNRELEASED
+### 0.2.0nc UNRELEASED
+  * Changed [NOREF] Rebuild the app frontend as a Vue SPA for Nextcloud 34 and newer.
+  * Added [NOREF] Serve authenticated JSON view data while preserving sensor-client API routes.
+  * Fixed [NOREF] Unify direct routes and in-app navigation with browser history support.
+  * Changed [NOREF] Declare Nextcloud 34+, PHP 8.2+, and MySQL 8.0+ as the supported baseline.
   * Fixed [NOREF] Improved Nextcloud 34/PHP 8 compatibility across database queries, navigation, and template resources.
   * Fixed [NOREF] Use the PSR logger interface for API controller dependency injection on Nextcloud 34.
   * Fixed [NOREF] Allow CSRF-exempt read-only GET routes and decode persisted log data before rendering.
   * Updated [NOREF] Modernize SensorLogger templates for the current Nextcloud layout with responsive and accessible controls.
-  * Fixed [NOREF] Render the complete Nextcloud app layout for direct visits to SensorLogger pages while retaining partial AJAX navigation.
-  * Fixed [NOREF] Render the device list template for direct visits to the device list page.
-  * Fixed [NOREF] Open the device details sidebar reliably from device rows and actions.
-  * Fixed [NOREF] Bundle and load jQuery before SensorLogger's legacy frontend scripts.
-  * Fixed [NOREF] Replace unavailable jQuery tooltip calls with native browser titles.
-  * Fixed [NOREF] Render and update device details with native controls instead of unavailable Select2 editors.
+  * Fixed [NOREF] Render all SensorLogger views inside one Nextcloud shell and Vue app.
+  * Fixed [NOREF] Replace legacy jQuery, jqPlot, X-editable, and Select2 frontend dependencies.
 
 ### 0.1.4nc RELEASED 2024-01-05
   * Fixed [NOREF] Error on create device type within device details sidebar

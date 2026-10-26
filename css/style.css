@@ -374,3 +374,221 @@ table td {
 		animation: none;
 	}
 }
+
+.sensorlogger-shell {
+	display: contents;
+}
+
+#sensorlogger-app #app-navigation {
+	display: flex;
+	flex-direction: column;
+}
+
+#sensorlogger-app #navigation-list {
+	list-style: none;
+	margin: 0;
+	padding: 12px 0;
+}
+
+#sensorlogger-app #navigation-list li a {
+	display: block;
+	padding: 10px 16px;
+	color: var(--color-main-text, inherit);
+	text-decoration: none;
+}
+
+#sensorlogger-app #navigation-list li.active a {
+	background: var(--color-primary-element-light, #e5f2fa);
+	color: var(--color-primary-element, #0082c9);
+	font-weight: 600;
+}
+
+#sensorlogger-app .sensorlogger-content {
+	box-sizing: border-box;
+	height: 100%;
+	overflow: auto;
+	padding: 24px;
+}
+
+.sensorlogger-page-header,
+.sensorlogger-card-header,
+.sensorlogger-sidebar-header {
+	align-items: center;
+	display: flex;
+	gap: 12px;
+	justify-content: space-between;
+}
+
+.sensorlogger-page-header h1 {
+	font-size: 24px;
+	margin: 0 0 20px;
+}
+
+.sensorlogger-dashboard {
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+}
+
+.sensorlogger-card {
+	background: var(--color-main-background, #fff);
+	border: 1px solid var(--color-border, #ddd);
+	border-radius: var(--border-radius-large, 10px);
+	min-width: 0;
+	padding: 16px;
+}
+
+.sensorlogger-card-header h2 {
+	font-size: 18px;
+	margin: 0;
+}
+
+.sensorlogger-card-header small {
+	color: var(--color-text-maxcontrast, #666);
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.sensorlogger-table-wrap {
+	overflow-x: auto;
+}
+
+.sensorlogger-table {
+	border-collapse: collapse;
+	min-width: 640px;
+	width: 100%;
+}
+
+.sensorlogger-table th,
+.sensorlogger-table td {
+	border-bottom: 1px solid var(--color-border, #ddd);
+	padding: 10px;
+	text-align: start;
+	vertical-align: top;
+}
+
+.sensorlogger-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.sensorlogger-empty,
+.sensorlogger-loading {
+	color: var(--color-text-maxcontrast, #666);
+	padding: 24px 12px;
+	text-align: center;
+}
+
+.sensorlogger-loading {
+	align-items: center;
+	display: flex;
+	gap: 8px;
+	justify-content: center;
+}
+
+.sensorlogger-error {
+	background: var(--color-error, #c00);
+	border-radius: var(--border-radius, 6px);
+	color: var(--color-primary-text, #fff);
+	margin: 12px 0;
+	padding: 10px 12px;
+}
+
+.sensorlogger-measurements {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.sensorlogger-measurements li {
+	border-bottom: 1px solid var(--color-border, #ddd);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	justify-content: space-between;
+	padding: 8px 0;
+}
+
+.sensorlogger-chart svg {
+	height: auto;
+	max-height: 320px;
+	width: 100%;
+}
+
+.sensor-chart label,
+.sensorlogger-sidebar-body label {
+	display: grid;
+	gap: 6px;
+	margin: 12px 0;
+}
+
+.sensor-chart select,
+.sensorlogger-sidebar-body input,
+.sensorlogger-sidebar-body select {
+	box-sizing: border-box;
+	max-width: 100%;
+	width: 100%;
+}
+
+.chart-axis {
+	stroke: var(--color-border-dark, #888);
+	stroke-width: 2;
+}
+
+.chart-line {
+	fill: none;
+	stroke: var(--color-primary-element, #0082c9);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-width: 3;
+}
+
+#sensorlogger-app #app-sidebar {
+	display: none;
+	inset-block: 0;
+	inset-inline-end: 0;
+	max-width: min(420px, 100%);
+	overflow: auto;
+	position: absolute;
+	width: 360px;
+	z-index: 1100;
+}
+
+#sensorlogger-app #app-sidebar.is-open {
+	display: block;
+}
+
+.sensorlogger-sidebar {
+	background: var(--color-main-background, #fff);
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+}
+
+.sensorlogger-sidebar-header {
+	border-bottom: 1px solid var(--color-border, #ddd);
+	padding: 12px 16px;
+}
+
+.sensorlogger-sidebar-header h2 {
+	font-size: 18px;
+	margin: 0;
+}
+
+.sensorlogger-sidebar-body {
+	flex: 1;
+	overflow: auto;
+	padding: 8px 16px 20px;
+}
+
+@media (max-width: 600px) {
+	#sensorlogger-app .sensorlogger-content {
+		padding: 14px;
+	}
+
+	#sensorlogger-app #app-sidebar {
+		width: min(100vw, 400px);
+	}
+}

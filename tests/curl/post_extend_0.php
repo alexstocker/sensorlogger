@@ -40,7 +40,7 @@
 	$data_json = json_encode($array);
 
 	$username = 'admin';
-	$token = 'HwA9L-eHgyj-YoMon-Ckb43-Y56bX';
+	$token = 'GxZnN-qixgn-rrrSd-ettJR-Pyk5q';
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
