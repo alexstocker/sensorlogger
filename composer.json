@@ -12,9 +12,17 @@
         }
     ],
     "require": {
-        "php": ">=7.2"
+        "php": ">=8.0"
     },
-    "require-dev": {},
+    "require-dev": {
+        "phpcompatibility/php-compatibility": "^10.0@dev",
+        "squizlabs/php_codesniffer": "4.x-dev"
+    },
     "autoload": {},
-    "autoload-dev": {}
+    "autoload-dev": {},
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }
