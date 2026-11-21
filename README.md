@@ -1,7 +1,7 @@
 # SensorLogger
 
 ### Latest Stable Release
-- owncloud [0.1.0](https://github.com/alexstocker/sensorlogger/releases/tag/0.1.0)
+- owncloud [0.1.1](https://github.com/alexstocker/sensorlogger/releases/tag/0.1.1)
 - nextcloud [0.2.0nc](https://github.com/alexstocker/sensorlogger/releases/tag/0.2.0nc)
 
 ### Latest Stable Branches
@@ -13,7 +13,7 @@
 - nextcloud [0.2-nc-devel](https://github.com/alexstocker/sensorlogger/tree/0.2-nc-devel)
 
 ### Upcoming Versions
-- owncloud 0.1.1
+- owncloud 0.1.2
 - nextcloud 0.2.1
 
 ### Development Environments
