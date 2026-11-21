@@ -26,7 +26,7 @@ class DeviceTypes
             ->where('sdt.user_id = :userId')
             ->groupBy('sdt.id')
             ->orderBy('sdt.id', 'DESC')
-            ->setParameter(':userId', $userId);
+            ->setParameter('userId', $userId);
         $query->setMaxResults(100);
         $result = $query->execute();
         $data = $result->fetchAll();
@@ -46,8 +46,8 @@ class DeviceTypes
             ->from('sensorlogger_device_types')
             ->where('user_id = :userId')
             ->andWhere('id = :deviceTypeId')
-            ->setParameter(':userId', $userId)
-            ->setParameter(':deviceTypeId', $deviceTypeId);
+            ->setParameter('userId', $userId)
+            ->setParameter('deviceTypeId', $deviceTypeId);
         $result = $query->execute();
         if ($result) {
             $data = $result->fetch();
@@ -71,8 +71,8 @@ class DeviceTypes
             ->from('sensorlogger_device_types')
             ->where('user_id = :userId')
             ->andWhere('device_type_name = :deviceTypeName')
-            ->setParameter(':userId', $userId)
-            ->setParameter(':deviceTypeName', $deviceTypeName);
+            ->setParameter('userId', $userId)
+            ->setParameter('deviceTypeName', $deviceTypeName);
         $result = $query->execute();
         if ($result) {
             $data = $result->fetch();
@@ -99,8 +99,8 @@ class DeviceTypes
             ->where('sd.user_id = :userId')
             ->andWhere('sd.id = :deviceId')
             ->orderBy('sd.id', 'ASC')
-            ->setParameter(':userId', $userId)
-            ->setParameter(':deviceId', $deviceId);
+            ->setParameter('userId', $userId)
+            ->setParameter('deviceId', $deviceId);
 
         $query->setMaxResults(100);
         $result = $query->execute();
@@ -148,8 +148,8 @@ class DeviceTypes
             ->from('sensorlogger_devices')
             ->where('user_id = :userId')
             ->andWhere('type_id = :id')
-            ->setParameter(':userId', $userId)
-            ->setParameter(':id', $id);
+            ->setParameter('userId', $userId)
+            ->setParameter('id', $id);
         $result = $query->execute();
         if ($result) {
             $data = $result->fetch();
@@ -177,8 +177,8 @@ class DeviceTypes
         $query->delete('sensorlogger_device_types')
             ->where('user_id = :userId')
             ->andWhere('id = :typeId')
-            ->setParameter(':userId', $userId)
-            ->setParameter(':typeId', $typeId);
+            ->setParameter('userId', $userId)
+            ->setParameter('typeId', $typeId);
         return $query->execute();
     }
 }

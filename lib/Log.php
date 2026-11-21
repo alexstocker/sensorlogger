@@ -23,7 +23,7 @@ class Log extends Entity implements \JsonSerializable
         $this->addType('createdAt', 'string');
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->id,
@@ -49,7 +49,7 @@ class Log extends Entity implements \JsonSerializable
      */
     public function setTemperature($temperature)
     {
-        $this->temperature = number_format($temperature, 2);
+        $this->temperature = number_format($temperature ?? 0, 2);
     }
 
     /**
@@ -65,7 +65,7 @@ class Log extends Entity implements \JsonSerializable
      */
     public function setHumidity($humidity)
     {
-        $this->humidity = number_format($humidity, 2);
+        $this->humidity = number_format($humidity ?? 0, 2);
     }
 
     /**

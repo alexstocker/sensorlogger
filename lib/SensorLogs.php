@@ -122,10 +122,10 @@ class SensorLogs
         $query = $db->getQueryBuilder();
         $query->delete('sensorlogger_logs')
             //->where('id = :log_id')
-            //->setParameter([':log_id' => ''])
+            //->setParameter(['log_id' => ''])
             ->where('id = :log_id')
             ->setParameters([
-                ':log_id' => $id
+                'log_id' => $id
             ]);
         return $query->execute();
     }
@@ -141,7 +141,7 @@ class SensorLogs
         $query->delete('sensorlogger_logs')
             ->where('device_uuid = :uuid')
             ->setParameters([
-                ':uuid' => $uuid
+                'uuid' => $uuid
             ]);
         return $query->execute();
     }

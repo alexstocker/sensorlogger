@@ -77,7 +77,7 @@ class LogExtended extends Entity implements \JsonSerializable
         $this->type = $type;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'dataTypeId' => $this->dataTypeId,

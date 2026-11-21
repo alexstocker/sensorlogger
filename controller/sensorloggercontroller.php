@@ -848,6 +848,8 @@ class SensorLoggerController extends Controller
      */
     public function deviceTypeList()
     {
+        $session = $this->userSession->getUser()->getUID();
+        $connex = $this->connection;
         $deviceTypes = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
         $templateName = 'main';
         $parameters = [

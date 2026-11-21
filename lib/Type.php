@@ -21,7 +21,7 @@ class Type extends Entity implements \JsonSerializable
         $this->addType('assignedDevices', 'array');
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->id,

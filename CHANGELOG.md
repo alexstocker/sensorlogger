@@ -1,7 +1,9 @@
 # SensorLogger for owncloud
 
 ### 0.1.2 UNRELEASED
-  * Added OC11 support 
+  * Added OC11 support, raised version to 0.1.2
+  * Fixed DBAL named parameter binding in device type, device group, and log queries
+  * Refactored device group queries for DBAL 3
 
 ### 0.1.1 RELEASED
   * Added #101 PHP 8 Support
