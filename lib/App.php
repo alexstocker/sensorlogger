@@ -2,7 +2,7 @@
 
 namespace OCA\SensorLogger;
 
-use \OCP\IContainer;
+use OCP\IContainer;
 
 class App
 {

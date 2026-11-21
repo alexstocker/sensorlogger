@@ -1,4 +1,5 @@
 <?php
+
 namespace OCA\sensorlogger\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
@@ -9,7 +10,6 @@ use OCP\Migration\ISchemaMigration;
  */
 class Version20190206015249 implements ISchemaMigration
 {
-
     /** @var  string */
     private $prefix;
     /**

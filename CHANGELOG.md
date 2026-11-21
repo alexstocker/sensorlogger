@@ -5,6 +5,8 @@
   * Fixed DBAL named parameter binding in device type, device group, and log queries
   * Refactored device group queries for DBAL 3
   * Fixed LogExtended entity construction for PHP 8.3 compatibility
+  * Fixed successful temperature and humidity log responses when no extended data is supplied
+  * Establish PSR12 coding standards
 
 ### 0.1.1 RELEASED
   * Added #101 PHP 8 Support

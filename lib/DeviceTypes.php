@@ -11,7 +11,6 @@ use OCP\IDBConnection;
  */
 class DeviceTypes
 {
-
     /**
      * @param $userId
      * @param IDBConnection $db

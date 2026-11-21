@@ -36,7 +36,7 @@ class Devices extends Mapper
             ->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
-            ->where('sd.user_id = "'.$userId.'"')
+            ->where('sd.user_id = "' . $userId . '"')
             ->orderBy('sd.id', 'DESC');
         $query->setMaxResults(100);
         $result = $query->execute();
@@ -62,8 +62,8 @@ class Devices extends Mapper
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_devices')
-            ->where('id = "'.$id.'" ')
-            ->andWhere('user_id = "'.$userId.'"');
+            ->where('id = "' . $id . '" ')
+            ->andWhere('user_id = "' . $userId . '"');
         $result = $query->execute();
 
         $data = $result->fetch();
@@ -103,8 +103,8 @@ class Devices extends Mapper
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_devices')
-            ->where('uuid = "'.$uuid.'" ')
-            ->andWhere('user_id = "'.$userId.'"');
+            ->where('uuid = "' . $uuid . '" ')
+            ->andWhere('user_id = "' . $userId . '"');
         $result = $query->execute();
 
         $data = $result->fetch();
@@ -133,8 +133,8 @@ class Devices extends Mapper
             ->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
-            ->where('sd.id = "'.$id.'" ')
-            ->andWhere('sd.user_id = "'.$userId.'"');
+            ->where('sd.id = "' . $id . '" ')
+            ->andWhere('sd.user_id = "' . $userId . '"');
         $result = $query->execute();
         $data = $result->fetch();
         $device = Device::fromRow($data);
@@ -153,7 +153,7 @@ class Devices extends Mapper
         $query = $db->getQueryBuilder();
         $query->update('sensorlogger_devices')
             ->set($field, $query->expr()->literal($value))
-            ->where('id = "'.$id.'" ');
+            ->where('id = "' . $id . '" ');
         if ($query->execute()) {
             return true;
         }

@@ -92,7 +92,7 @@ class Log extends Entity implements \JsonSerializable
                 $array[] = $logExtended;
             }
         }
-        
+
         $this->data = $array;
     }
 

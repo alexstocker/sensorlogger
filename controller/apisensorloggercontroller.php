@@ -2,6 +2,7 @@
 
 namespace OCA\SensorLogger\Controller;
 
+use Doctrine\DBAL\DBALException;
 use Guzzle\Plugin\ErrorResponse\Exception\ErrorResponseException;
 use OC\OCS\Exception;
 use OC\OCS\Result;
@@ -121,8 +122,10 @@ class ApiSensorLoggerController extends ApiController
             } else {
                 foreach ($params['data'] as $param) {
                     if (is_array($param)) {
-                        if (!array_key_exists('dataTypeId', $param)
-                            || !array_key_exists('value', $param)) {
+                        if (
+                            !array_key_exists('dataTypeId', $param)
+                            || !array_key_exists('value', $param)
+                        ) {
                             $this->errors[] = 'Data Array needs to contain dataTypeId AND value';
                         } else {
                             if (!(int)$param['dataTypeId']) {
@@ -140,12 +143,18 @@ class ApiSensorLoggerController extends ApiController
         }
 
         if (!empty($this->errors)) {
-            return $this->requestResponse(false, Error::MISSING_PARAM, implode(',', $this->errors));
+            return $this->requestResponse(
+                false,
+                Error::MISSING_PARAM,
+                implode(',', $this->errors)
+            );
         }
 
         if (isset($params['data']) && empty($this->errors)) {
-            if ($this->checkRegisteredDataTypes($params)
-                && empty($this->errors)) {
+            if (
+                $this->checkRegisteredDataTypes($params)
+                && empty($this->errors)
+            ) {
                 $this->insertExtendedLog($params);
             }
         }
@@ -160,7 +169,7 @@ class ApiSensorLoggerController extends ApiController
             true,
             Http::STATUS_OK,
             'Sensor Log successfully stored',
-            $params['data']
+            $params['data'] ?? []
         );
     }
 
@@ -171,7 +180,7 @@ class ApiSensorLoggerController extends ApiController
     protected function insertExtendedLog($array)
     {
         if (!$this->checkRegisteredDevice($array)) {
-            $this->errors[] = 'Device #'.$array['deviceId'].' not registered';
+            $this->errors[] = 'Device #' . $array['deviceId'] . ' not registered';
             return false;
         }
         if (!isset($array['date']) || empty($array['date'])) {
@@ -238,9 +247,11 @@ class ApiSensorLoggerController extends ApiController
      */
     public function registerDevice()
     {
-        if (!$this->checkRegisteredDevice($this->request->getParams()) &&
+        if (
+            !$this->checkRegisteredDevice($this->request->getParams()) &&
             $this->checkRequestParams($this->request->getParams()) &&
-            empty($this->errors)) {
+            empty($this->errors)
+        ) {
             $params = $this->request->getParams();
             $lastInsertId = $this->insertDevice($this->request->getParams());
             if (is_int($lastInsertId)) {
@@ -274,7 +285,12 @@ class ApiSensorLoggerController extends ApiController
                     $deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
                     if (is_int($deviceGroupParentId)) {
                         try {
-                            Devices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
+                            Devices::updateDevice(
+                                $lastInsertId,
+                                'group_parent_id',
+                                $deviceGroupParentId,
+                                $this->db
+                            );
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }
@@ -282,10 +298,16 @@ class ApiSensorLoggerController extends ApiController
                 }
 
                 foreach ($params['deviceDataTypes'] as $key => $array) {
-                    $availableDataTypes = DataTypes::getDataTypesByUserId($this->userSession->getUser()->getUID(), $this->db);
+                    $availableDataTypes = DataTypes::getDataTypesByUserId(
+                        $this->userSession->getUser()->getUID(),
+                        $this->db
+                    );
                     /** @var DataType $availableDataType */
                     foreach ($availableDataTypes as $availableDataType) {
-                        if ($availableDataType->getShort() === $array['unit'] && $availableDataType->getType() === $array['type']) {
+                        if (
+                            $availableDataType->getShort() === $array['unit']
+                            && $availableDataType->getType() === $array['type']
+                        ) {
                             $dataTypeId = $availableDataType->getId();
                             if (is_int($dataTypeId)) {
                                 $this->insertDeviceDataTypes($lastInsertId, $dataTypeId);
@@ -298,7 +320,11 @@ class ApiSensorLoggerController extends ApiController
                         $this->insertDeviceDataTypes($lastInsertId, $dataTypeId);
                     }
                 }
-                $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(), $lastInsertId, $this->db);
+                $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+                    $this->userSession->getUser()->getUID(),
+                    $lastInsertId,
+                    $this->db
+                );
                 return $this->requestResponse(
                     true,
                     Http::STATUS_OK,
@@ -367,6 +393,7 @@ class ApiSensorLoggerController extends ApiController
     /**
      * @param string $string
      * @return int
+     * @throws DBALException
      */
     protected function insertDeviceGroup($string)
     {
@@ -573,14 +600,14 @@ class ApiSensorLoggerController extends ApiController
 
         $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(), $device->getId(), $this->db);
         if ($deviceDataTypes === null || $deviceDataTypes === false) {
-            $this->errors[] = 'No DataTypes for Device #'.$params['deviceId'].' found';
+            $this->errors[] = 'No DataTypes for Device #' . $params['deviceId'] . ' found';
             return $this->requestResponse(false, Error::NOT_FOUND, implode(',', $this->errors));
         }
 
         return $this->requestResponse(
             true,
             Http::STATUS_OK,
-            'DataTypes for Device #'.$params['deviceId'],
+            'DataTypes for Device #' . $params['deviceId'],
             $deviceDataTypes
         );
     }
@@ -600,12 +627,11 @@ class ApiSensorLoggerController extends ApiController
     {
         # TODO [GH13] Add apisensorloggercontroller::createShare
 
-		$share = $this->shareManager->newShare();
-		if (!$this->shareManager->shareApiEnabled()) {
-			return new Result(null, 404, $this->l->t('Share API is disabled'));
-		}
-		$name = $this->request->getParam('name', null);
-
+        $share = $this->shareManager->newShare();
+        if (!$this->shareManager->shareApiEnabled()) {
+            return new Result(null, 404, $this->l->t('Share API is disabled'));
+        }
+        $name = $this->request->getParam('name', null);
     }
 
     /**
@@ -686,15 +712,18 @@ class ApiSensorLoggerController extends ApiController
         }
 
         // Owner of the file and the sharer of the file can always get share
-        if ($share->getShareOwner() === $this->currentUser->getUID() ||
+        if (
+            $share->getShareOwner() === $this->currentUser->getUID() ||
             $share->getSharedBy() === $this->currentUser->getUID()
         ) {
             return true;
         }
 
         // If the share is shared with you (or a group you are a member of)
-        if ($share->getShareType() === Share::SHARE_TYPE_USER &&
-            $share->getSharedWith() === $this->currentUser->getUID()) {
+        if (
+            $share->getShareType() === Share::SHARE_TYPE_USER &&
+            $share->getSharedWith() === $this->currentUser->getUID()
+        ) {
             return true;
         }
 

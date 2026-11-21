@@ -6,7 +6,6 @@ use OCP\IDBConnection;
 
 class DataTypes
 {
-
     /**
      * @param $userId
      * @param IDBConnection $db
@@ -17,7 +16,7 @@ class DataTypes
         $query = $db->getQueryBuilder();
         $query->select(array('id','description','type','short'))
             ->from('sensorlogger_data_types')
-            ->where('user_id = "'.$userId.'"')
+            ->where('user_id = "' . $userId . '"')
             ->orderBy('id', 'DESC');
         $query->setMaxResults(100);
         $result = $query->execute();
@@ -38,13 +37,13 @@ class DataTypes
         $query = $db->getQueryBuilder();
         $query->select(array('id','description','type','short'))
             ->from('sensorlogger_data_types')
-            ->where('user_id = "'.$userId.'"')
-            ->andWhere('id = "'.$dataTypeId.'"');
+            ->where('user_id = "' . $userId . '"')
+            ->andWhere('id = "' . $dataTypeId . '"');
         $query->setMaxResults(100);
         $result = $query->execute();
 
         $data = $result->fetch();
-        
+
         if ($data) {
             $data = DataType::fromRow($data);
         }
@@ -62,7 +61,7 @@ class DataTypes
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_data_types')
-            ->where('user_id = "'.$userId.'"');
+            ->where('user_id = "' . $userId . '"');
         $results = $query->execute();
         $data = [];
         foreach ($results->fetchAll() as $result) {
@@ -83,8 +82,8 @@ class DataTypes
         $query->select(array('sdt.id','sdt.description','sdt.type','sdt.short','sdt.type'))
             ->from('sensorlogger_device_data_types', 'sddt')
             ->leftJoin('sddt', 'sensorlogger_data_types', 'sdt', 'sdt.id = sddt.data_type_id')
-            ->where('sddt.user_id = "'.$userId.'"')
-            ->andWhere('sddt.device_id = "'.$deviceId.'" ')
+            ->where('sddt.user_id = "' . $userId . '"')
+            ->andWhere('sddt.device_id = "' . $deviceId . '" ')
             ->orderBy('sddt.id', 'ASC');
         $query->setMaxResults(100);
         $result = $query->execute();

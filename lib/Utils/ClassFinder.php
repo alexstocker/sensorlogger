@@ -4,7 +4,6 @@ namespace OCA\SensorLogger\Utils;
 
 class ClassFinder
 {
-
     /**
      * @param $dir
      * @param string $filter
@@ -15,7 +14,7 @@ class ClassFinder
         $files = scandir($dir);
 
         foreach ($files as $key => $value) {
-            $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
+            $path = realpath($dir . DIRECTORY_SEPARATOR . $value);
 
             if (!is_dir($path)) {
                 if (empty($filter) || preg_match($filter, $path)) {

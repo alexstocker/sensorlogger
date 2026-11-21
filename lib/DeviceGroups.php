@@ -11,7 +11,6 @@ use OCP\IDBConnection;
  */
 class DeviceGroups
 {
-
     /**
      * @param $userId
      * @param IDBConnection $db

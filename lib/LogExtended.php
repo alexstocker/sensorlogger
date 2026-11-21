@@ -94,7 +94,7 @@ class LogExtended extends Entity implements \JsonSerializable
     {
         $this->dataTypeId = $dataTypeId;
     }
-    
+
     /**
      * @return mixed
      */

@@ -16,7 +16,8 @@
     },
     "require-dev": {
         "phpcompatibility/php-compatibility": "^10.0@dev",
-        "squizlabs/php_codesniffer": "4.x-dev"
+        "squizlabs/php_codesniffer": "4.x-dev",
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {},
     "autoload-dev": {},

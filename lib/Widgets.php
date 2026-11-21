@@ -8,6 +8,7 @@ use OCA\SensorLogger\Widgets\iWidget;
 use OCA\SensorLogger\Widgets\MaxValues24hWidget;
 use OCP\IConfig;
 use OCP\IDBConnection;
+
 use function Sabre\Event\Loop\stop;
 
 /**
@@ -20,7 +21,7 @@ class Widgets
     const WIDGET_TYPES = [
         'list' => 'Data list',
         'chart' => 'Chart',
-        'last'	=> 'Current data',
+        'last'  => 'Current data',
         'realTimeLast' => 'Live - Current Data',
         'realTimeChart' => 'Live - Chart'
         ];
@@ -36,7 +37,7 @@ class Widgets
     {
         $this->deviceId = $deviceId;
 
-        ClassFinder::customClassLoader(dirname(__FILE__).DIRECTORY_SEPARATOR.'Widgets');
+        ClassFinder::customClassLoader(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Widgets');
     }
 
     /**
@@ -91,10 +92,10 @@ class Widgets
             if ($widgetConfig->widget_type) {
                 $widgetClass = str_replace(' ', '', ucwords(str_replace('_', ' ', $widgetConfig->widget_type)));
 
-                $nameSpaced = 'OCA\\SensorLogger\\Widgets\\'.$widgetClass.'Widget';
+                $nameSpaced = 'OCA\\SensorLogger\\Widgets\\' . $widgetClass . 'Widget';
                 if (class_exists($nameSpaced)) {
                     /** @var Widget|MaxValues24hWidget $customWidget */
-                    $customWidget = new $nameSpaced;
+                    $customWidget = new $nameSpaced();
                     $customWidget->setDisplayName($customWidget->widgetDisplayName());
                     $customWidget->setDeviceId($device->getId());
                     $customWidget->setType($widgetConfig->widget_type);
@@ -146,9 +147,9 @@ class Widgets
             default:
                 break;
         }
-        
+
         # TODO [GH8] makeover Widgets::build
-        
+
         if ($log && is_array($log)) {
             /** @var Log $lg */
             foreach ($log as $lg) {
@@ -180,15 +181,15 @@ class Widgets
         $widget->setLog($log);
         $widget->setName($device->getName());
         $position = [
-        		'x' => $config->x ?: 0,
-				'y' => $config->y ?: 0
-			];
-		$widget->setOptions('position',$position);
+                'x' => $config->x ?: 0,
+                'y' => $config->y ?: 0
+            ];
+        $widget->setOptions('position', $position);
         $size = [
-				'w' => $config->w ?: 4,
-				'h' => $config->h ?: 6
-			];
-		$widget->setOptions('size',$size);
+                'w' => $config->w ?: 4,
+                'h' => $config->h ?: 6
+            ];
+        $widget->setOptions('size', $size);
 
         $widget->setDisplayName(self::WIDGET_TYPES[$config->widget_type]);
         return $widget;
