@@ -86,7 +86,10 @@ class Log extends Entity implements \JsonSerializable
         $array = [];
         foreach ($dataTypes as $dataType) {
             if (isset($dataType->value)) {
-                $array[] = new LogExtended($dataType);
+                $logExtended = new LogExtended();
+                $logExtended->setDataTypeId($dataType->dataTypeId);
+                $logExtended->setValue($dataType->value);
+                $array[] = $logExtended;
             }
         }
         
