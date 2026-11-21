@@ -6,6 +6,8 @@
   * Refactored device group queries for DBAL 3
   * Fixed LogExtended entity construction for PHP 8.3 compatibility
   * Fixed successful temperature and humidity log responses when no extended data is supplied
+  * Refactored API controller inserts to DBAL 3 query builders
+  * Refactored device queries and writes to DBAL 3
   * Establish PSR12 coding standards
 
 ### 0.1.1 RELEASED
