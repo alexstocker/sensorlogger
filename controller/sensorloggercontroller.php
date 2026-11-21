@@ -45,6 +45,7 @@ use OCP\INavigationManager;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
+use OCP\PreConditionNotMetException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -393,8 +394,6 @@ class SensorLoggerController extends Controller
                     $customWidget->setOptions('position', ['x' => $x, 'y' => $y]);
                     $customWidget->setOptions('size', ['w' => $w, 'h' => $h]);
                 }
-
-                //$buildWidget = Widgets::build($this->userSession->getUser()->getUID(), $device, $widgetConfig, $this->connection, $this->config);
                 $widgets[] = $customWidget;
             }
         }
@@ -440,7 +439,7 @@ class SensorLoggerController extends Controller
     /**
      * @NoAdminRequired
      * @return DataResponse
-     * @throws \OCP\PreConditionNotMetException
+     * @throws PreConditionNotMetException
      */
     public function createWidget()
     {
@@ -452,7 +451,11 @@ class SensorLoggerController extends Controller
             return $this->returnJSON(array('errors' => 'Could not create widget!'));
         }
         try {
-            $this->setUserValue('widget-' . $widgetType . '-' . $widgetId, $this->userSession->getUser()->getUID(), $json);
+            $this->setUserValue(
+                'widget-' . $widgetType . '-' . $widgetId,
+                $this->userSession->getUser()->getUID(),
+                $json
+            );
             return $this->returnJSON(array('id' => 'widget-' . $widgetType . '-' . $widgetId));
         } catch (Exception $e) {
             return $this->returnJSON(array('errors' => 'Could not create widget!'));
@@ -709,7 +712,11 @@ class SensorLoggerController extends Controller
     public function createDeviceType()
     {
         $deviceTypeName = $this->request->getParam('device_type_name');
-        $deviceTypeId = DeviceTypes::insertDeviceType($this->userSession->getUser()->getUID(), $deviceTypeName, $this->connection);
+        $deviceTypeId = DeviceTypes::insertDeviceType(
+            $this->userSession->getUser()->getUID(),
+            $deviceTypeName,
+            $this->connection
+        );
         if (is_int($deviceTypeId)) {
             return $this->returnJSON(['deviceTypeId' => $deviceTypeId]);
         }
@@ -719,13 +726,19 @@ class SensorLoggerController extends Controller
      * @NoAdminRequired
      * @return DataResponse
      */
-    public function createDeviceGroup()
+    public function createDeviceGroup(): DataResponse
     {
         $deviceGroupName = $this->request->getParam('device_group_name');
-        $deviceGroupId = DeviceGroups::insertSensorGroup($this->userSession->getUser()->getUID(), $deviceGroupName, $this->connection);
+        $deviceGroupId = DeviceGroups::insertSensorGroup(
+            $this->userSession->getUser()->getUID(),
+            $deviceGroupName,
+            $this->connection
+        );
         if (is_int($deviceGroupId)) {
             return $this->returnJSON(['deviceGroupId' => $deviceGroupId]);
         }
+
+        return $this->returnJSON(['deviceGroupId' => null]);
     }
 
     /**
@@ -733,7 +746,7 @@ class SensorLoggerController extends Controller
      * @NoCSRFRequired
      * @return TemplateResponse
      */
-    public function showDashboard()
+    public function showDashboard(): TemplateResponse
     {
         $log = SensorLogs::getLastLog($this->userSession->getUser()->getUID(), $this->connection);
         $widgets = $this->getWidgets();
@@ -760,7 +773,7 @@ class SensorLoggerController extends Controller
      * @NoCSRFRequired
      * @return TemplateResponse
      */
-    public function deviceChart($id)
+    public function deviceChart(int $id): TemplateResponse
     {
         $templateName = 'part.chart';
         $device = Devices::getDevice($this->userSession->getUser()->getUID(), $id, $this->connection);
@@ -781,9 +794,9 @@ class SensorLoggerController extends Controller
     /**
      * @NoAdminRequired
      * @param int $id
-     * @return string
+     * @return DataResponse|string
      */
-    public function chartDataLastLog($id)
+    public function chartDataLastLog(int $id): DataResponse|string
     {
         return $this->getChartDataLastLog($id);
     }
@@ -794,9 +807,9 @@ class SensorLoggerController extends Controller
      * @param integer $param
      * @return DataResponse
      */
-    public function maxLastLog($id, $param)
+    public function maxLastLog(int $id, int $param): DataResponse
     {
-        if (is_int($id) && (is_int($param) && $param !== 0)) {
+        if (($param !== 0)) {
             $device = Devices::getDevice(
                 $this->userSession->getUser()->getUID(),
                 $id,
@@ -817,13 +830,15 @@ class SensorLoggerController extends Controller
             }
             return $this->returnJSON($logs);
         }
+
+        return $this->returnJSON(['logs' => null]);
     }
 
     /**
      * @NoCSRFRequired
      * @NoAdminRequired
      */
-    public function deviceList()
+    public function deviceList(): TemplateResponse
     {
         $devices = Devices::getDevices($this->userSession->getUser()->getUID(), $this->connection);
         $templateName = 'main';
@@ -847,10 +862,8 @@ class SensorLoggerController extends Controller
      * @NoCSRFRequired
      * @return TemplateResponse
      */
-    public function deviceTypeList()
+    public function deviceTypeList(): TemplateResponse
     {
-        $session = $this->userSession->getUser()->getUID();
-        $connex = $this->connection;
         $deviceTypes = DeviceTypes::getDeviceTypes($this->userSession->getUser()->getUID(), $this->connection);
         $templateName = 'main';
         $parameters = [
@@ -873,7 +886,7 @@ class SensorLoggerController extends Controller
      * @NoCSRFRequired
      * @return TemplateResponse
      */
-    public function deviceGroupList()
+    public function deviceGroupList(): TemplateResponse
     {
         $deviceGroups = DeviceGroups::getDeviceGroups($this->userSession->getUser()->getUID(), $this->connection);
         $templateName = 'main';
@@ -897,7 +910,7 @@ class SensorLoggerController extends Controller
      * @NoCSRFRequired
      * @return TemplateResponse
      */
-    public function dataTypeList()
+    public function dataTypeList(): TemplateResponse
     {
         $dataTypes = DataTypes::getDataTypes($this->userSession->getUser()->getUID(), $this->connection);
         $templateName = 'main';
@@ -921,7 +934,7 @@ class SensorLoggerController extends Controller
      * @param $userId
      * @return string
      */
-    public function getUserValue($key, $userId)
+    public function getUserValue($key, $userId): string
     {
         return $this->config->getUserValue($userId, $this->appName, $key);
     }
@@ -929,13 +942,13 @@ class SensorLoggerController extends Controller
     /**
      * @NoAdminRequired
      * @return DataResponse
-     * @throws \OCP\PreConditionNotMetException
+     * @throws PreConditionNotMetException
      */
-    public function updateWidgetSettings()
+    public function updateWidgetSettings(): DataResponse
     {
         $array = $this->request->getParams();
-        foreach ($array as $key => $widget) {
-            if (isset($widget['key']) && !is_array($widget['key']) && !empty($widget['key'])) {
+        foreach ($array as $widget) {
+            if (!is_array($widget['key']) && !empty($widget['key'])) {
                 $json = json_encode($widget);
                 try {
                     $this->updateUserValue($widget['key'], $this->userSession->getUser()->getUID(), $json);
@@ -951,9 +964,9 @@ class SensorLoggerController extends Controller
      * @param $key
      * @param $userId
      * @param $value
-     * @throws \OCP\PreConditionNotMetException
+     * @throws PreConditionNotMetException
      */
-    protected function setUserValue($key, $userId, $value)
+    protected function setUserValue($key, $userId, $value): void
     {
         $this->config->setUserValue($userId, $this->appName, $key, $value);
     }
@@ -962,9 +975,9 @@ class SensorLoggerController extends Controller
      * @param $key
      * @param $userId
      * @param $value
-     * @throws \OCP\PreConditionNotMetException
+     * @throws PreConditionNotMetException
      */
-    protected function updateUserValue($key, $userId, $value)
+    protected function updateUserValue($key, $userId, $value): void
     {
         if (
             $this->config->getUserValue($userId, $this->appName, $key)
@@ -978,7 +991,7 @@ class SensorLoggerController extends Controller
      * @param $array
      * @return DataResponse
      */
-    public function returnJSON($array)
+    public function returnJSON($array): DataResponse
     {
         try {
             return new DataResponse($array);
@@ -991,7 +1004,7 @@ class SensorLoggerController extends Controller
      * @param int $id
      * @return string
      */
-    protected function getChartData($id)
+    protected function getChartData(int $id): DataResponse|string
     {
         $limit = $this->request->getParam('limit') ?: 1000;
         $offset = $this->request->getParam('offset') ?: 0;
@@ -1022,7 +1035,7 @@ class SensorLoggerController extends Controller
         return $this->returnJSON($logs);
     }
 
-    protected function getChartDataLastLog($id)
+    protected function getChartDataLastLog($id): DataResponse
     {
         $device = Devices::getDevice(
             $this->userSession->getUser()->getUID(),
@@ -1054,10 +1067,13 @@ class SensorLoggerController extends Controller
      * @param int $id
      * @return array
      */
-    protected function getDeviceData($id)
+    protected function getDeviceData(int $id): array
     {
         $device = Devices::getDevice($this->userSession->getUser()->getUID(), $id, $this->connection);
-        $logs = SensorLogs::getLogsByUuId($this->userSession->getUser()->getUID(), $device->getUuid(), $this->connection);
-        return $logs;
+        return SensorLogs::getLogsByUuId(
+            $this->userSession->getUser()->getUID(),
+            $device->getUuid(),
+            $this->connection
+        );
     }
 }
