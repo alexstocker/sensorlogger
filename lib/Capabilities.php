@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: elex
@@ -13,7 +14,6 @@ use OCP\IConfig;
 
 class Capabilities implements ICapability
 {
-
     /** @var IConfig */
     protected $config;
 

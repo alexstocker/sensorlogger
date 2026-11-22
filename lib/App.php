@@ -2,7 +2,7 @@
 
 namespace OCA\SensorLogger;
 
-use \OCP\IContainer;
+use OCP\IContainer;
 
 class App
 {
@@ -13,7 +13,6 @@ class App
 
     public function __construct(array $urlParams = array())
     {
-        parent::__construct($urlParams);
         $container = $this->getContainer();
         $server = $container->getServer();
 

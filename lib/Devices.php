@@ -36,12 +36,16 @@ class Devices extends Mapper
             ->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
-            ->where('sd.user_id = "'.$userId.'"')
+            ->where('sd.user_id = :userId')
+            ->setParameter('userId', $userId)
             ->orderBy('sd.id', 'DESC');
         $query->setMaxResults(100);
-        $result = $query->execute();
 
-        $rows = $result->fetchAll();
+        $rows = $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAllAssociative();
 
         $data = [];
         foreach ($rows as $row) {
@@ -62,11 +66,16 @@ class Devices extends Mapper
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_devices')
-            ->where('id = "'.$id.'" ')
-            ->andWhere('user_id = "'.$userId.'"');
-        $result = $query->execute();
+            ->where('id = :id')
+            ->andWhere('user_id = :userId')
+            ->setParameter('id', $id)
+            ->setParameter('userId', $userId);
 
-        $data = $result->fetch();
+        $data = $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAssociative();
 
         if ($data) {
             $data = Device::fromRow($data);
@@ -103,11 +112,16 @@ class Devices extends Mapper
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_devices')
-            ->where('uuid = "'.$uuid.'" ')
-            ->andWhere('user_id = "'.$userId.'"');
-        $result = $query->execute();
+            ->where('uuid = :uuid')
+            ->andWhere('user_id = :userId')
+            ->setParameter('uuid', $uuid)
+            ->setParameter('userId', $userId);
 
-        $data = $result->fetch();
+        $data = $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAssociative();
         if ($data) {
             //foreach($data as $device) {
             $data = Device::fromRow($data);
@@ -133,10 +147,15 @@ class Devices extends Mapper
             ->leftJoin('sd', 'sensorlogger_device_types', 'sdt', 'sdt.id = sd.type_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg0', 'sdg0.id = sd.group_id')
             ->leftJoin('sd', 'sensorlogger_device_groups', 'sdg1', 'sdg1.id = sd.group_parent_id')
-            ->where('sd.id = "'.$id.'" ')
-            ->andWhere('sd.user_id = "'.$userId.'"');
-        $result = $query->execute();
-        $data = $result->fetch();
+            ->where('sd.id = :id')
+            ->andWhere('sd.user_id = :userId')
+            ->setParameter('id', $id)
+            ->setParameter('userId', $userId);
+        $data = $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAssociative();
         $device = Device::fromRow($data);
         return $device;
     }
@@ -150,13 +169,22 @@ class Devices extends Mapper
      */
     public static function updateDevice($id, $field, $value, IDBConnection $db)
     {
+        $allowedFields = ['name', 'type_id', 'group_id', 'group_parent_id'];
+        if (!in_array($field, $allowedFields, true)) {
+            return false;
+        }
+
         $query = $db->getQueryBuilder();
         $query->update('sensorlogger_devices')
-            ->set($field, $query->expr()->literal($value))
-            ->where('id = "'.$id.'" ');
-        if ($query->execute()) {
-            return true;
-        }
+            ->set($field, $query->createNamedParameter($value))
+            ->where('id = :id')
+            ->setParameter('id', $id);
+
+        return $db->executeStatement(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        ) > 0;
     }
 
     /**
@@ -166,12 +194,16 @@ class Devices extends Mapper
      */
     public static function deleteDevice($id, IDBConnection $db)
     {
-        $sql = 'DELETE FROM `*PREFIX*sensorlogger_devices` WHERE *PREFIX*sensorlogger_devices.id = ?';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(1, $id);
-        if ($stmt->execute()) {
-            return true;
-        }
+        $query = $db->getQueryBuilder();
+        $query->delete('sensorlogger_devices')
+            ->where('id = :id')
+            ->setParameter('id', $id);
+
+        return $db->executeStatement(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        ) > 0;
     }
 
     /**
@@ -182,9 +214,6 @@ class Devices extends Mapper
      */
     public static function insertDevice($userId, $array, IDBConnection $db)
     {
-        $sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
-        $stmt = $db->prepare($sql);
-
         if (isset($array['deviceId'])) {
             if (!isset($array['deviceName'])) {
                 $array['deviceName'] = 'Default device';
@@ -194,13 +223,21 @@ class Devices extends Mapper
                 $array['deviceTypeId'] = 0;
             }
 
-            $stmt->bindParam(1, $array['deviceId']);
-            $stmt->bindParam(2, $array['deviceName']);
-            //$stmt->bindParam(3, date('Y-m-d H:i:s'));
-            $stmt->bindParam(3, $array['deviceTypeId']);
-            $stmt->bindParam(4, $userId);
+            $query = $db->getQueryBuilder();
+            $query->insert('sensorlogger_devices')
+                ->values([
+                    'uuid' => $query->createNamedParameter($array['deviceId']),
+                    'name' => $query->createNamedParameter($array['deviceName']),
+                    'type_id' => $query->createNamedParameter($array['deviceTypeId']),
+                    'user_id' => $query->createNamedParameter($userId),
+                ]);
 
-            if ($stmt->execute()) {
+            $affectedRows = $db->executeStatement(
+                $query->getSQL(),
+                $query->getParameters(),
+                $query->getParameterTypes()
+            );
+            if ($affectedRows > 0) {
                 return (int)$db->lastInsertId();
             }
         } else {

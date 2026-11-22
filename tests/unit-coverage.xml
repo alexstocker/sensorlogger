@@ -1,0 +1,1881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1795287238">
+  <project timestamp="1795287238">
+    <file name="/var/www/owncloud/apps-external/sensorlogger/controller/apisensorloggercontroller.php">
+      <class name="OCA\SensorLogger\Controller\ApiSensorLoggerController" namespace="global">
+        <metrics complexity="131" methods="25" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="342" coveredstatements="78" elements="367" coveredelements="80"/>
+      </class>
+      <line num="70" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="4"/>
+      <line num="82" type="stmt" count="4"/>
+      <line num="83" type="stmt" count="4"/>
+      <line num="84" type="stmt" count="4"/>
+      <line num="85" type="stmt" count="4"/>
+      <line num="86" type="stmt" count="4"/>
+      <line num="87" type="stmt" count="4"/>
+      <line num="88" type="stmt" count="4"/>
+      <line num="89" type="stmt" count="4"/>
+      <line num="90" type="stmt" count="4"/>
+      <line num="91" type="stmt" count="4"/>
+      <line num="92" type="stmt" count="4"/>
+      <line num="93" type="stmt" count="4"/>
+      <line num="94" type="stmt" count="4"/>
+      <line num="95" type="stmt" count="4"/>
+      <line num="96" type="stmt" count="4"/>
+      <line num="99" type="method" name="log" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="111" type="method" name="createLog" visibility="public" complexity="20" crap="21.46" count="3"/>
+      <line num="113" type="stmt" count="3"/>
+      <line num="114" type="stmt" count="3"/>
+      <line num="115" type="stmt" count="1"/>
+      <line num="118" type="stmt" count="3"/>
+      <line num="119" type="stmt" count="2"/>
+      <line num="120" type="stmt" count="1"/>
+      <line num="124" type="stmt" count="3"/>
+      <line num="125" type="stmt" count="1"/>
+      <line num="126" type="stmt" count="0"/>
+      <line num="128" type="stmt" count="1"/>
+      <line num="129" type="stmt" count="1"/>
+      <line num="131" type="stmt" count="1"/>
+      <line num="132" type="stmt" count="1"/>
+      <line num="134" type="stmt" count="0"/>
+      <line num="136" type="stmt" count="1"/>
+      <line num="137" type="stmt" count="0"/>
+      <line num="139" type="stmt" count="1"/>
+      <line num="140" type="stmt" count="0"/>
+      <line num="144" type="stmt" count="0"/>
+      <line num="150" type="stmt" count="3"/>
+      <line num="151" type="stmt" count="1"/>
+      <line num="152" type="stmt" count="1"/>
+      <line num="153" type="stmt" count="1"/>
+      <line num="154" type="stmt" count="1"/>
+      <line num="155" type="stmt" count="1"/>
+      <line num="158" type="stmt" count="2"/>
+      <line num="160" type="stmt" count="1"/>
+      <line num="161" type="stmt" count="1"/>
+      <line num="163" type="stmt" count="1"/>
+      <line num="167" type="stmt" count="2"/>
+      <line num="168" type="stmt" count="1"/>
+      <line num="170" type="stmt" count="2"/>
+      <line num="171" type="stmt" count="0"/>
+      <line num="173" type="stmt" count="2"/>
+      <line num="174" type="stmt" count="2"/>
+      <line num="175" type="stmt" count="2"/>
+      <line num="176" type="stmt" count="2"/>
+      <line num="177" type="stmt" count="2"/>
+      <line num="178" type="stmt" count="2"/>
+      <line num="185" type="method" name="insertExtendedLog" visibility="protected" complexity="3" crap="12" count="0"/>
+      <line num="187" type="stmt" count="0"/>
+      <line num="188" type="stmt" count="0"/>
+      <line num="189" type="stmt" count="0"/>
+      <line num="191" type="stmt" count="0"/>
+      <line num="192" type="stmt" count="0"/>
+      <line num="195" type="stmt" count="0"/>
+      <line num="196" type="stmt" count="0"/>
+      <line num="198" type="stmt" count="0"/>
+      <line num="199" type="stmt" count="0"/>
+      <line num="200" type="stmt" count="0"/>
+      <line num="201" type="stmt" count="0"/>
+      <line num="202" type="stmt" count="0"/>
+      <line num="203" type="stmt" count="0"/>
+      <line num="204" type="stmt" count="0"/>
+      <line num="205" type="stmt" count="0"/>
+      <line num="206" type="stmt" count="0"/>
+      <line num="208" type="stmt" count="0"/>
+      <line num="215" type="method" name="insertLog" visibility="protected" complexity="8" crap="72" count="0"/>
+      <line num="217" type="stmt" count="0"/>
+      <line num="218" type="stmt" count="0"/>
+      <line num="219" type="stmt" count="0"/>
+      <line num="220" type="stmt" count="0"/>
+      <line num="224" type="stmt" count="0"/>
+      <line num="225" type="stmt" count="0"/>
+      <line num="228" type="stmt" count="0"/>
+      <line num="229" type="stmt" count="0"/>
+      <line num="231" type="stmt" count="0"/>
+      <line num="233" type="stmt" count="0"/>
+      <line num="234" type="stmt" count="0"/>
+      <line num="235" type="stmt" count="0"/>
+      <line num="236" type="stmt" count="0"/>
+      <line num="237" type="stmt" count="0"/>
+      <line num="238" type="stmt" count="0"/>
+      <line num="239" type="stmt" count="0"/>
+      <line num="240" type="stmt" count="0"/>
+      <line num="241" type="stmt" count="0"/>
+      <line num="242" type="stmt" count="0"/>
+      <line num="243" type="stmt" count="0"/>
+      <line num="245" type="stmt" count="0"/>
+      <line num="255" type="method" name="registerDevice" visibility="public" complexity="21" crap="462" count="0"/>
+      <line num="258" type="stmt" count="0"/>
+      <line num="259" type="stmt" count="0"/>
+      <line num="260" type="stmt" count="0"/>
+      <line num="262" type="stmt" count="0"/>
+      <line num="263" type="stmt" count="0"/>
+      <line num="264" type="stmt" count="0"/>
+      <line num="267" type="stmt" count="0"/>
+      <line num="268" type="stmt" count="0"/>
+      <line num="269" type="stmt" count="0"/>
+      <line num="271" type="stmt" count="0"/>
+      <line num="272" type="stmt" count="0"/>
+      <line num="273" type="stmt" count="0"/>
+      <line num="279" type="stmt" count="0"/>
+      <line num="280" type="stmt" count="0"/>
+      <line num="281" type="stmt" count="0"/>
+      <line num="283" type="stmt" count="0"/>
+      <line num="284" type="stmt" count="0"/>
+      <line num="285" type="stmt" count="0"/>
+      <line num="291" type="stmt" count="0"/>
+      <line num="292" type="stmt" count="0"/>
+      <line num="293" type="stmt" count="0"/>
+      <line num="295" type="stmt" count="0"/>
+      <line num="296" type="stmt" count="0"/>
+      <line num="297" type="stmt" count="0"/>
+      <line num="298" type="stmt" count="0"/>
+      <line num="299" type="stmt" count="0"/>
+      <line num="300" type="stmt" count="0"/>
+      <line num="301" type="stmt" count="0"/>
+      <line num="302" type="stmt" count="0"/>
+      <line num="307" type="stmt" count="0"/>
+      <line num="308" type="stmt" count="0"/>
+      <line num="309" type="stmt" count="0"/>
+      <line num="310" type="stmt" count="0"/>
+      <line num="311" type="stmt" count="0"/>
+      <line num="313" type="stmt" count="0"/>
+      <line num="315" type="stmt" count="0"/>
+      <line num="316" type="stmt" count="0"/>
+      <line num="318" type="stmt" count="0"/>
+      <line num="319" type="stmt" count="0"/>
+      <line num="320" type="stmt" count="0"/>
+      <line num="322" type="stmt" count="0"/>
+      <line num="325" type="stmt" count="0"/>
+      <line num="326" type="stmt" count="0"/>
+      <line num="327" type="stmt" count="0"/>
+      <line num="330" type="stmt" count="0"/>
+      <line num="331" type="stmt" count="0"/>
+      <line num="332" type="stmt" count="0"/>
+      <line num="333" type="stmt" count="0"/>
+      <line num="334" type="stmt" count="0"/>
+      <line num="335" type="stmt" count="0"/>
+      <line num="336" type="stmt" count="0"/>
+      <line num="337" type="stmt" count="0"/>
+      <line num="338" type="stmt" count="0"/>
+      <line num="339" type="stmt" count="0"/>
+      <line num="340" type="stmt" count="0"/>
+      <line num="342" type="stmt" count="0"/>
+      <line num="343" type="stmt" count="0"/>
+      <line num="345" type="stmt" count="0"/>
+      <line num="348" type="stmt" count="0"/>
+      <line num="359" type="method" name="requestResponse" visibility="protected" complexity="3" crap="3.00" count="3"/>
+      <line num="365" type="stmt" count="3"/>
+      <line num="366" type="stmt" count="1"/>
+      <line num="367" type="stmt" count="0"/>
+      <line num="369" type="stmt" count="1"/>
+      <line num="370" type="stmt" count="1"/>
+      <line num="371" type="stmt" count="1"/>
+      <line num="372" type="stmt" count="1"/>
+      <line num="373" type="stmt" count="1"/>
+      <line num="374" type="stmt" count="1"/>
+      <line num="375" type="stmt" count="1"/>
+      <line num="377" type="stmt" count="2"/>
+      <line num="378" type="stmt" count="2"/>
+      <line num="379" type="stmt" count="2"/>
+      <line num="380" type="stmt" count="2"/>
+      <line num="381" type="stmt" count="2"/>
+      <line num="382" type="stmt" count="2"/>
+      <line num="384" type="stmt" count="3"/>
+      <line num="385" type="stmt" count="3"/>
+      <line num="392" type="method" name="insertDeviceType" visibility="protected" complexity="2" crap="2.01" count="1"/>
+      <line num="394" type="stmt" count="1"/>
+      <line num="395" type="stmt" count="1"/>
+      <line num="396" type="stmt" count="1"/>
+      <line num="397" type="stmt" count="1"/>
+      <line num="398" type="stmt" count="1"/>
+      <line num="399" type="stmt" count="1"/>
+      <line num="401" type="stmt" count="1"/>
+      <line num="402" type="stmt" count="1"/>
+      <line num="404" type="stmt" count="0"/>
+      <line num="411" type="method" name="insertDeviceGroup" visibility="protected" complexity="2" crap="6" count="0"/>
+      <line num="413" type="stmt" count="0"/>
+      <line num="414" type="stmt" count="0"/>
+      <line num="415" type="stmt" count="0"/>
+      <line num="416" type="stmt" count="0"/>
+      <line num="417" type="stmt" count="0"/>
+      <line num="418" type="stmt" count="0"/>
+      <line num="420" type="stmt" count="0"/>
+      <line num="421" type="stmt" count="0"/>
+      <line num="423" type="stmt" count="0"/>
+      <line num="430" type="method" name="insertDataTypes" visibility="protected" complexity="8" crap="72" count="0"/>
+      <line num="432" type="stmt" count="0"/>
+      <line num="433" type="stmt" count="0"/>
+      <line num="435" type="stmt" count="0"/>
+      <line num="438" type="stmt" count="0"/>
+      <line num="439" type="stmt" count="0"/>
+      <line num="441" type="stmt" count="0"/>
+      <line num="444" type="stmt" count="0"/>
+      <line num="445" type="stmt" count="0"/>
+      <line num="447" type="stmt" count="0"/>
+      <line num="450" type="stmt" count="0"/>
+      <line num="451" type="stmt" count="0"/>
+      <line num="452" type="stmt" count="0"/>
+      <line num="453" type="stmt" count="0"/>
+      <line num="454" type="stmt" count="0"/>
+      <line num="455" type="stmt" count="0"/>
+      <line num="456" type="stmt" count="0"/>
+      <line num="457" type="stmt" count="0"/>
+      <line num="459" type="stmt" count="0"/>
+      <line num="460" type="stmt" count="0"/>
+      <line num="462" type="stmt" count="0"/>
+      <line num="469" type="method" name="checkRequestParams" visibility="protected" complexity="15" crap="240" count="0"/>
+      <line num="471" type="stmt" count="0"/>
+      <line num="472" type="stmt" count="0"/>
+      <line num="474" type="stmt" count="0"/>
+      <line num="475" type="stmt" count="0"/>
+      <line num="477" type="stmt" count="0"/>
+      <line num="478" type="stmt" count="0"/>
+      <line num="480" type="stmt" count="0"/>
+      <line num="481" type="stmt" count="0"/>
+      <line num="483" type="stmt" count="0"/>
+      <line num="484" type="stmt" count="0"/>
+      <line num="486" type="stmt" count="0"/>
+      <line num="487" type="stmt" count="0"/>
+      <line num="488" type="stmt" count="0"/>
+      <line num="489" type="stmt" count="0"/>
+      <line num="491" type="stmt" count="0"/>
+      <line num="492" type="stmt" count="0"/>
+      <line num="494" type="stmt" count="0"/>
+      <line num="495" type="stmt" count="0"/>
+      <line num="499" type="stmt" count="0"/>
+      <line num="500" type="stmt" count="0"/>
+      <line num="502" type="stmt" count="0"/>
+      <line num="509" type="method" name="insertDeviceDataTypes" visibility="protected" complexity="1" crap="2" count="0"/>
+      <line num="511" type="stmt" count="0"/>
+      <line num="512" type="stmt" count="0"/>
+      <line num="513" type="stmt" count="0"/>
+      <line num="514" type="stmt" count="0"/>
+      <line num="515" type="stmt" count="0"/>
+      <line num="516" type="stmt" count="0"/>
+      <line num="517" type="stmt" count="0"/>
+      <line num="518" type="stmt" count="0"/>
+      <line num="525" type="method" name="checkRegisteredDevice" visibility="protected" complexity="3" crap="12" count="0"/>
+      <line num="527" type="stmt" count="0"/>
+      <line num="528" type="stmt" count="0"/>
+      <line num="529" type="stmt" count="0"/>
+      <line num="530" type="stmt" count="0"/>
+      <line num="531" type="stmt" count="0"/>
+      <line num="532" type="stmt" count="0"/>
+      <line num="534" type="stmt" count="0"/>
+      <line num="535" type="stmt" count="0"/>
+      <line num="538" type="stmt" count="0"/>
+      <line num="541" type="method" name="checkRegisteredDataTypes" visibility="protected" complexity="7" crap="56" count="0"/>
+      <line num="543" type="stmt" count="0"/>
+      <line num="544" type="stmt" count="0"/>
+      <line num="546" type="stmt" count="0"/>
+      <line num="547" type="stmt" count="0"/>
+      <line num="549" type="stmt" count="0"/>
+      <line num="550" type="stmt" count="0"/>
+      <line num="551" type="stmt" count="0"/>
+      <line num="552" type="stmt" count="0"/>
+      <line num="557" type="stmt" count="0"/>
+      <line num="558" type="stmt" count="0"/>
+      <line num="559" type="stmt" count="0"/>
+      <line num="560" type="stmt" count="0"/>
+      <line num="562" type="stmt" count="0"/>
+      <line num="564" type="stmt" count="0"/>
+      <line num="571" type="method" name="insertDevice" visibility="protected" complexity="5" crap="30" count="0"/>
+      <line num="573" type="stmt" count="0"/>
+      <line num="574" type="stmt" count="0"/>
+      <line num="575" type="stmt" count="0"/>
+      <line num="578" type="stmt" count="0"/>
+      <line num="579" type="stmt" count="0"/>
+      <line num="582" type="stmt" count="0"/>
+      <line num="583" type="stmt" count="0"/>
+      <line num="584" type="stmt" count="0"/>
+      <line num="585" type="stmt" count="0"/>
+      <line num="586" type="stmt" count="0"/>
+      <line num="587" type="stmt" count="0"/>
+      <line num="588" type="stmt" count="0"/>
+      <line num="589" type="stmt" count="0"/>
+      <line num="591" type="stmt" count="0"/>
+      <line num="592" type="stmt" count="0"/>
+      <line num="595" type="stmt" count="0"/>
+      <line num="597" type="stmt" count="0"/>
+      <line num="600" type="method" name="executeQueryBuilderStatement" visibility="private" complexity="1" crap="1" count="1"/>
+      <line num="602" type="stmt" count="1"/>
+      <line num="603" type="stmt" count="1"/>
+      <line num="604" type="stmt" count="1"/>
+      <line num="605" type="stmt" count="1"/>
+      <line num="606" type="stmt" count="1"/>
+      <line num="616" type="method" name="getDeviceDataTypes" visibility="public" complexity="6" crap="42" count="0"/>
+      <line num="618" type="stmt" count="0"/>
+      <line num="619" type="stmt" count="0"/>
+      <line num="620" type="stmt" count="0"/>
+      <line num="621" type="stmt" count="0"/>
+      <line num="624" type="stmt" count="0"/>
+      <line num="626" type="stmt" count="0"/>
+      <line num="627" type="stmt" count="0"/>
+      <line num="628" type="stmt" count="0"/>
+      <line num="631" type="stmt" count="0"/>
+      <line num="632" type="stmt" count="0"/>
+      <line num="633" type="stmt" count="0"/>
+      <line num="634" type="stmt" count="0"/>
+      <line num="635" type="stmt" count="0"/>
+      <line num="636" type="stmt" count="0"/>
+      <line num="637" type="stmt" count="0"/>
+      <line num="638" type="stmt" count="0"/>
+      <line num="641" type="stmt" count="0"/>
+      <line num="642" type="stmt" count="0"/>
+      <line num="643" type="stmt" count="0"/>
+      <line num="644" type="stmt" count="0"/>
+      <line num="645" type="stmt" count="0"/>
+      <line num="646" type="stmt" count="0"/>
+      <line num="652" type="method" name="getAllShares" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="655" type="stmt" count="0"/>
+      <line num="660" type="method" name="createShare" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="664" type="stmt" count="0"/>
+      <line num="665" type="stmt" count="0"/>
+      <line num="666" type="stmt" count="0"/>
+      <line num="668" type="stmt" count="0"/>
+      <line num="676" type="method" name="getShare" visibility="public" complexity="5" crap="30" count="0"/>
+      <line num="679" type="stmt" count="0"/>
+      <line num="680" type="stmt" count="0"/>
+      <line num="684" type="stmt" count="0"/>
+      <line num="685" type="stmt" count="0"/>
+      <line num="686" type="stmt" count="0"/>
+      <line num="689" type="stmt" count="0"/>
+      <line num="691" type="stmt" count="0"/>
+      <line num="695" type="stmt" count="0"/>
+      <line num="703" type="method" name="getShareById" visibility="private" complexity="3" crap="12" count="0"/>
+      <line num="707" type="stmt" count="0"/>
+      <line num="710" type="stmt" count="0"/>
+      <line num="711" type="stmt" count="0"/>
+      <line num="712" type="stmt" count="0"/>
+      <line num="713" type="stmt" count="0"/>
+      <line num="715" type="stmt" count="0"/>
+      <line num="718" type="stmt" count="0"/>
+      <line num="724" type="method" name="updateShare" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="727" type="stmt" count="0"/>
+      <line num="732" type="method" name="deleteShare" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="735" type="stmt" count="0"/>
+      <line num="741" type="method" name="canAccessShare" visibility="protected" complexity="9" crap="90" count="0"/>
+      <line num="744" type="stmt" count="0"/>
+      <line num="745" type="stmt" count="0"/>
+      <line num="750" type="stmt" count="0"/>
+      <line num="751" type="stmt" count="0"/>
+      <line num="753" type="stmt" count="0"/>
+      <line num="758" type="stmt" count="0"/>
+      <line num="759" type="stmt" count="0"/>
+      <line num="761" type="stmt" count="0"/>
+      <line num="764" type="stmt" count="0"/>
+      <line num="765" type="stmt" count="0"/>
+      <line num="766" type="stmt" count="0"/>
+      <line num="767" type="stmt" count="0"/>
+      <line num="771" type="stmt" count="0"/>
+      <line num="778" type="method" name="returnJSON" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="781" type="stmt" count="0"/>
+      <line num="782" type="stmt" count="0"/>
+      <line num="783" type="stmt" count="0"/>
+      <metrics loc="787" ncloc="663" classes="1" methods="25" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="342" coveredstatements="78" elements="367" coveredelements="80"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/controller/sensorloggercontroller.php">
+      <class name="OCA\SensorLogger\Controller\SensorLoggerController" namespace="global">
+        <metrics complexity="99" methods="40" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="458" coveredstatements="20" elements="498" coveredelements="22"/>
+      </class>
+      <line num="116" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="2"/>
+      <line num="129" type="stmt" count="2"/>
+      <line num="130" type="stmt" count="2"/>
+      <line num="131" type="stmt" count="2"/>
+      <line num="132" type="stmt" count="2"/>
+      <line num="133" type="stmt" count="2"/>
+      <line num="134" type="stmt" count="2"/>
+      <line num="135" type="stmt" count="2"/>
+      <line num="136" type="stmt" count="2"/>
+      <line num="137" type="stmt" count="2"/>
+      <line num="138" type="stmt" count="2"/>
+      <line num="146" type="method" name="index" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="148" type="stmt" count="0"/>
+      <line num="149" type="stmt" count="0"/>
+      <line num="151" type="stmt" count="0"/>
+      <line num="152" type="stmt" count="0"/>
+      <line num="153" type="stmt" count="0"/>
+      <line num="154" type="stmt" count="0"/>
+      <line num="155" type="stmt" count="0"/>
+      <line num="158" type="stmt" count="0"/>
+      <line num="159" type="stmt" count="0"/>
+      <line num="161" type="stmt" count="0"/>
+      <line num="162" type="stmt" count="0"/>
+      <line num="164" type="stmt" count="0"/>
+      <line num="171" type="method" name="getNavigationItems" visibility="protected" complexity="5" crap="30" count="0"/>
+      <line num="173" type="stmt" count="0"/>
+      <line num="174" type="stmt" count="0"/>
+      <line num="175" type="stmt" count="0"/>
+      <line num="176" type="stmt" count="0"/>
+      <line num="177" type="stmt" count="0"/>
+      <line num="178" type="stmt" count="0"/>
+      <line num="179" type="stmt" count="0"/>
+      <line num="180" type="stmt" count="0"/>
+      <line num="181" type="stmt" count="0"/>
+      <line num="182" type="stmt" count="0"/>
+      <line num="184" type="stmt" count="0"/>
+      <line num="185" type="stmt" count="0"/>
+      <line num="186" type="stmt" count="0"/>
+      <line num="187" type="stmt" count="0"/>
+      <line num="188" type="stmt" count="0"/>
+      <line num="189" type="stmt" count="0"/>
+      <line num="190" type="stmt" count="0"/>
+      <line num="191" type="stmt" count="0"/>
+      <line num="192" type="stmt" count="0"/>
+      <line num="193" type="stmt" count="0"/>
+      <line num="195" type="stmt" count="0"/>
+      <line num="196" type="stmt" count="0"/>
+      <line num="197" type="stmt" count="0"/>
+      <line num="198" type="stmt" count="0"/>
+      <line num="199" type="stmt" count="0"/>
+      <line num="200" type="stmt" count="0"/>
+      <line num="201" type="stmt" count="0"/>
+      <line num="202" type="stmt" count="0"/>
+      <line num="203" type="stmt" count="0"/>
+      <line num="204" type="stmt" count="0"/>
+      <line num="206" type="stmt" count="0"/>
+      <line num="207" type="stmt" count="0"/>
+      <line num="208" type="stmt" count="0"/>
+      <line num="209" type="stmt" count="0"/>
+      <line num="210" type="stmt" count="0"/>
+      <line num="211" type="stmt" count="0"/>
+      <line num="212" type="stmt" count="0"/>
+      <line num="213" type="stmt" count="0"/>
+      <line num="214" type="stmt" count="0"/>
+      <line num="215" type="stmt" count="0"/>
+      <line num="217" type="stmt" count="0"/>
+      <line num="218" type="stmt" count="0"/>
+      <line num="219" type="stmt" count="0"/>
+      <line num="220" type="stmt" count="0"/>
+      <line num="221" type="stmt" count="0"/>
+      <line num="222" type="stmt" count="0"/>
+      <line num="223" type="stmt" count="0"/>
+      <line num="224" type="stmt" count="0"/>
+      <line num="225" type="stmt" count="0"/>
+      <line num="226" type="stmt" count="0"/>
+      <line num="228" type="stmt" count="0"/>
+      <line num="229" type="stmt" count="0"/>
+      <line num="230" type="stmt" count="0"/>
+      <line num="231" type="stmt" count="0"/>
+      <line num="232" type="stmt" count="0"/>
+      <line num="233" type="stmt" count="0"/>
+      <line num="234" type="stmt" count="0"/>
+      <line num="235" type="stmt" count="0"/>
+      <line num="236" type="stmt" count="0"/>
+      <line num="237" type="stmt" count="0"/>
+      <line num="239" type="stmt" count="0"/>
+      <line num="240" type="stmt" count="0"/>
+      <line num="241" type="stmt" count="0"/>
+      <line num="242" type="stmt" count="0"/>
+      <line num="243" type="stmt" count="0"/>
+      <line num="244" type="stmt" count="0"/>
+      <line num="245" type="stmt" count="0"/>
+      <line num="246" type="stmt" count="0"/>
+      <line num="247" type="stmt" count="0"/>
+      <line num="248" type="stmt" count="0"/>
+      <line num="249" type="stmt" count="0"/>
+      <line num="251" type="stmt" count="0"/>
+      <line num="252" type="stmt" count="0"/>
+      <line num="253" type="stmt" count="0"/>
+      <line num="254" type="stmt" count="0"/>
+      <line num="255" type="stmt" count="0"/>
+      <line num="256" type="stmt" count="0"/>
+      <line num="257" type="stmt" count="0"/>
+      <line num="258" type="stmt" count="0"/>
+      <line num="259" type="stmt" count="0"/>
+      <line num="260" type="stmt" count="0"/>
+      <line num="263" type="stmt" count="0"/>
+      <line num="264" type="stmt" count="0"/>
+      <line num="265" type="stmt" count="0"/>
+      <line num="266" type="stmt" count="0"/>
+      <line num="267" type="stmt" count="0"/>
+      <line num="268" type="stmt" count="0"/>
+      <line num="269" type="stmt" count="0"/>
+      <line num="270" type="stmt" count="0"/>
+      <line num="271" type="stmt" count="0"/>
+      <line num="272" type="stmt" count="0"/>
+      <line num="273" type="stmt" count="0"/>
+      <line num="277" type="stmt" count="0"/>
+      <line num="278" type="stmt" count="0"/>
+      <line num="279" type="stmt" count="0"/>
+      <line num="280" type="stmt" count="0"/>
+      <line num="282" type="stmt" count="0"/>
+      <line num="283" type="stmt" count="0"/>
+      <line num="284" type="stmt" count="0"/>
+      <line num="288" type="stmt" count="0"/>
+      <line num="295" type="method" name="sharingIn" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="298" type="stmt" count="0"/>
+      <line num="299" type="stmt" count="0"/>
+      <line num="300" type="stmt" count="0"/>
+      <line num="301" type="stmt" count="0"/>
+      <line num="302" type="stmt" count="0"/>
+      <line num="304" type="stmt" count="0"/>
+      <line num="305" type="stmt" count="0"/>
+      <line num="307" type="stmt" count="0"/>
+      <line num="308" type="stmt" count="0"/>
+      <line num="310" type="stmt" count="0"/>
+      <line num="317" type="method" name="sharingOut" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="320" type="stmt" count="0"/>
+      <line num="321" type="stmt" count="0"/>
+      <line num="322" type="stmt" count="0"/>
+      <line num="323" type="stmt" count="0"/>
+      <line num="324" type="stmt" count="0"/>
+      <line num="326" type="stmt" count="0"/>
+      <line num="327" type="stmt" count="0"/>
+      <line num="329" type="stmt" count="0"/>
+      <line num="330" type="stmt" count="0"/>
+      <line num="332" type="stmt" count="0"/>
+      <line num="339" type="method" name="sharedLink" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="342" type="stmt" count="0"/>
+      <line num="343" type="stmt" count="0"/>
+      <line num="344" type="stmt" count="0"/>
+      <line num="345" type="stmt" count="0"/>
+      <line num="346" type="stmt" count="0"/>
+      <line num="348" type="stmt" count="0"/>
+      <line num="349" type="stmt" count="0"/>
+      <line num="351" type="stmt" count="0"/>
+      <line num="352" type="stmt" count="0"/>
+      <line num="354" type="stmt" count="0"/>
+      <line num="361" type="method" name="getWidgets" visibility="protected" complexity="5" crap="30" count="0"/>
+      <line num="363" type="stmt" count="0"/>
+      <line num="364" type="stmt" count="0"/>
+      <line num="366" type="stmt" count="0"/>
+      <line num="367" type="stmt" count="0"/>
+      <line num="368" type="stmt" count="0"/>
+      <line num="370" type="stmt" count="0"/>
+      <line num="371" type="stmt" count="0"/>
+      <line num="372" type="stmt" count="0"/>
+      <line num="373" type="stmt" count="0"/>
+      <line num="374" type="stmt" count="0"/>
+      <line num="376" type="stmt" count="0"/>
+      <line num="377" type="stmt" count="0"/>
+      <line num="380" type="stmt" count="0"/>
+      <line num="381" type="stmt" count="0"/>
+      <line num="382" type="stmt" count="0"/>
+      <line num="383" type="stmt" count="0"/>
+      <line num="384" type="stmt" count="0"/>
+      <line num="385" type="stmt" count="0"/>
+      <line num="386" type="stmt" count="0"/>
+      <line num="388" type="stmt" count="0"/>
+      <line num="389" type="stmt" count="0"/>
+      <line num="390" type="stmt" count="0"/>
+      <line num="391" type="stmt" count="0"/>
+      <line num="392" type="stmt" count="0"/>
+      <line num="393" type="stmt" count="0"/>
+      <line num="394" type="stmt" count="0"/>
+      <line num="398" type="stmt" count="0"/>
+      <line num="401" type="stmt" count="0"/>
+      <line num="409" type="method" name="showList" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="411" type="stmt" count="0"/>
+      <line num="412" type="stmt" count="0"/>
+      <line num="413" type="stmt" count="0"/>
+      <line num="414" type="stmt" count="0"/>
+      <line num="415" type="stmt" count="0"/>
+      <line num="416" type="stmt" count="0"/>
+      <line num="418" type="stmt" count="0"/>
+      <line num="419" type="stmt" count="0"/>
+      <line num="421" type="stmt" count="0"/>
+      <line num="422" type="stmt" count="0"/>
+      <line num="424" type="stmt" count="0"/>
+      <line num="431" type="method" name="getWidgetTypes" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="434" type="stmt" count="0"/>
+      <line num="435" type="stmt" count="0"/>
+      <line num="436" type="stmt" count="0"/>
+      <line num="437" type="stmt" count="0"/>
+      <line num="445" type="method" name="createWidget" visibility="public" complexity="4" crap="4.13" count="2"/>
+      <line num="447" type="stmt" count="2"/>
+      <line num="448" type="stmt" count="2"/>
+      <line num="449" type="stmt" count="2"/>
+      <line num="450" type="stmt" count="2"/>
+      <line num="451" type="stmt" count="2"/>
+      <line num="452" type="stmt" count="1"/>
+      <line num="455" type="stmt" count="1"/>
+      <line num="456" type="stmt" count="1"/>
+      <line num="457" type="stmt" count="0"/>
+      <line num="458" type="stmt" count="0"/>
+      <line num="467" type="method" name="deleteWidget" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="470" type="stmt" count="0"/>
+      <line num="471" type="stmt" count="0"/>
+      <line num="472" type="stmt" count="0"/>
+      <line num="473" type="stmt" count="0"/>
+      <line num="482" type="method" name="deleteDataType" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="484" type="stmt" count="0"/>
+      <line num="485" type="stmt" count="0"/>
+      <line num="487" type="stmt" count="0"/>
+      <line num="488" type="stmt" count="0"/>
+      <line num="489" type="stmt" count="0"/>
+      <line num="492" type="stmt" count="0"/>
+      <line num="500" type="method" name="deleteDeviceGroup" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="502" type="stmt" count="0"/>
+      <line num="503" type="stmt" count="0"/>
+      <line num="505" type="stmt" count="0"/>
+      <line num="506" type="stmt" count="0"/>
+      <line num="507" type="stmt" count="0"/>
+      <line num="510" type="stmt" count="0"/>
+      <line num="518" type="method" name="deleteDeviceType" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="520" type="stmt" count="0"/>
+      <line num="521" type="stmt" count="0"/>
+      <line num="523" type="stmt" count="0"/>
+      <line num="524" type="stmt" count="0"/>
+      <line num="525" type="stmt" count="0"/>
+      <line num="528" type="stmt" count="0"/>
+      <line num="536" type="method" name="deleteDevice" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="538" type="stmt" count="0"/>
+      <line num="540" type="stmt" count="0"/>
+      <line num="541" type="stmt" count="0"/>
+      <line num="542" type="stmt" count="0"/>
+      <line num="543" type="stmt" count="0"/>
+      <line num="546" type="stmt" count="0"/>
+      <line num="553" type="method" name="deleteLogsByDevice" visibility="protected" complexity="2" crap="6" count="0"/>
+      <line num="556" type="stmt" count="0"/>
+      <line num="557" type="stmt" count="0"/>
+      <line num="558" type="stmt" count="0"/>
+      <line num="559" type="stmt" count="0"/>
+      <line num="567" type="method" name="wipeOutDevice" visibility="public" complexity="6" crap="42" count="0"/>
+      <line num="569" type="stmt" count="0"/>
+      <line num="570" type="stmt" count="0"/>
+      <line num="571" type="stmt" count="0"/>
+      <line num="573" type="stmt" count="0"/>
+      <line num="574" type="stmt" count="0"/>
+      <line num="577" type="stmt" count="0"/>
+      <line num="579" type="stmt" count="0"/>
+      <line num="580" type="stmt" count="0"/>
+      <line num="581" type="stmt" count="0"/>
+      <line num="582" type="stmt" count="0"/>
+      <line num="586" type="stmt" count="0"/>
+      <line num="594" type="method" name="deleteLog" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="597" type="stmt" count="0"/>
+      <line num="598" type="stmt" count="0"/>
+      <line num="599" type="stmt" count="0"/>
+      <line num="601" type="stmt" count="0"/>
+      <line num="609" type="method" name="showDeviceData" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="615" type="stmt" count="0"/>
+      <line num="616" type="stmt" count="0"/>
+      <line num="617" type="stmt" count="0"/>
+      <line num="619" type="stmt" count="0"/>
+      <line num="620" type="stmt" count="0"/>
+      <line num="622" type="stmt" count="0"/>
+      <line num="623" type="stmt" count="0"/>
+      <line num="625" type="stmt" count="0"/>
+      <line num="633" type="method" name="showDeviceDetails" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="635" type="stmt" count="0"/>
+      <line num="636" type="stmt" count="0"/>
+      <line num="637" type="stmt" count="0"/>
+      <line num="639" type="stmt" count="0"/>
+      <line num="640" type="stmt" count="0"/>
+      <line num="641" type="stmt" count="0"/>
+      <line num="642" type="stmt" count="0"/>
+      <line num="643" type="stmt" count="0"/>
+      <line num="646" type="stmt" count="0"/>
+      <line num="647" type="stmt" count="0"/>
+      <line num="649" type="stmt" count="0"/>
+      <line num="650" type="stmt" count="0"/>
+      <line num="651" type="stmt" count="0"/>
+      <line num="652" type="stmt" count="0"/>
+      <line num="653" type="stmt" count="0"/>
+      <line num="654" type="stmt" count="0"/>
+      <line num="655" type="stmt" count="0"/>
+      <line num="657" type="stmt" count="0"/>
+      <line num="659" type="stmt" count="0"/>
+      <line num="666" type="method" name="updateDevice" visibility="public" complexity="10" crap="110" count="0"/>
+      <line num="668" type="stmt" count="0"/>
+      <line num="669" type="stmt" count="0"/>
+      <line num="671" type="stmt" count="0"/>
+      <line num="672" type="stmt" count="0"/>
+      <line num="673" type="stmt" count="0"/>
+      <line num="674" type="stmt" count="0"/>
+      <line num="675" type="stmt" count="0"/>
+      <line num="676" type="stmt" count="0"/>
+      <line num="677" type="stmt" count="0"/>
+      <line num="678" type="stmt" count="0"/>
+      <line num="680" type="stmt" count="0"/>
+      <line num="682" type="stmt" count="0"/>
+      <line num="683" type="stmt" count="0"/>
+      <line num="684" type="stmt" count="0"/>
+      <line num="685" type="stmt" count="0"/>
+      <line num="686" type="stmt" count="0"/>
+      <line num="687" type="stmt" count="0"/>
+      <line num="688" type="stmt" count="0"/>
+      <line num="689" type="stmt" count="0"/>
+      <line num="691" type="stmt" count="0"/>
+      <line num="697" type="stmt" count="0"/>
+      <line num="698" type="stmt" count="0"/>
+      <line num="700" type="stmt" count="0"/>
+      <line num="702" type="stmt" count="0"/>
+      <line num="709" type="method" name="createDeviceType" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="711" type="stmt" count="0"/>
+      <line num="712" type="stmt" count="0"/>
+      <line num="713" type="stmt" count="0"/>
+      <line num="714" type="stmt" count="0"/>
+      <line num="722" type="method" name="createDeviceGroup" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="724" type="stmt" count="0"/>
+      <line num="725" type="stmt" count="0"/>
+      <line num="726" type="stmt" count="0"/>
+      <line num="727" type="stmt" count="0"/>
+      <line num="736" type="method" name="showDashboard" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="738" type="stmt" count="0"/>
+      <line num="739" type="stmt" count="0"/>
+      <line num="740" type="stmt" count="0"/>
+      <line num="741" type="stmt" count="0"/>
+      <line num="742" type="stmt" count="0"/>
+      <line num="743" type="stmt" count="0"/>
+      <line num="744" type="stmt" count="0"/>
+      <line num="745" type="stmt" count="0"/>
+      <line num="746" type="stmt" count="0"/>
+      <line num="748" type="stmt" count="0"/>
+      <line num="749" type="stmt" count="0"/>
+      <line num="751" type="stmt" count="0"/>
+      <line num="752" type="stmt" count="0"/>
+      <line num="754" type="stmt" count="0"/>
+      <line num="763" type="method" name="deviceChart" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="765" type="stmt" count="0"/>
+      <line num="766" type="stmt" count="0"/>
+      <line num="767" type="stmt" count="0"/>
+      <line num="768" type="stmt" count="0"/>
+      <line num="776" type="method" name="chartData" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="778" type="stmt" count="0"/>
+      <line num="786" type="method" name="chartDataLastLog" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="788" type="stmt" count="0"/>
+      <line num="797" type="method" name="maxLastLog" visibility="public" complexity="6" crap="42" count="0"/>
+      <line num="799" type="stmt" count="0"/>
+      <line num="800" type="stmt" count="0"/>
+      <line num="801" type="stmt" count="0"/>
+      <line num="802" type="stmt" count="0"/>
+      <line num="803" type="stmt" count="0"/>
+      <line num="804" type="stmt" count="0"/>
+      <line num="806" type="stmt" count="0"/>
+      <line num="807" type="stmt" count="0"/>
+      <line num="809" type="stmt" count="0"/>
+      <line num="810" type="stmt" count="0"/>
+      <line num="811" type="stmt" count="0"/>
+      <line num="812" type="stmt" count="0"/>
+      <line num="813" type="stmt" count="0"/>
+      <line num="815" type="stmt" count="0"/>
+      <line num="816" type="stmt" count="0"/>
+      <line num="818" type="stmt" count="0"/>
+      <line num="826" type="method" name="deviceList" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="828" type="stmt" count="0"/>
+      <line num="829" type="stmt" count="0"/>
+      <line num="830" type="stmt" count="0"/>
+      <line num="831" type="stmt" count="0"/>
+      <line num="832" type="stmt" count="0"/>
+      <line num="833" type="stmt" count="0"/>
+      <line num="834" type="stmt" count="0"/>
+      <line num="836" type="stmt" count="0"/>
+      <line num="837" type="stmt" count="0"/>
+      <line num="839" type="stmt" count="0"/>
+      <line num="840" type="stmt" count="0"/>
+      <line num="842" type="stmt" count="0"/>
+      <line num="850" type="method" name="deviceTypeList" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="852" type="stmt" count="0"/>
+      <line num="853" type="stmt" count="0"/>
+      <line num="854" type="stmt" count="0"/>
+      <line num="855" type="stmt" count="0"/>
+      <line num="856" type="stmt" count="0"/>
+      <line num="857" type="stmt" count="0"/>
+      <line num="858" type="stmt" count="0"/>
+      <line num="859" type="stmt" count="0"/>
+      <line num="860" type="stmt" count="0"/>
+      <line num="862" type="stmt" count="0"/>
+      <line num="863" type="stmt" count="0"/>
+      <line num="865" type="stmt" count="0"/>
+      <line num="866" type="stmt" count="0"/>
+      <line num="868" type="stmt" count="0"/>
+      <line num="876" type="method" name="deviceGroupList" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="878" type="stmt" count="0"/>
+      <line num="879" type="stmt" count="0"/>
+      <line num="880" type="stmt" count="0"/>
+      <line num="881" type="stmt" count="0"/>
+      <line num="882" type="stmt" count="0"/>
+      <line num="883" type="stmt" count="0"/>
+      <line num="884" type="stmt" count="0"/>
+      <line num="886" type="stmt" count="0"/>
+      <line num="887" type="stmt" count="0"/>
+      <line num="889" type="stmt" count="0"/>
+      <line num="890" type="stmt" count="0"/>
+      <line num="892" type="stmt" count="0"/>
+      <line num="900" type="method" name="dataTypeList" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="902" type="stmt" count="0"/>
+      <line num="903" type="stmt" count="0"/>
+      <line num="904" type="stmt" count="0"/>
+      <line num="905" type="stmt" count="0"/>
+      <line num="906" type="stmt" count="0"/>
+      <line num="907" type="stmt" count="0"/>
+      <line num="908" type="stmt" count="0"/>
+      <line num="910" type="stmt" count="0"/>
+      <line num="911" type="stmt" count="0"/>
+      <line num="913" type="stmt" count="0"/>
+      <line num="914" type="stmt" count="0"/>
+      <line num="916" type="stmt" count="0"/>
+      <line num="924" type="method" name="getUserValue" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="926" type="stmt" count="0"/>
+      <line num="934" type="method" name="updateWidgetSettings" visibility="public" complexity="6" crap="42" count="0"/>
+      <line num="936" type="stmt" count="0"/>
+      <line num="937" type="stmt" count="0"/>
+      <line num="938" type="stmt" count="0"/>
+      <line num="939" type="stmt" count="0"/>
+      <line num="941" type="stmt" count="0"/>
+      <line num="942" type="stmt" count="0"/>
+      <line num="943" type="stmt" count="0"/>
+      <line num="947" type="stmt" count="0"/>
+      <line num="956" type="method" name="setUserValue" visibility="protected" complexity="1" crap="1" count="1"/>
+      <line num="958" type="stmt" count="1"/>
+      <line num="967" type="method" name="updateUserValue" visibility="protected" complexity="3" crap="12" count="0"/>
+      <line num="970" type="stmt" count="0"/>
+      <line num="971" type="stmt" count="0"/>
+      <line num="973" type="stmt" count="0"/>
+      <line num="981" type="method" name="returnJSON" visibility="public" complexity="2" crap="3.19" count="2"/>
+      <line num="984" type="stmt" count="2"/>
+      <line num="985" type="stmt" count="0"/>
+      <line num="986" type="stmt" count="0"/>
+      <line num="994" type="method" name="getChartData" visibility="protected" complexity="5" crap="30" count="0"/>
+      <line num="996" type="stmt" count="0"/>
+      <line num="997" type="stmt" count="0"/>
+      <line num="999" type="stmt" count="0"/>
+      <line num="1000" type="stmt" count="0"/>
+      <line num="1001" type="stmt" count="0"/>
+      <line num="1002" type="stmt" count="0"/>
+      <line num="1003" type="stmt" count="0"/>
+      <line num="1005" type="stmt" count="0"/>
+      <line num="1006" type="stmt" count="0"/>
+      <line num="1007" type="stmt" count="0"/>
+      <line num="1008" type="stmt" count="0"/>
+      <line num="1009" type="stmt" count="0"/>
+      <line num="1010" type="stmt" count="0"/>
+      <line num="1011" type="stmt" count="0"/>
+      <line num="1013" type="stmt" count="0"/>
+      <line num="1014" type="stmt" count="0"/>
+      <line num="1015" type="stmt" count="0"/>
+      <line num="1016" type="stmt" count="0"/>
+      <line num="1017" type="stmt" count="0"/>
+      <line num="1019" type="stmt" count="0"/>
+      <line num="1020" type="stmt" count="0"/>
+      <line num="1022" type="stmt" count="0"/>
+      <line num="1025" type="method" name="getChartDataLastLog" visibility="protected" complexity="5" crap="30" count="0"/>
+      <line num="1027" type="stmt" count="0"/>
+      <line num="1028" type="stmt" count="0"/>
+      <line num="1029" type="stmt" count="0"/>
+      <line num="1030" type="stmt" count="0"/>
+      <line num="1031" type="stmt" count="0"/>
+      <line num="1033" type="stmt" count="0"/>
+      <line num="1034" type="stmt" count="0"/>
+      <line num="1035" type="stmt" count="0"/>
+      <line num="1036" type="stmt" count="0"/>
+      <line num="1037" type="stmt" count="0"/>
+      <line num="1038" type="stmt" count="0"/>
+      <line num="1039" type="stmt" count="0"/>
+      <line num="1041" type="stmt" count="0"/>
+      <line num="1042" type="stmt" count="0"/>
+      <line num="1043" type="stmt" count="0"/>
+      <line num="1044" type="stmt" count="0"/>
+      <line num="1045" type="stmt" count="0"/>
+      <line num="1047" type="stmt" count="0"/>
+      <line num="1048" type="stmt" count="0"/>
+      <line num="1050" type="stmt" count="0"/>
+      <line num="1057" type="method" name="getDeviceData" visibility="protected" complexity="1" crap="2" count="0"/>
+      <line num="1059" type="stmt" count="0"/>
+      <line num="1060" type="stmt" count="0"/>
+      <line num="1061" type="stmt" count="0"/>
+      <metrics loc="1064" ncloc="810" classes="1" methods="40" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="458" coveredstatements="20" elements="498" coveredelements="22"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/App.php">
+      <class name="OCA\SensorLogger\App" namespace="global">
+        <metrics complexity="4" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
+      </class>
+      <line num="14" type="method" name="__construct" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="16" type="stmt" count="0"/>
+      <line num="17" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="29" type="method" name="getNavigationManager" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="35" type="stmt" count="0"/>
+      <metrics loc="38" ncloc="29" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="10" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Application.php">
+      <class name="OCA\SensorLogger\Application" namespace="global">
+        <metrics complexity="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="0" elements="36" coveredelements="0"/>
+      </class>
+      <line num="37" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="41" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="49" type="stmt" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="53" type="stmt" count="0"/>
+      <line num="54" type="stmt" count="0"/>
+      <line num="55" type="stmt" count="0"/>
+      <line num="56" type="stmt" count="0"/>
+      <line num="58" type="stmt" count="0"/>
+      <line num="59" type="stmt" count="0"/>
+      <line num="60" type="stmt" count="0"/>
+      <line num="61" type="stmt" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="63" type="stmt" count="0"/>
+      <line num="64" type="stmt" count="0"/>
+      <line num="65" type="stmt" count="0"/>
+      <line num="66" type="stmt" count="0"/>
+      <line num="67" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="69" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="77" type="stmt" count="0"/>
+      <line num="78" type="stmt" count="0"/>
+      <line num="80" type="stmt" count="0"/>
+      <metrics loc="83" ncloc="56" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="35" coveredstatements="0" elements="36" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Capabilities.php">
+      <class name="OCA\SensorLogger\Capabilities" namespace="global">
+        <metrics complexity="2" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="9" coveredelements="0"/>
+      </class>
+      <line num="25" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="36" type="method" name="getCapabilities" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="41" type="stmt" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <metrics loc="46" ncloc="28" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="9" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/DataType.php">
+      <class name="OCA\SensorLogger\DataType" namespace="global">
+        <metrics complexity="8" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="25" coveredelements="0"/>
+      </class>
+      <line num="14" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="16" type="stmt" count="0"/>
+      <line num="17" type="stmt" count="0"/>
+      <line num="18" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="22" type="method" name="jsonSerialize" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="25" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="36" type="method" name="getDescription" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="44" type="method" name="setDescription" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="52" type="method" name="getType" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="54" type="stmt" count="0"/>
+      <line num="60" type="method" name="setType" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="68" type="method" name="getShort" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="76" type="method" name="setShort" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="78" type="stmt" count="0"/>
+      <metrics loc="81" ncloc="63" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="0" elements="25" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/DataTypes.php">
+      <class name="OCA\SensorLogger\DataTypes" namespace="global">
+        <metrics complexity="8" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="50" coveredelements="0"/>
+      </class>
+      <line num="14" type="method" name="getDataTypes" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="16" type="stmt" count="0"/>
+      <line num="17" type="stmt" count="0"/>
+      <line num="18" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="35" type="method" name="getDataTypeById" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="37" type="stmt" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="41" type="stmt" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="59" type="method" name="getDataTypesByUserId" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="61" type="stmt" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="63" type="stmt" count="0"/>
+      <line num="64" type="stmt" count="0"/>
+      <line num="65" type="stmt" count="0"/>
+      <line num="66" type="stmt" count="0"/>
+      <line num="67" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="79" type="method" name="getDeviceDataTypesByDeviceId" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="81" type="stmt" count="0"/>
+      <line num="82" type="stmt" count="0"/>
+      <line num="83" type="stmt" count="0"/>
+      <line num="84" type="stmt" count="0"/>
+      <line num="85" type="stmt" count="0"/>
+      <line num="86" type="stmt" count="0"/>
+      <line num="87" type="stmt" count="0"/>
+      <line num="88" type="stmt" count="0"/>
+      <line num="89" type="stmt" count="0"/>
+      <line num="91" type="stmt" count="0"/>
+      <line num="93" type="stmt" count="0"/>
+      <line num="96" type="method" name="deleteDeviceDataTypesByDeviceId" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <line num="99" type="stmt" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="102" type="stmt" count="0"/>
+      <metrics loc="106" ncloc="84" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="50" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Device.php">
+      <class name="OCA\SensorLogger\Device" namespace="global">
+        <metrics complexity="6" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="0" elements="31" coveredelements="0"/>
+      </class>
+      <line num="25" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <line num="35" type="stmt" count="0"/>
+      <line num="36" type="stmt" count="0"/>
+      <line num="42" type="method" name="jsonSerialize" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="49" type="stmt" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="53" type="stmt" count="0"/>
+      <line num="54" type="stmt" count="0"/>
+      <line num="60" type="method" name="getUuid" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="68" type="method" name="setUuid" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="76" type="method" name="getIsDeletable" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="78" type="stmt" count="0"/>
+      <line num="84" type="method" name="setIsDeletable" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="86" type="stmt" count="0"/>
+      <metrics loc="89" ncloc="69" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="0" elements="31" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/DeviceGroups.php">
+      <class name="OCA\SensorLogger\DeviceGroups" namespace="global">
+        <metrics complexity="18" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="103" coveredstatements="0" elements="111" coveredelements="0"/>
+      </class>
+      <line num="19" type="method" name="getDeviceGroups" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="25" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="41" type="method" name="getDeviceGroupById" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="49" type="stmt" count="0"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="53" type="stmt" count="0"/>
+      <line num="54" type="stmt" count="0"/>
+      <line num="55" type="stmt" count="0"/>
+      <line num="64" type="method" name="getDeviceGroupByName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="66" type="stmt" count="0"/>
+      <line num="67" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="69" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="71" type="stmt" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="74" type="stmt" count="0"/>
+      <line num="75" type="stmt" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="77" type="stmt" count="0"/>
+      <line num="78" type="stmt" count="0"/>
+      <line num="87" type="method" name="isDeletable" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="89" type="stmt" count="0"/>
+      <line num="90" type="stmt" count="0"/>
+      <line num="91" type="stmt" count="0"/>
+      <line num="92" type="stmt" count="0"/>
+      <line num="93" type="stmt" count="0"/>
+      <line num="94" type="stmt" count="0"/>
+      <line num="95" type="stmt" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="97" type="stmt" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <line num="99" type="stmt" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="102" type="stmt" count="0"/>
+      <line num="103" type="stmt" count="0"/>
+      <line num="104" type="stmt" count="0"/>
+      <line num="106" type="stmt" count="0"/>
+      <line num="117" type="method" name="deleteDeviceGroup" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="119" type="stmt" count="0"/>
+      <line num="120" type="stmt" count="0"/>
+      <line num="121" type="stmt" count="0"/>
+      <line num="122" type="stmt" count="0"/>
+      <line num="123" type="stmt" count="0"/>
+      <line num="125" type="stmt" count="0"/>
+      <line num="134" type="method" name="deleteDeviceGroupByName" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="136" type="stmt" count="0"/>
+      <line num="137" type="stmt" count="0"/>
+      <line num="138" type="stmt" count="0"/>
+      <line num="139" type="stmt" count="0"/>
+      <line num="140" type="stmt" count="0"/>
+      <line num="142" type="stmt" count="0"/>
+      <line num="145" type="method" name="deleteGroupIfUnused" visibility="private" complexity="1" crap="2" count="0"/>
+      <line num="147" type="stmt" count="0"/>
+      <line num="148" type="stmt" count="0"/>
+      <line num="149" type="stmt" count="0"/>
+      <line num="150" type="stmt" count="0"/>
+      <line num="151" type="stmt" count="0"/>
+      <line num="152" type="stmt" count="0"/>
+      <line num="154" type="stmt" count="0"/>
+      <line num="155" type="stmt" count="0"/>
+      <line num="156" type="stmt" count="0"/>
+      <line num="157" type="stmt" count="0"/>
+      <line num="158" type="stmt" count="0"/>
+      <line num="159" type="stmt" count="0"/>
+      <line num="160" type="stmt" count="0"/>
+      <line num="161" type="stmt" count="0"/>
+      <line num="162" type="stmt" count="0"/>
+      <line num="163" type="stmt" count="0"/>
+      <line num="165" type="stmt" count="0"/>
+      <line num="166" type="stmt" count="0"/>
+      <line num="167" type="stmt" count="0"/>
+      <line num="168" type="stmt" count="0"/>
+      <line num="169" type="stmt" count="0"/>
+      <line num="170" type="stmt" count="0"/>
+      <line num="179" type="method" name="insertSensorGroup" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="182" type="stmt" count="0"/>
+      <line num="183" type="stmt" count="0"/>
+      <line num="184" type="stmt" count="0"/>
+      <line num="187" type="stmt" count="0"/>
+      <line num="189" type="stmt" count="0"/>
+      <line num="190" type="stmt" count="0"/>
+      <line num="191" type="stmt" count="0"/>
+      <line num="192" type="stmt" count="0"/>
+      <line num="193" type="stmt" count="0"/>
+      <line num="194" type="stmt" count="0"/>
+      <line num="195" type="stmt" count="0"/>
+      <line num="196" type="stmt" count="0"/>
+      <line num="197" type="stmt" count="0"/>
+      <line num="198" type="stmt" count="0"/>
+      <line num="199" type="stmt" count="0"/>
+      <line num="200" type="stmt" count="0"/>
+      <line num="202" type="stmt" count="0"/>
+      <metrics loc="205" ncloc="157" classes="1" methods="8" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="103" coveredstatements="0" elements="111" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/DeviceTypes.php">
+      <class name="OCA\SensorLogger\DeviceTypes" namespace="global">
+        <metrics complexity="22" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="84" coveredstatements="0" elements="91" coveredelements="0"/>
+      </class>
+      <line num="19" type="method" name="getDeviceTypes" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="25" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="41" type="method" name="getDeviceType" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="49" type="stmt" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="53" type="stmt" count="0"/>
+      <line num="54" type="stmt" count="0"/>
+      <line num="57" type="stmt" count="0"/>
+      <line num="66" type="method" name="getDeviceTypeByName" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="69" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="71" type="stmt" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="73" type="stmt" count="0"/>
+      <line num="74" type="stmt" count="0"/>
+      <line num="75" type="stmt" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="77" type="stmt" count="0"/>
+      <line num="78" type="stmt" count="0"/>
+      <line num="79" type="stmt" count="0"/>
+      <line num="82" type="stmt" count="0"/>
+      <line num="91" type="method" name="getDeviceTypesByDeviceId" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="93" type="stmt" count="0"/>
+      <line num="95" type="stmt" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="97" type="stmt" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <line num="99" type="stmt" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="102" type="stmt" count="0"/>
+      <line num="104" type="stmt" count="0"/>
+      <line num="105" type="stmt" count="0"/>
+      <line num="106" type="stmt" count="0"/>
+      <line num="107" type="stmt" count="0"/>
+      <line num="109" type="stmt" count="0"/>
+      <line num="118" type="method" name="insertDeviceType" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="121" type="stmt" count="0"/>
+      <line num="122" type="stmt" count="0"/>
+      <line num="123" type="stmt" count="0"/>
+      <line num="126" type="stmt" count="0"/>
+      <line num="127" type="stmt" count="0"/>
+      <line num="128" type="stmt" count="0"/>
+      <line num="129" type="stmt" count="0"/>
+      <line num="130" type="stmt" count="0"/>
+      <line num="131" type="stmt" count="0"/>
+      <line num="134" type="stmt" count="0"/>
+      <line num="143" type="method" name="isDeletable" visibility="public" complexity="5" crap="30" count="0"/>
+      <line num="145" type="stmt" count="0"/>
+      <line num="146" type="stmt" count="0"/>
+      <line num="147" type="stmt" count="0"/>
+      <line num="148" type="stmt" count="0"/>
+      <line num="149" type="stmt" count="0"/>
+      <line num="150" type="stmt" count="0"/>
+      <line num="151" type="stmt" count="0"/>
+      <line num="152" type="stmt" count="0"/>
+      <line num="153" type="stmt" count="0"/>
+      <line num="154" type="stmt" count="0"/>
+      <line num="155" type="stmt" count="0"/>
+      <line num="156" type="stmt" count="0"/>
+      <line num="159" type="stmt" count="0"/>
+      <line num="168" type="method" name="deleteDeviceType" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="171" type="stmt" count="0"/>
+      <line num="172" type="stmt" count="0"/>
+      <line num="175" type="stmt" count="0"/>
+      <line num="176" type="stmt" count="0"/>
+      <line num="177" type="stmt" count="0"/>
+      <line num="178" type="stmt" count="0"/>
+      <line num="179" type="stmt" count="0"/>
+      <line num="180" type="stmt" count="0"/>
+      <line num="181" type="stmt" count="0"/>
+      <metrics loc="184" ncloc="136" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="84" coveredstatements="0" elements="91" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Devices.php">
+      <class name="OCA\SensorLogger\Devices" namespace="global">
+        <metrics complexity="18" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="121" coveredstatements="5" elements="130" coveredelements="5"/>
+      </class>
+      <line num="16" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="18" type="stmt" count="0"/>
+      <line num="26" type="method" name="getDevices" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <line num="35" type="stmt" count="0"/>
+      <line num="36" type="stmt" count="0"/>
+      <line num="37" type="stmt" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="41" type="stmt" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="55" type="stmt" count="0"/>
+      <line num="64" type="method" name="getDevice" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="66" type="stmt" count="0"/>
+      <line num="67" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="69" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="71" type="stmt" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="74" type="stmt" count="0"/>
+      <line num="75" type="stmt" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="77" type="stmt" count="0"/>
+      <line num="78" type="stmt" count="0"/>
+      <line num="80" type="stmt" count="0"/>
+      <line num="81" type="stmt" count="0"/>
+      <line num="84" type="stmt" count="0"/>
+      <line num="93" type="method" name="isDeletable" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="97" type="stmt" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="110" type="method" name="getDeviceByUuid" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="112" type="stmt" count="0"/>
+      <line num="113" type="stmt" count="0"/>
+      <line num="114" type="stmt" count="0"/>
+      <line num="115" type="stmt" count="0"/>
+      <line num="116" type="stmt" count="0"/>
+      <line num="117" type="stmt" count="0"/>
+      <line num="118" type="stmt" count="0"/>
+      <line num="120" type="stmt" count="0"/>
+      <line num="121" type="stmt" count="0"/>
+      <line num="122" type="stmt" count="0"/>
+      <line num="123" type="stmt" count="0"/>
+      <line num="124" type="stmt" count="0"/>
+      <line num="125" type="stmt" count="0"/>
+      <line num="127" type="stmt" count="0"/>
+      <line num="131" type="stmt" count="0"/>
+      <line num="140" type="method" name="getDeviceDetails" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="142" type="stmt" count="0"/>
+      <line num="143" type="stmt" count="0"/>
+      <line num="144" type="stmt" count="0"/>
+      <line num="145" type="stmt" count="0"/>
+      <line num="146" type="stmt" count="0"/>
+      <line num="147" type="stmt" count="0"/>
+      <line num="148" type="stmt" count="0"/>
+      <line num="149" type="stmt" count="0"/>
+      <line num="150" type="stmt" count="0"/>
+      <line num="151" type="stmt" count="0"/>
+      <line num="152" type="stmt" count="0"/>
+      <line num="153" type="stmt" count="0"/>
+      <line num="154" type="stmt" count="0"/>
+      <line num="155" type="stmt" count="0"/>
+      <line num="156" type="stmt" count="0"/>
+      <line num="157" type="stmt" count="0"/>
+      <line num="158" type="stmt" count="0"/>
+      <line num="159" type="stmt" count="0"/>
+      <line num="160" type="stmt" count="0"/>
+      <line num="170" type="method" name="updateDevice" visibility="public" complexity="2" crap="3.82" count="1"/>
+      <line num="172" type="stmt" count="1"/>
+      <line num="173" type="stmt" count="1"/>
+      <line num="174" type="stmt" count="1"/>
+      <line num="177" type="stmt" count="0"/>
+      <line num="178" type="stmt" count="0"/>
+      <line num="179" type="stmt" count="0"/>
+      <line num="180" type="stmt" count="0"/>
+      <line num="181" type="stmt" count="0"/>
+      <line num="183" type="stmt" count="0"/>
+      <line num="184" type="stmt" count="0"/>
+      <line num="185" type="stmt" count="0"/>
+      <line num="186" type="stmt" count="0"/>
+      <line num="187" type="stmt" count="0"/>
+      <line num="195" type="method" name="deleteDevice" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="197" type="stmt" count="0"/>
+      <line num="198" type="stmt" count="0"/>
+      <line num="199" type="stmt" count="0"/>
+      <line num="200" type="stmt" count="0"/>
+      <line num="202" type="stmt" count="0"/>
+      <line num="203" type="stmt" count="0"/>
+      <line num="204" type="stmt" count="0"/>
+      <line num="205" type="stmt" count="0"/>
+      <line num="206" type="stmt" count="0"/>
+      <line num="215" type="method" name="insertDevice" visibility="public" complexity="5" crap="23.52" count="1"/>
+      <line num="217" type="stmt" count="1"/>
+      <line num="218" type="stmt" count="0"/>
+      <line num="219" type="stmt" count="0"/>
+      <line num="222" type="stmt" count="0"/>
+      <line num="223" type="stmt" count="0"/>
+      <line num="226" type="stmt" count="0"/>
+      <line num="227" type="stmt" count="0"/>
+      <line num="228" type="stmt" count="0"/>
+      <line num="229" type="stmt" count="0"/>
+      <line num="230" type="stmt" count="0"/>
+      <line num="231" type="stmt" count="0"/>
+      <line num="232" type="stmt" count="0"/>
+      <line num="233" type="stmt" count="0"/>
+      <line num="235" type="stmt" count="0"/>
+      <line num="236" type="stmt" count="0"/>
+      <line num="237" type="stmt" count="0"/>
+      <line num="238" type="stmt" count="0"/>
+      <line num="239" type="stmt" count="0"/>
+      <line num="240" type="stmt" count="0"/>
+      <line num="241" type="stmt" count="0"/>
+      <line num="244" type="stmt" count="1"/>
+      <metrics loc="248" ncloc="193" classes="1" methods="9" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="121" coveredstatements="5" elements="130" coveredelements="5"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Error.php">
+      <class name="OCA\SensorLogger\Error" namespace="global">
+        <metrics complexity="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      </class>
+      <metrics loc="22" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Group.php">
+      <class name="OCA\SensorLogger\Group" namespace="global">
+        <metrics complexity="2" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="9" coveredelements="0"/>
+      </class>
+      <line num="22" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="25" type="stmt" count="0"/>
+      <line num="28" type="method" name="jsonSerialize" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <metrics loc="37" ncloc="28" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="0" elements="9" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Log.php">
+      <class name="OCA\SensorLogger\Log" namespace="global">
+        <metrics complexity="12" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="31" coveredstatements="0" elements="41" coveredelements="0"/>
+      </class>
+      <line num="16" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="18" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="26" type="method" name="jsonSerialize" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <line num="35" type="stmt" count="0"/>
+      <line num="36" type="stmt" count="0"/>
+      <line num="42" type="method" name="getTemperature" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="50" type="method" name="setTemperature" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="58" type="method" name="getHumidity" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="60" type="stmt" count="0"/>
+      <line num="66" type="method" name="setHumidity" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="74" type="method" name="getData" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="82" type="method" name="setData" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="84" type="stmt" count="0"/>
+      <line num="86" type="stmt" count="0"/>
+      <line num="87" type="stmt" count="0"/>
+      <line num="88" type="stmt" count="0"/>
+      <line num="89" type="stmt" count="0"/>
+      <line num="90" type="stmt" count="0"/>
+      <line num="91" type="stmt" count="0"/>
+      <line num="92" type="stmt" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="102" type="method" name="getCreatedAt" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="104" type="stmt" count="0"/>
+      <line num="110" type="method" name="setCreatedAt" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="112" type="stmt" count="0"/>
+      <metrics loc="115" ncloc="91" classes="1" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="31" coveredstatements="0" elements="41" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/LogExtended.php">
+      <class name="OCA\SensorLogger\LogExtended" namespace="global">
+        <metrics complexity="12" methods="12" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="0" elements="32" coveredelements="0"/>
+      </class>
+      <line num="16" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="18" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="29" type="method" name="setShort" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="37" type="method" name="getShort" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="45" type="method" name="setDescription" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="53" type="method" name="getDescription" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="55" type="stmt" count="0"/>
+      <line num="61" type="method" name="getType" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="63" type="stmt" count="0"/>
+      <line num="69" type="method" name="setType" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="71" type="stmt" count="0"/>
+      <line num="74" type="method" name="jsonSerialize" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="77" type="stmt" count="0"/>
+      <line num="78" type="stmt" count="0"/>
+      <line num="79" type="stmt" count="0"/>
+      <line num="85" type="method" name="getDataTypeId" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="87" type="stmt" count="0"/>
+      <line num="93" type="method" name="setDataTypeId" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="95" type="stmt" count="0"/>
+      <line num="101" type="method" name="getValue" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="103" type="stmt" count="0"/>
+      <line num="109" type="method" name="setValue" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="111" type="stmt" count="0"/>
+      <metrics loc="114" ncloc="84" classes="1" methods="12" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="0" elements="32" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/SensorLogs.php">
+      <class name="OCA\SensorLogger\SensorLogs" namespace="global">
+        <metrics complexity="12" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="69" coveredstatements="0" elements="75" coveredelements="0"/>
+      </class>
+      <line num="19" type="method" name="getLastLog" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="22" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="25" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <line num="32" type="stmt" count="0"/>
+      <line num="34" type="stmt" count="0"/>
+      <line num="37" type="method" name="getLastLogByUuid" visibility="public" complexity="2" crap="6" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="41" type="stmt" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="46" type="stmt" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="53" type="stmt" count="0"/>
+      <line num="61" type="method" name="getLogs" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="63" type="stmt" count="0"/>
+      <line num="64" type="stmt" count="0"/>
+      <line num="65" type="stmt" count="0"/>
+      <line num="66" type="stmt" count="0"/>
+      <line num="67" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="69" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="73" type="stmt" count="0"/>
+      <line num="74" type="stmt" count="0"/>
+      <line num="75" type="stmt" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="79" type="stmt" count="0"/>
+      <line num="90" type="method" name="getLogsByUuId" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="92" type="stmt" count="0"/>
+      <line num="93" type="stmt" count="0"/>
+      <line num="94" type="stmt" count="0"/>
+      <line num="95" type="stmt" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="97" type="stmt" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <line num="99" type="stmt" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="102" type="stmt" count="0"/>
+      <line num="104" type="stmt" count="0"/>
+      <line num="105" type="stmt" count="0"/>
+      <line num="106" type="stmt" count="0"/>
+      <line num="107" type="stmt" count="0"/>
+      <line num="108" type="stmt" count="0"/>
+      <line num="111" type="stmt" count="0"/>
+      <line num="119" type="method" name="deleteLogById" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="121" type="stmt" count="0"/>
+      <line num="122" type="stmt" count="0"/>
+      <line num="123" type="stmt" count="0"/>
+      <line num="124" type="stmt" count="0"/>
+      <line num="125" type="stmt" count="0"/>
+      <line num="126" type="stmt" count="0"/>
+      <line num="127" type="stmt" count="0"/>
+      <line num="128" type="stmt" count="0"/>
+      <line num="129" type="stmt" count="0"/>
+      <line num="137" type="method" name="deleteLogsByUuid" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="139" type="stmt" count="0"/>
+      <line num="140" type="stmt" count="0"/>
+      <line num="141" type="stmt" count="0"/>
+      <line num="142" type="stmt" count="0"/>
+      <line num="143" type="stmt" count="0"/>
+      <line num="144" type="stmt" count="0"/>
+      <line num="145" type="stmt" count="0"/>
+      <metrics loc="148" ncloc="115" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="69" coveredstatements="0" elements="75" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Type.php">
+      <class name="OCA\SensorLogger\Type" namespace="global">
+        <metrics complexity="2" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="11" coveredelements="0"/>
+      </class>
+      <line num="17" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="24" type="method" name="jsonSerialize" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="30" type="stmt" count="0"/>
+      <line num="31" type="stmt" count="0"/>
+      <metrics loc="34" ncloc="34" classes="1" methods="2" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="0" elements="11" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Utils/ClassFinder.php">
+      <class name="OCA\SensorLogger\Utils\ClassFinder" namespace="global">
+        <metrics complexity="8" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="0" elements="12" coveredelements="0"/>
+      </class>
+      <line num="12" type="method" name="customClassLoader" visibility="public" complexity="8" crap="72" count="0"/>
+      <line num="14" type="stmt" count="0"/>
+      <line num="16" type="stmt" count="0"/>
+      <line num="17" type="stmt" count="0"/>
+      <line num="19" type="stmt" count="0"/>
+      <line num="20" type="stmt" count="0"/>
+      <line num="21" type="stmt" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <metrics loc="33" ncloc="28" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="0" elements="12" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Widget.php">
+      <class name="OCA\SensorLogger\Widget" namespace="global">
+        <metrics complexity="17" methods="15" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="44" coveredelements="0"/>
+      </class>
+      <line num="22" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="24" type="stmt" count="0"/>
+      <line num="25" type="stmt" count="0"/>
+      <line num="26" type="stmt" count="0"/>
+      <line num="27" type="stmt" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="34" type="method" name="jsonSerialize" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="36" type="stmt" count="0"/>
+      <line num="37" type="stmt" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="41" type="stmt" count="0"/>
+      <line num="42" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="46" type="method" name="widgetTemplateName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="48" type="stmt" count="0"/>
+      <line num="54" type="method" name="getType" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="56" type="stmt" count="0"/>
+      <line num="62" type="method" name="setType" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="64" type="stmt" count="0"/>
+      <line num="70" type="method" name="getDeviceId" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="78" type="method" name="setDeviceId" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="80" type="stmt" count="0"/>
+      <line num="86" type="method" name="getLog" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="88" type="stmt" count="0"/>
+      <line num="94" type="method" name="setLog" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="102" type="method" name="getName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="104" type="stmt" count="0"/>
+      <line num="110" type="method" name="setName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="112" type="stmt" count="0"/>
+      <line num="118" type="method" name="setDisplayName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="120" type="stmt" count="0"/>
+      <line num="126" type="method" name="getDisplayName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="128" type="stmt" count="0"/>
+      <line num="134" type="method" name="getOptions" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="136" type="stmt" count="0"/>
+      <line num="137" type="stmt" count="0"/>
+      <line num="138" type="stmt" count="0"/>
+      <line num="141" type="stmt" count="0"/>
+      <line num="147" type="method" name="setOptions" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="149" type="stmt" count="0"/>
+      <metrics loc="152" ncloc="108" classes="1" methods="15" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="0" elements="44" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Widgets.php">
+      <class name="OCA\SensorLogger\Widgets" namespace="global">
+        <metrics complexity="34" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="84" coveredstatements="0" elements="88" coveredelements="0"/>
+      </class>
+      <line num="36" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="46" type="method" name="getWidgetTypes" visibility="public" complexity="5" crap="30" count="0"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="53" type="stmt" count="0"/>
+      <line num="54" type="stmt" count="0"/>
+      <line num="58" type="stmt" count="0"/>
+      <line num="60" type="stmt" count="0"/>
+      <line num="61" type="stmt" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="63" type="stmt" count="0"/>
+      <line num="66" type="stmt" count="0"/>
+      <line num="67" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="69" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="73" type="stmt" count="0"/>
+      <line num="84" type="method" name="buildUserWidget" visibility="public" complexity="4" crap="20" count="0"/>
+      <line num="91" type="stmt" count="0"/>
+      <line num="92" type="stmt" count="0"/>
+      <line num="93" type="stmt" count="0"/>
+      <line num="95" type="stmt" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <line num="99" type="stmt" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="102" type="stmt" count="0"/>
+      <line num="103" type="stmt" count="0"/>
+      <line num="104" type="stmt" count="0"/>
+      <line num="105" type="stmt" count="0"/>
+      <line num="106" type="stmt" count="0"/>
+      <line num="108" type="stmt" count="0"/>
+      <line num="122" type="method" name="build" visibility="public" complexity="24" crap="600" count="0"/>
+      <line num="124" type="stmt" count="0"/>
+      <line num="126" type="stmt" count="0"/>
+      <line num="128" type="stmt" count="0"/>
+      <line num="129" type="stmt" count="0"/>
+      <line num="130" type="stmt" count="0"/>
+      <line num="131" type="stmt" count="0"/>
+      <line num="132" type="stmt" count="0"/>
+      <line num="133" type="stmt" count="0"/>
+      <line num="134" type="stmt" count="0"/>
+      <line num="135" type="stmt" count="0"/>
+      <line num="136" type="stmt" count="0"/>
+      <line num="137" type="stmt" count="0"/>
+      <line num="138" type="stmt" count="0"/>
+      <line num="139" type="stmt" count="0"/>
+      <line num="140" type="stmt" count="0"/>
+      <line num="142" type="stmt" count="0"/>
+      <line num="143" type="stmt" count="0"/>
+      <line num="144" type="stmt" count="0"/>
+      <line num="145" type="stmt" count="0"/>
+      <line num="146" type="stmt" count="0"/>
+      <line num="148" type="stmt" count="0"/>
+      <line num="153" type="stmt" count="0"/>
+      <line num="155" type="stmt" count="0"/>
+      <line num="156" type="stmt" count="0"/>
+      <line num="157" type="stmt" count="0"/>
+      <line num="158" type="stmt" count="0"/>
+      <line num="159" type="stmt" count="0"/>
+      <line num="160" type="stmt" count="0"/>
+      <line num="161" type="stmt" count="0"/>
+      <line num="167" type="stmt" count="0"/>
+      <line num="168" type="stmt" count="0"/>
+      <line num="170" type="stmt" count="0"/>
+      <line num="171" type="stmt" count="0"/>
+      <line num="172" type="stmt" count="0"/>
+      <line num="173" type="stmt" count="0"/>
+      <line num="174" type="stmt" count="0"/>
+      <line num="179" type="stmt" count="0"/>
+      <line num="180" type="stmt" count="0"/>
+      <line num="181" type="stmt" count="0"/>
+      <line num="182" type="stmt" count="0"/>
+      <line num="183" type="stmt" count="0"/>
+      <line num="184" type="stmt" count="0"/>
+      <line num="185" type="stmt" count="0"/>
+      <line num="186" type="stmt" count="0"/>
+      <line num="187" type="stmt" count="0"/>
+      <line num="188" type="stmt" count="0"/>
+      <line num="189" type="stmt" count="0"/>
+      <line num="190" type="stmt" count="0"/>
+      <line num="191" type="stmt" count="0"/>
+      <line num="192" type="stmt" count="0"/>
+      <line num="194" type="stmt" count="0"/>
+      <line num="195" type="stmt" count="0"/>
+      <metrics loc="198" ncloc="164" classes="1" methods="4" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="84" coveredstatements="0" elements="88" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Widgets/MaxValues24hWidget.php">
+      <class name="OCA\SensorLogger\Widgets\MaxValues24hWidget" namespace="global">
+        <metrics complexity="24" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="73" coveredstatements="0" elements="79" coveredelements="0"/>
+      </class>
+      <line num="21" type="method" name="widgetIdentifier" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="23" type="stmt" count="0"/>
+      <line num="26" type="method" name="widgetDisplayName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="28" type="stmt" count="0"/>
+      <line num="31" type="method" name="widgetTemplateName" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="33" type="stmt" count="0"/>
+      <line num="36" type="method" name="widgetData" visibility="public" complexity="3" crap="12" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="39" type="stmt" count="0"/>
+      <line num="40" type="stmt" count="0"/>
+      <line num="43" type="stmt" count="0"/>
+      <line num="44" type="stmt" count="0"/>
+      <line num="45" type="stmt" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <line num="53" type="method" name="recentLog" visibility="protected" complexity="15" crap="240" count="0"/>
+      <line num="55" type="stmt" count="0"/>
+      <line num="56" type="stmt" count="0"/>
+      <line num="60" type="stmt" count="0"/>
+      <line num="61" type="stmt" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="64" type="stmt" count="0"/>
+      <line num="66" type="stmt" count="0"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="69" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="71" type="stmt" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="73" type="stmt" count="0"/>
+      <line num="74" type="stmt" count="0"/>
+      <line num="75" type="stmt" count="0"/>
+      <line num="76" type="stmt" count="0"/>
+      <line num="77" type="stmt" count="0"/>
+      <line num="79" type="stmt" count="0"/>
+      <line num="80" type="stmt" count="0"/>
+      <line num="81" type="stmt" count="0"/>
+      <line num="82" type="stmt" count="0"/>
+      <line num="83" type="stmt" count="0"/>
+      <line num="84" type="stmt" count="0"/>
+      <line num="85" type="stmt" count="0"/>
+      <line num="86" type="stmt" count="0"/>
+      <line num="87" type="stmt" count="0"/>
+      <line num="94" type="stmt" count="0"/>
+      <line num="96" type="stmt" count="0"/>
+      <line num="97" type="stmt" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <line num="99" type="stmt" count="0"/>
+      <line num="100" type="stmt" count="0"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="102" type="stmt" count="0"/>
+      <line num="103" type="stmt" count="0"/>
+      <line num="104" type="stmt" count="0"/>
+      <line num="105" type="stmt" count="0"/>
+      <line num="107" type="stmt" count="0"/>
+      <line num="108" type="stmt" count="0"/>
+      <line num="109" type="stmt" count="0"/>
+      <line num="112" type="stmt" count="0"/>
+      <line num="113" type="stmt" count="0"/>
+      <line num="114" type="stmt" count="0"/>
+      <line num="119" type="stmt" count="0"/>
+      <line num="120" type="stmt" count="0"/>
+      <line num="121" type="stmt" count="0"/>
+      <line num="123" type="stmt" count="0"/>
+      <line num="125" type="stmt" count="0"/>
+      <line num="127" type="stmt" count="0"/>
+      <line num="137" type="method" name="getLogsByDeviceId" visibility="protected" complexity="3" crap="12" count="0"/>
+      <line num="139" type="stmt" count="0"/>
+      <line num="140" type="stmt" count="0"/>
+      <line num="141" type="stmt" count="0"/>
+      <line num="142" type="stmt" count="0"/>
+      <line num="143" type="stmt" count="0"/>
+      <line num="144" type="stmt" count="0"/>
+      <line num="145" type="stmt" count="0"/>
+      <line num="147" type="stmt" count="0"/>
+      <line num="149" type="stmt" count="0"/>
+      <line num="150" type="stmt" count="0"/>
+      <line num="151" type="stmt" count="0"/>
+      <line num="152" type="stmt" count="0"/>
+      <line num="153" type="stmt" count="0"/>
+      <line num="156" type="stmt" count="0"/>
+      <metrics loc="159" ncloc="148" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="73" coveredstatements="0" elements="79" coveredelements="0"/>
+    </file>
+    <file name="/var/www/owncloud/apps-external/sensorlogger/lib/Widgets/iWidget.php">
+      <metrics loc="15" ncloc="15" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+    </file>
+    <metrics files="22" loc="3958" ncloc="3120" classes="20" methods="171" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="1578" coveredstatements="103" elements="1749" coveredelements="107"/>
+  </project>
+</coverage>

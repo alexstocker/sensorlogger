@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Alexander Stocker <alex@stocker.info>
  *

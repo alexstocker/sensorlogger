@@ -139,8 +139,8 @@ class MaxValues24hWidget extends Widget implements iWidget
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_logs')
-            ->where('user_id = "'.$userId.'"')
-            ->andWhere('device_uuid = "'.$deviceUuid.'"')
+            ->where('user_id = "' . $userId . '"')
+            ->andWhere('device_uuid = "' . $deviceUuid . '"')
             ->andWhere('created_at >= now() - INTERVAL 1 DAY');
         $result = $query->execute();
 

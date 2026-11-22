@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ownCloud - myapp
  *
@@ -9,5 +10,10 @@
  * @copyright ELExG 2018
  */
 
-require_once __DIR__ . '/bootstrap.php';
+$ownCloudRoot = getenv('OWNCLOUD_ROOT') ?: dirname(__DIR__, 3);
+$coreBootstrap = rtrim($ownCloudRoot, DIRECTORY_SEPARATOR) . '/lib/base.php';
+if (is_file($coreBootstrap)) {
+    require_once $coreBootstrap;
+}
+
 require_once __DIR__ . '/../appinfo/autoload.php';

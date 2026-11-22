@@ -15,6 +15,7 @@ use OCP\AppFramework\ApiController;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
@@ -35,31 +36,36 @@ use OCP\Share\IShare;
  */
 class ApiSensorLoggerController extends ApiController
 {
-    private $db;
+    private IDBConnection $db;
 
     /**
      * @var IUserSession
      */
-    private $userSession;
+    private IUserSession $userSession;
 
     /** @var IManager */
-    private $shareManager;
+    private IManager $shareManager;
+
     /** @var IGroupManager */
-    private $groupManager;
+    private IGroupManager $groupManager;
+
     /** @var IUserManager */
-    private $userManager;
+    private IUserManager $userManager;
+
     /** @var IUser */
-    private $currentUser;
+    private IUser $currentUser;
+
     /** @var IL10N */
-    private $l;
+    private IL10N $l;
 
-    private $logger;
+    /** @var ILogger */
+    private ILogger $logger;
 
-    protected $errors = [];
+    /** @var array */
+    protected array $errors = [];
 
-    protected $config;
-
-    protected $response;
+    /** @var IConfig */
+    protected IConfig $config;
 
     public function __construct(
         $AppName,
@@ -90,7 +96,7 @@ class ApiSensorLoggerController extends ApiController
         $this->logger = $logger;
     }
 
-    public function log($message)
+    public function log($message): void
     {
         $this->logger->error($message, ['app' => $this->appName]);
     }
@@ -102,10 +108,10 @@ class ApiSensorLoggerController extends ApiController
      * @return Error|JSONResponse
      * @throws \Exception
      */
-    public function createLog()
+    public function createLog(): JSONResponse|Error
     {
         $params = $this->request->getParams();
-        if (!isset($params['deviceId']) || $params['deviceId'] === null || empty($params['deviceId'])) {
+        if (empty($params['deviceId'])) {
             $this->errors[] = 'deviceId required';
         }
 
@@ -121,8 +127,10 @@ class ApiSensorLoggerController extends ApiController
             } else {
                 foreach ($params['data'] as $param) {
                     if (is_array($param)) {
-                        if (!array_key_exists('dataTypeId', $param)
-                            || !array_key_exists('value', $param)) {
+                        if (
+                            !array_key_exists('dataTypeId', $param)
+                            || !array_key_exists('value', $param)
+                        ) {
                             $this->errors[] = 'Data Array needs to contain dataTypeId AND value';
                         } else {
                             if (!(int)$param['dataTypeId']) {
@@ -140,12 +148,18 @@ class ApiSensorLoggerController extends ApiController
         }
 
         if (!empty($this->errors)) {
-            return $this->requestResponse(false, Error::MISSING_PARAM, implode(',', $this->errors));
+            return $this->requestResponse(
+                false,
+                Error::MISSING_PARAM,
+                implode(',', $this->errors)
+            );
         }
 
-        if (isset($params['data']) && empty($this->errors)) {
-            if ($this->checkRegisteredDataTypes($params)
-                && empty($this->errors)) {
+        if (isset($params['data'])) {
+            if (
+                $this->checkRegisteredDataTypes($params)
+                && empty($this->errors)
+            ) {
                 $this->insertExtendedLog($params);
             }
         }
@@ -160,7 +174,7 @@ class ApiSensorLoggerController extends ApiController
             true,
             Http::STATUS_OK,
             'Sensor Log successfully stored',
-            $params['data']
+            $params['data'] ?? []
         );
     }
 
@@ -168,13 +182,13 @@ class ApiSensorLoggerController extends ApiController
      * @param $array
      * @return bool
      */
-    protected function insertExtendedLog($array)
+    protected function insertExtendedLog($array): bool
     {
         if (!$this->checkRegisteredDevice($array)) {
-            $this->errors[] = 'Device #'.$array['deviceId'].' not registered';
+            $this->errors[] = 'Device #' . $array['deviceId'] . ' not registered';
             return false;
         }
-        if (!isset($array['date']) || empty($array['date'])) {
+        if (empty($array['date'])) {
             $array['date'] = date('Y-m-d H:i:s');
         }
 
@@ -188,15 +202,17 @@ class ApiSensorLoggerController extends ApiController
                 'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
                 'device_uuid' => $query->createNamedParameter($deviceId),
                 'data' => $query->createNamedParameter($dataJson)
-            ])
-            ->execute();
+            ]);
+        $this->executeQueryBuilderStatement($query);
+
+        return true;
     }
 
     /**
      * @param array $array
      * @return bool
      */
-    protected function insertLog($array)
+    protected function insertLog(array $array): bool
     {
         $registered = $this->checkRegisteredDevice($array);
         if (isset($array['deviceId'])) {
@@ -217,14 +233,14 @@ class ApiSensorLoggerController extends ApiController
             $query = $this->db->getQueryBuilder();
             $query->insert('sensorlogger_logs')
                 ->values([
-                    'temperature' => $query->createNamedParameter($array['temperature']),
-                    'humidity' => $query->createNamedParameter($array['humidity']),
+                    'temperature' => $query->createNamedParameter($array['temperature'] ?? null),
+                    'humidity' => $query->createNamedParameter($array['humidity'] ?? null),
                     'created_at' => $query->createNamedParameter($array['date']),
                     'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
                     'device_uuid' => $query->createNamedParameter($deviceId),
                     'data' => $query->createNamedParameter($dataJson)
-                ])
-                ->execute();
+                    ]);
+            $this->executeQueryBuilderStatement($query);
         }
         return true;
     }
@@ -236,11 +252,13 @@ class ApiSensorLoggerController extends ApiController
      * @return JSONResponse|Error
      * @throws \Exception
      */
-    public function registerDevice()
+    public function registerDevice(): JSONResponse|Error
     {
-        if (!$this->checkRegisteredDevice($this->request->getParams()) &&
+        if (
+            !$this->checkRegisteredDevice($this->request->getParams()) &&
             $this->checkRequestParams($this->request->getParams()) &&
-            empty($this->errors)) {
+            empty($this->errors)
+        ) {
             $params = $this->request->getParams();
             $lastInsertId = $this->insertDevice($this->request->getParams());
             if (is_int($lastInsertId)) {
@@ -274,7 +292,12 @@ class ApiSensorLoggerController extends ApiController
                     $deviceGroupParentId = $this->insertDeviceGroup($params['deviceParentGroup']);
                     if (is_int($deviceGroupParentId)) {
                         try {
-                            Devices::updateDevice($lastInsertId, 'group_parent_id', $deviceGroupParentId, $this->db);
+                            Devices::updateDevice(
+                                $lastInsertId,
+                                'group_parent_id',
+                                $deviceGroupParentId,
+                                $this->db
+                            );
                         } catch (\Exception $e) {
                             $this->errors[] = $e->getMessage();
                         }
@@ -282,10 +305,16 @@ class ApiSensorLoggerController extends ApiController
                 }
 
                 foreach ($params['deviceDataTypes'] as $key => $array) {
-                    $availableDataTypes = DataTypes::getDataTypesByUserId($this->userSession->getUser()->getUID(), $this->db);
+                    $availableDataTypes = DataTypes::getDataTypesByUserId(
+                        $this->userSession->getUser()->getUID(),
+                        $this->db
+                    );
                     /** @var DataType $availableDataType */
                     foreach ($availableDataTypes as $availableDataType) {
-                        if ($availableDataType->getShort() === $array['unit'] && $availableDataType->getType() === $array['type']) {
+                        if (
+                            $availableDataType->getShort() === $array['unit']
+                            && $availableDataType->getType() === $array['type']
+                        ) {
                             $dataTypeId = $availableDataType->getId();
                             if (is_int($dataTypeId)) {
                                 $this->insertDeviceDataTypes($lastInsertId, $dataTypeId);
@@ -298,7 +327,11 @@ class ApiSensorLoggerController extends ApiController
                         $this->insertDeviceDataTypes($lastInsertId, $dataTypeId);
                     }
                 }
-                $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(), $lastInsertId, $this->db);
+                $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+                    $this->userSession->getUser()->getUID(),
+                    $lastInsertId,
+                    $this->db
+                );
                 return $this->requestResponse(
                     true,
                     Http::STATUS_OK,
@@ -320,11 +353,15 @@ class ApiSensorLoggerController extends ApiController
      * @param int|null $code
      * @param string|null $message
      * @param array|null $data
-     * @return Error|JSONResponse
+     * @return JSONResponse
      * @throws \Exception
      */
-    protected function requestResponse($success, $code = null, $message = null, $data = [])
-    {
+    protected function requestResponse(
+        bool $success,
+        int $code = null,
+        string $message = null,
+        ?array $data = []
+    ): JSONResponse {
         if (!$success) {
             if ($code === null) {
                 $code = Error::UNKNOWN;
@@ -352,13 +389,16 @@ class ApiSensorLoggerController extends ApiController
      * @param $deviceType
      * @return bool|int
      */
-    protected function insertDeviceType($deviceType)
+    protected function insertDeviceType($deviceType): bool|int
     {
-        $sql = 'INSERT INTO `*PREFIX*sensorlogger_device_types` (`user_id`,`device_type_name`) VALUES(?,?)';
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $this->userSession->getUser()->getUID());
-        $stmt->bindParam(2, $deviceType);
-        if ($stmt->execute()) {
+        $query = $this->db->getQueryBuilder();
+        $query->insert('sensorlogger_device_types')
+            ->values([
+                'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                'device_type_name' => $query->createNamedParameter($deviceType),
+            ]);
+
+        if ($this->executeQueryBuilderStatement($query) > 0) {
             return (int)$this->db->lastInsertId();
         }
         return false;
@@ -368,13 +408,16 @@ class ApiSensorLoggerController extends ApiController
      * @param string $string
      * @return int
      */
-    protected function insertDeviceGroup($string)
+    protected function insertDeviceGroup(string $string): false|int
     {
-        $sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $this->userSession->getUser()->getUID());
-        $stmt->bindParam(2, $string);
-        if ($stmt->execute()) {
+        $query = $this->db->getQueryBuilder();
+        $query->insert('sensorlogger_device_groups')
+            ->values([
+                'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                'device_group_name' => $query->createNamedParameter($string),
+            ]);
+
+        if ($this->executeQueryBuilderStatement($query) > 0) {
             return (int)$this->db->lastInsertId();
         }
         return false;
@@ -382,13 +425,10 @@ class ApiSensorLoggerController extends ApiController
 
     /**
      * @param array $array
-     * @return int
+     * @return false|int
      */
-    protected function insertDataTypes($array)
+    protected function insertDataTypes(array $array): false|int
     {
-        $sql = 'INSERT INTO `*PREFIX*sensorlogger_data_types` (`user_id`,`description`,`type`,`short`) VALUES(?,?,?,?)';
-        $stmt = $this->db->prepare($sql);
-
         if (isset($array['description'])) {
             $description = $array['description'] ?: '';
         } else {
@@ -407,11 +447,16 @@ class ApiSensorLoggerController extends ApiController
             $unit = '';
         }
 
-        $stmt->bindParam(1, $this->userSession->getUser()->getUID());
-        $stmt->bindParam(2, $description);
-        $stmt->bindParam(3, $type);
-        $stmt->bindParam(4, $unit);
-        if ($stmt->execute()) {
+        $query = $this->db->getQueryBuilder();
+        $query->insert('sensorlogger_data_types')
+            ->values([
+                'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                'description' => $query->createNamedParameter($description),
+                'type' => $query->createNamedParameter($type),
+                'short' => $query->createNamedParameter($unit),
+            ]);
+
+        if ($this->executeQueryBuilderStatement($query) > 0) {
             return (int)$this->db->lastInsertId();
         }
         return false;
@@ -419,9 +464,9 @@ class ApiSensorLoggerController extends ApiController
 
     /**
      * @param $params
-     * @return bool|JSONResponse
+     * @return bool
      */
-    protected function checkRequestParams($params)
+    protected function checkRequestParams($params): bool
     {
         if (isset($params['deviceType']) && empty($params['deviceType'])) {
             $this->errors[] = 'Param deviceType is set but empty';
@@ -432,10 +477,10 @@ class ApiSensorLoggerController extends ApiController
         if (isset($params['deviceParentGroup']) && empty($params['deviceParentGroup'])) {
             $this->errors[] = 'Param deviceParentGroup is set but empty';
         }
-        if (!isset($params['deviceId']) || empty($params['deviceId'])) {
+        if (empty($params['deviceId'])) {
             $this->errors[] = 'Param deviceId missing';
         }
-        if (!isset($params['deviceDataTypes']) || empty($params['deviceDataTypes'])) {
+        if (empty($params['deviceDataTypes'])) {
             $this->errors[] = 'Param deviceDataTypes missing!';
         }
         if (!empty($params['deviceDataTypes'])) {
@@ -461,21 +506,23 @@ class ApiSensorLoggerController extends ApiController
      * @param int $deviceId
      * @param int $dataTypeId
      */
-    protected function insertDeviceDataTypes($deviceId, $dataTypeId)
+    protected function insertDeviceDataTypes(int $deviceId, int $dataTypeId): void
     {
-        $sql = 'INSERT INTO `*PREFIX*sensorlogger_device_data_types` (`user_id`,`device_id`,`data_type_id`) VALUES(?,?,?)';
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $this->userSession->getUser()->getUID());
-        $stmt->bindParam(2, $deviceId);
-        $stmt->bindParam(3, $dataTypeId);
-        $stmt->execute();
+        $query = $this->db->getQueryBuilder();
+        $query->insert('sensorlogger_device_data_types')
+            ->values([
+                'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                'device_id' => $query->createNamedParameter($deviceId),
+                'data_type_id' => $query->createNamedParameter($dataTypeId),
+            ]);
+        $this->executeQueryBuilderStatement($query);
     }
 
     /**
      * @param $params
      * @return bool;
      */
-    protected function checkRegisteredDevice($params)
+    protected function checkRegisteredDevice($params): bool
     {
         if (isset($params['deviceId'])) {
             $device = Devices::getDeviceByUuid(
@@ -491,7 +538,7 @@ class ApiSensorLoggerController extends ApiController
         return false;
     }
 
-    protected function checkRegisteredDataTypes($params)
+    protected function checkRegisteredDataTypes($params): bool
     {
         if (!isset($params['data'])) {
             return false;
@@ -519,13 +566,10 @@ class ApiSensorLoggerController extends ApiController
 
     /**
      * @param array $array
-     * @return int|string
+     * @return false|int|string
      */
-    protected function insertDevice($array)
+    protected function insertDevice($array): false|int|string
     {
-        $sql = 'INSERT INTO `*PREFIX*sensorlogger_devices` (`uuid`,`name`,`type_id`,`user_id`) VALUES(?,?,?,?)';
-        $stmt = $this->db->prepare($sql);
-
         if (isset($array['deviceId'])) {
             if (!isset($array['deviceName'])) {
                 $array['deviceName'] = 'Default device';
@@ -535,12 +579,16 @@ class ApiSensorLoggerController extends ApiController
                 $array['deviceTypeId'] = 0;
             }
 
-            $stmt->bindParam(1, $array['deviceId']);
-            $stmt->bindParam(2, $array['deviceName']);
-            $stmt->bindParam(3, $array['deviceTypeId']);
-            $stmt->bindParam(4, $this->userSession->getUser()->getUID());
+            $query = $this->db->getQueryBuilder();
+            $query->insert('sensorlogger_devices')
+                ->values([
+                    'uuid' => $query->createNamedParameter($array['deviceId']),
+                    'name' => $query->createNamedParameter($array['deviceName']),
+                    'type_id' => $query->createNamedParameter($array['deviceTypeId']),
+                    'user_id' => $query->createNamedParameter($this->userSession->getUser()->getUID()),
+                ]);
 
-            if ($stmt->execute()) {
+            if ($this->executeQueryBuilderStatement($query) > 0) {
                 return (int)$this->db->lastInsertId();
             }
         } else {
@@ -549,14 +597,23 @@ class ApiSensorLoggerController extends ApiController
         return false;
     }
 
+    private function executeQueryBuilderStatement(IQueryBuilder $query): int
+    {
+        return $this->db->executeStatement(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        );
+    }
+
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
      * @CORS
-     * @return Error|JSONResponse
+     * @return JSONResponse
      * @throws \Exception
      */
-    public function getDeviceDataTypes()
+    public function getDeviceDataTypes(): JSONResponse
     {
         $params = $this->request->getParams();
         if (!isset($params['deviceId'])) {
@@ -571,16 +628,20 @@ class ApiSensorLoggerController extends ApiController
             return $this->requestResponse(false, Error::NOT_FOUND, implode(',', $this->errors));
         }
 
-        $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId($this->userSession->getUser()->getUID(), $device->getId(), $this->db);
+        $deviceDataTypes = DataTypes::getDeviceDataTypesByDeviceId(
+            $this->userSession->getUser()->getUID(),
+            $device->getId(),
+            $this->db
+        );
         if ($deviceDataTypes === null || $deviceDataTypes === false) {
-            $this->errors[] = 'No DataTypes for Device #'.$params['deviceId'].' found';
+            $this->errors[] = 'No DataTypes for Device #' . $params['deviceId'] . ' found';
             return $this->requestResponse(false, Error::NOT_FOUND, implode(',', $this->errors));
         }
 
         return $this->requestResponse(
             true,
             Http::STATUS_OK,
-            'DataTypes for Device #'.$params['deviceId'],
+            'DataTypes for Device #' . $params['deviceId'],
             $deviceDataTypes
         );
     }
@@ -600,12 +661,11 @@ class ApiSensorLoggerController extends ApiController
     {
         # TODO [GH13] Add apisensorloggercontroller::createShare
 
-		$share = $this->shareManager->newShare();
-		if (!$this->shareManager->shareApiEnabled()) {
-			return new Result(null, 404, $this->l->t('Share API is disabled'));
-		}
-		$name = $this->request->getParam('name', null);
-
+        $share = $this->shareManager->newShare();
+        if (!$this->shareManager->shareApiEnabled()) {
+            return new Result(null, 404, $this->l->t('Share API is disabled'));
+        }
+        $name = $this->request->getParam('name', null);
     }
 
     /**
@@ -613,7 +673,7 @@ class ApiSensorLoggerController extends ApiController
      * @param $id
      * @return Result
      */
-    public function getShare($id)
+    public function getShare($id): Result
     {
         # TODO [GH14] Add apisensorloggercontroller::getShare
         if (!$this->shareManager->shareApiEnabled()) {
@@ -640,7 +700,7 @@ class ApiSensorLoggerController extends ApiController
      * @return null|IShare
      * @throws ShareNotFound
      */
-    private function getShareById($id)
+    private function getShareById($id): ?IShare
     {
         # TODO [GH15] Add apisensorloggercontroller::getShareById
 
@@ -678,7 +738,7 @@ class ApiSensorLoggerController extends ApiController
      * @param IShare $share
      * @return bool
      */
-    protected function canAccessShare(IShare $share)
+    protected function canAccessShare(IShare $share): bool
     {
         // A file with permissions 0 can't be accessed by us. So Don't show it
         if ($share->getPermissions() === 0) {
@@ -686,15 +746,18 @@ class ApiSensorLoggerController extends ApiController
         }
 
         // Owner of the file and the sharer of the file can always get share
-        if ($share->getShareOwner() === $this->currentUser->getUID() ||
+        if (
+            $share->getShareOwner() === $this->currentUser->getUID() ||
             $share->getSharedBy() === $this->currentUser->getUID()
         ) {
             return true;
         }
 
         // If the share is shared with you (or a group you are a member of)
-        if ($share->getShareType() === Share::SHARE_TYPE_USER &&
-            $share->getSharedWith() === $this->currentUser->getUID()) {
+        if (
+            $share->getShareType() === Share::SHARE_TYPE_USER &&
+            $share->getSharedWith() === $this->currentUser->getUID()
+        ) {
             return true;
         }
 
@@ -712,7 +775,7 @@ class ApiSensorLoggerController extends ApiController
      * @param $array
      * @return DataResponse
      */
-    public function returnJSON($array)
+    public function returnJSON($array): DataResponse
     {
         try {
             return new DataResponse($array);

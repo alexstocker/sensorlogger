@@ -1,5 +1,16 @@
 # SensorLogger for owncloud
 
+### 0.1.2 UNRELEASED
+  * Added OC11 support, raised version to 0.1.2
+  * Fixed DBAL named parameter binding in device type, device group, and log queries
+  * Refactored device group queries for DBAL 3
+  * Fixed LogExtended entity construction for PHP 8.3 compatibility
+  * Fixed successful temperature and humidity log responses when no extended data is supplied
+  * Refactored API controller inserts to DBAL 3 query builders
+  * Refactored device queries and writes to DBAL 3
+  * Establish PSR12 coding standards
+  * Added API demo scripts with development `.env` configuration and documentation
+
 ### 0.1.1 RELEASED
   * Added #101 PHP 8 Support
   * Fixed creating device groups and types on the fly within device details sidebar

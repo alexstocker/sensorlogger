@@ -1,4 +1,5 @@
 <?php
+
 namespace OCA\sensorlogger\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
@@ -9,7 +10,6 @@ use OCP\Migration\ISchemaMigration;
  */
 class Version20190206015000 implements ISchemaMigration
 {
-
     /** @var  string */
     private $prefix;
 
@@ -22,8 +22,8 @@ class Version20190206015000 implements ISchemaMigration
     {
         $this->prefix = $options['tablePrefix'];
 
-        if (!$schema->hasTable($this->prefix.'sensorlogger_logs')) {
-            $table = $schema->createTable($this->prefix.'sensorlogger_logs');
+        if (!$schema->hasTable($this->prefix . 'sensorlogger_logs')) {
+            $table = $schema->createTable($this->prefix . 'sensorlogger_logs');
             $table->addColumn('id', 'bigint', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -55,8 +55,8 @@ class Version20190206015000 implements ISchemaMigration
             $table->setPrimaryKey(['id']);
         }
 
-        if (!$schema->hasTable($this->prefix.'sensorlogger_device_types')) {
-            $table = $schema->createTable($this->prefix.'sensorlogger_device_types');
+        if (!$schema->hasTable($this->prefix . 'sensorlogger_device_types')) {
+            $table = $schema->createTable($this->prefix . 'sensorlogger_device_types');
             $table->addColumn('id', 'bigint', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -74,8 +74,8 @@ class Version20190206015000 implements ISchemaMigration
             $table->setPrimaryKey(['id']);
         }
 
-        if (!$schema->hasTable($this->prefix.'sensorlogger_device_groups')) {
-            $table = $schema->createTable($this->prefix.'sensorlogger_device_groups');
+        if (!$schema->hasTable($this->prefix . 'sensorlogger_device_groups')) {
+            $table = $schema->createTable($this->prefix . 'sensorlogger_device_groups');
             $table->addColumn('id', 'bigint', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -94,8 +94,8 @@ class Version20190206015000 implements ISchemaMigration
             $table->setPrimaryKey(['id']);
         }
 
-        if (!$schema->hasTable($this->prefix.'sensorlogger_devices')) {
-            $table = $schema->createTable($this->prefix.'sensorlogger_devices');
+        if (!$schema->hasTable($this->prefix . 'sensorlogger_devices')) {
+            $table = $schema->createTable($this->prefix . 'sensorlogger_devices');
             $table->addColumn('id', 'bigint', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -137,8 +137,8 @@ class Version20190206015000 implements ISchemaMigration
             $table->addIndex(['group_parent_id'], 'group_parent_id_idx');
         }
 
-        if (!$schema->hasTable($this->prefix.'sensorlogger_device_data_types')) {
-            $table = $schema->createTable($this->prefix.'sensorlogger_device_data_types');
+        if (!$schema->hasTable($this->prefix . 'sensorlogger_device_data_types')) {
+            $table = $schema->createTable($this->prefix . 'sensorlogger_device_data_types');
             $table->addColumn('id', 'bigint', [
                 'autoincrement' => true,
                 'notnull' => true,
@@ -162,8 +162,8 @@ class Version20190206015000 implements ISchemaMigration
             $table->setPrimaryKey(['id']);
         }
 
-        if (!$schema->hasTable($this->prefix.'sensorlogger_data_types')) {
-            $table = $schema->createTable($this->prefix.'sensorlogger_data_types');
+        if (!$schema->hasTable($this->prefix . 'sensorlogger_data_types')) {
+            $table = $schema->createTable($this->prefix . 'sensorlogger_data_types');
             $table->addColumn('id', 'bigint', [
                 'autoincrement' => true,
                 'notnull' => true,
