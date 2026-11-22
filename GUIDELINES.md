@@ -18,7 +18,7 @@ Follow that repository's README for prerequisites, initial setup, and container 
 - `templates/`, `css/`, `js/`, and `l10n/`: user interface and translations.
 - `tests/unit/`: isolated unit tests.
 - `tests/integration/`: tests requiring ownCloud's app container or services.
-- `tests/curl/`: request examples and manual API exercises.
+- `scripts/`: CLI demos for registering a device and sending simulated API readings.
 
 ## PHP and database changes
 

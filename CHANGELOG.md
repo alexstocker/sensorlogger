@@ -9,6 +9,7 @@
   * Refactored API controller inserts to DBAL 3 query builders
   * Refactored device queries and writes to DBAL 3
   * Establish PSR12 coding standards
+  * Added API demo scripts with development `.env` configuration and documentation
 
 ### 0.1.1 RELEASED
   * Added #101 PHP 8 Support

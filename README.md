@@ -44,6 +44,38 @@ docker exec -u root -w /var/www/owncloud/apps-external/sensorlogger \
 
 The coverage report is written to `sensorlogger/tests/unit-coverage.xml`. Coverage requires Xdebug in the ownCloud container; the text summary is also printed in the terminal.
 
+Run the API integration suite against the ownCloud database with:
+
+```sh
+docker exec -u www-data -w /var/www/owncloud/apps-external/sensorlogger \
+  owncloud_server env OWNCLOUD_ROOT=/var/www/owncloud \
+  vendor/bin/phpunit -c phpunit.integration.xml
+```
+
+The API integration test registers a temporary device, checks its data types, and stores an extended log. Database changes are rolled back after each test; no credentials or manual HTTP requests are needed.
+
+### API Demo Scripts
+
+The `scripts/` directory contains interactive examples for registering a demo device, listing its data types, and sending simulated sensor readings. These scripts send real requests to ownCloud and store sensor data. In the recommended owncloud-docker-development checkout, add or update these settings in the root `.env` (existing `.env` files are not overwritten when defaults change):
+
+```sh
+SENSORLOGGER_URL=http://localhost:8080
+SENSORLOGGER_USERNAME=admin
+SENSORLOGGER_APP_PASSWORD=your-ownCloud-app-password
+SENSORLOGGER_DEVICE_ID=
+```
+
+Use an app password created in ownCloud's Security settings, not `ADMIN_PASSWORD`. From the development checkout, run:
+
+```sh
+php scripts/sensorlogger-demo.php register
+php scripts/sensorlogger-demo.php types
+php scripts/sensorlogger-demo.php extended
+php scripts/sensorlogger-demo.php basic
+```
+
+The script reads SensorLogger settings from the development `.env`, while explicitly exported shell variables take precedence. After registration, save the printed ID as `SENSORLOGGER_DEVICE_ID` in `.env` before running `types` or `extended`. If not using the development checkout, export `SENSORLOGGER_URL`, `SENSORLOGGER_USERNAME`, and `SENSORLOGGER_APP_PASSWORD` in the shell. The `basic` command can run without registering a device first. To continuously send readings, use `scripts/sensorlogger-demo.sh basic [interval-seconds]` or `scripts/sensorlogger-demo.sh extended [interval-seconds]`; stop with Ctrl-C. The extended mode requires a registered device ID. Both scripts default to `http://localhost:8080` and require PHP's cURL extension.
+
 Read more [SensorLogger WIKI](https://github.com/alexstocker/sensorlogger/wiki/)
 
 ![SensorLogger for nextcloud Dashboard](https://www.html5live.at/wp-content/uploads/2026/10/sensorlogger-nc35-dashboard.png)
