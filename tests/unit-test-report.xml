@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="8" assertions="21" errors="0" warnings="0" failures="0" skipped="0" time="0.047617">
+    <testsuite name="unit" tests="8" assertions="21" errors="0" warnings="0" failures="0" skipped="0" time="0.047617">
+      <testsuite name="OCA\SensorLogger\Tests\Unit\Controller\SensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/SensorLoggerControllerTest.php" tests="2" assertions="4" errors="0" warnings="0" failures="0" skipped="0" time="0.031792">
+        <testcase name="testCreateWidgetStoresConfigurationForCurrentUser" class="OCA\SensorLogger\Tests\Unit\Controller\SensorLoggerControllerTest" classname="OCA.SensorLogger.Tests.Unit.Controller.SensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/SensorLoggerControllerTest.php" line="22" assertions="3" time="0.031005"/>
+        <testcase name="testCreateWidgetRequiresDeviceAndWidgetType" class="OCA\SensorLogger\Tests\Unit\Controller\SensorLoggerControllerTest" classname="OCA.SensorLogger.Tests.Unit.Controller.SensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/SensorLoggerControllerTest.php" line="43" assertions="1" time="0.000787"/>
+      </testsuite>
+      <testsuite name="OCA\SensorLogger\Tests\Unit\Controller\ApiSensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/apisensorloggercontrollerTest.php" tests="4" assertions="13" errors="0" warnings="0" failures="0" skipped="0" time="0.014884">
+        <testcase name="testCreateLogRejectsMissingRequiredParameters" class="OCA\SensorLogger\Tests\Unit\Controller\ApiSensorLoggerControllerTest" classname="OCA.SensorLogger.Tests.Unit.Controller.ApiSensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/apisensorloggercontrollerTest.php" line="20" assertions="4" time="0.008939"/>
+        <testcase name="testCreateLogStoresExtendedSensorData" class="OCA\SensorLogger\Tests\Unit\Controller\ApiSensorLoggerControllerTest" classname="OCA.SensorLogger.Tests.Unit.Controller.ApiSensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/apisensorloggercontrollerTest.php" line="36" assertions="3" time="0.001900"/>
+        <testcase name="testCreateLogStoresTemperatureWithoutExtendedData" class="OCA\SensorLogger\Tests\Unit\Controller\ApiSensorLoggerControllerTest" classname="OCA.SensorLogger.Tests.Unit.Controller.ApiSensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/apisensorloggercontrollerTest.php" line="60" assertions="3" time="0.001072"/>
+        <testcase name="testInsertDeviceTypeUsesOwnCloudQueryBuilder" class="OCA\SensorLogger\Tests\Unit\Controller\ApiSensorLoggerControllerTest" classname="OCA.SensorLogger.Tests.Unit.Controller.ApiSensorLoggerControllerTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/controller/apisensorloggercontrollerTest.php" line="78" assertions="3" time="0.002974"/>
+      </testsuite>
+      <testsuite name="OCA\SensorLogger\Tests\Unit\Lib\DevicesTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/lib/DevicesTest.php" tests="2" assertions="4" errors="0" warnings="0" failures="0" skipped="0" time="0.000941">
+        <testcase name="testUpdateDeviceRejectsUnknownColumnWithoutExecutingQuery" class="OCA\SensorLogger\Tests\Unit\Lib\DevicesTest" classname="OCA.SensorLogger.Tests.Unit.Lib.DevicesTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/lib/DevicesTest.php" line="11" assertions="2" time="0.000665"/>
+        <testcase name="testInsertDeviceReturnsMessageWhenDeviceIdIsMissing" class="OCA\SensorLogger\Tests\Unit\Lib\DevicesTest" classname="OCA.SensorLogger.Tests.Unit.Lib.DevicesTest" file="/var/www/owncloud/apps-external/sensorlogger/tests/unit/lib/DevicesTest.php" line="20" assertions="2" time="0.000276"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

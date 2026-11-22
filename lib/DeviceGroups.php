@@ -11,7 +11,6 @@ use OCP\IDBConnection;
  */
 class DeviceGroups
 {
-
     /**
      * @param $userId
      * @param IDBConnection $db
@@ -19,16 +18,18 @@ class DeviceGroups
      */
     public static function getDeviceGroups($userId, IDBConnection $db)
     {
-        // use a prepared sql statement
-        $sql = 'SELECT * FROM `*PREFIX*sensorlogger_device_groups` WHERE user_id = ? ORDER BY id DESC';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(1, $userId);
-        //$stmt->setMaxResults(100);
-        if ($stmt->execute()) {
-            $row = $stmt->fetchAll();
-            return $row;
-        }
-        return null;
+        $query = $db->getQueryBuilder();
+        $query->select('*')
+            ->from('sensorlogger_device_groups')
+            ->where('user_id = :userId')
+            ->orderBy('id', 'DESC')
+            ->setParameter('userId', $userId);
+
+        return $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAllAssociative();
     }
 
     /**
@@ -39,16 +40,19 @@ class DeviceGroups
      */
     public static function getDeviceGroupById($userId, $groupId, IDBConnection $db)
     {
-        // use a prepared sql statement
-        $sql = 'SELECT * FROM `*PREFIX*sensorlogger_device_groups` WHERE id = ? AND user_id = ?';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(1, $groupId);
-        $stmt->bindParam(2, $userId);
-        if ($stmt->execute()) {
-            $row = $stmt->fetch();
-            return $row;
-        }
-        return null;
+        $query = $db->getQueryBuilder();
+        $query->select('*')
+            ->from('sensorlogger_device_groups')
+            ->where('id = :groupId')
+            ->andWhere('user_id = :userId')
+            ->setParameter('groupId', $groupId)
+            ->setParameter('userId', $userId);
+
+        return $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAssociative();
     }
 
     /**
@@ -59,17 +63,19 @@ class DeviceGroups
      */
     public static function getDeviceGroupByName($userId, $groupName, IDBConnection $db)
     {
-        // use a prepared sql statement
-        $sql = 'SELECT * FROM `*PREFIX*sensorlogger_device_groups` WHERE device_group_name = ? AND user_id = ?';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(1, $groupName);
-        $stmt->bindParam(2, $userId);
-        if ($stmt->execute()) {
-            $row = $stmt->fetch();
-            return $row;
-        }
+        $query = $db->getQueryBuilder();
+        $query->select('*')
+            ->from('sensorlogger_device_groups')
+            ->where('device_group_name = :groupName')
+            ->andWhere('user_id = :userId')
+            ->setParameter('groupName', $groupName)
+            ->setParameter('userId', $userId);
 
-        return null;
+        return $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAssociative();
     }
 
     /**
@@ -86,15 +92,16 @@ class DeviceGroups
             ->where('user_id = :userId')
             ->andWhere('( group_id = :gid')
             ->orWhere('group_parent_id = :gpid )')
-            ->setParameter(':userId', $userId)
-            ->setParameter(':gid', $id)
-            ->setParameter(':gpid', $id);
-        $result = $query->execute();
-        if ($result) {
-            $data = $result->fetch();
-            if ($data && is_numeric($data['id']) && $data['id'] > 0) {
-                return false;
-            }
+            ->setParameter('userId', $userId)
+            ->setParameter('gid', $id)
+            ->setParameter('gpid', $id);
+        $data = $db->executeQuery(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        )->fetchAssociative();
+        if ($data && is_numeric($data['id']) && $data['id'] > 0) {
+            return false;
         }
         return true;
     }
@@ -113,16 +120,7 @@ class DeviceGroups
         $devGroup = DeviceGroups::getDeviceGroupById($userId, $groupId, $db);
         if (is_numeric($devGroup['id']) && $devGroup['id'] > 0) {
             $DevId = (int)$devGroup['id'];
-
-            // nur loeschen, wenn DeviceGroup nicht noch in Devices enthalten ist
-            $sql = 'DELETE FROM `*PREFIX*sensorlogger_device_groups` WHERE id = ? AND user_id = ? AND id NOT IN (SELECT id FROM `*PREFIX*sensorlogger_devices` WHERE user_id = ? AND group_id = ? AND group_parent_id = ?)';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(1, $DevId);
-            $stmt->bindParam(2, $userId);
-            $stmt->bindParam(3, $userId);
-            $stmt->bindParam(4, $DevId);
-            $stmt->bindParam(5, $DevId);
-            return $stmt->execute();
+            return self::deleteGroupIfUnused($userId, $DevId, $db);
         }
         return false;
     }
@@ -139,17 +137,37 @@ class DeviceGroups
         $devGroup = DeviceGroups::getDeviceGroupByName($userId, $deviceGroupName, $db);
         if ($devGroup['id'] && is_numeric($devGroup['id']) && $devGroup['id'] > 0) {
             $DevId = (int)$devGroup['id'];
-
-            $sql = 'DELETE FROM `*PREFIX*sensorlogger_device_groups` WHERE id = ? AND user_id = ? AND id NOT IN (SELECT id FROM `*PREFIX*sensorlogger_devices` WHERE user_id = ? AND group_id = ? AND group_parent_id = ?)';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(1, $DevId);
-            $stmt->bindParam(2, $userId);
-            $stmt->bindParam(3, $userId);
-            $stmt->bindParam(4, $DevId);
-            $stmt->bindParam(5, $DevId);
-            return $stmt->execute();
+            return self::deleteGroupIfUnused($userId, $DevId, $db);
         }
         return false;
+    }
+
+    private static function deleteGroupIfUnused($userId, $groupId, IDBConnection $db)
+    {
+        $deviceQuery = $db->getQueryBuilder();
+        $deviceQuery->select('id')
+            ->from('sensorlogger_devices')
+            ->where('user_id = :deviceUserId')
+            ->andWhere('group_id = :deviceGroupId')
+            ->andWhere('group_parent_id = :parentId');
+
+        $query = $db->getQueryBuilder();
+        $query->delete('sensorlogger_device_groups')
+            ->where('id = :groupId')
+            ->andWhere('user_id = :userId')
+            ->andWhere('id NOT IN (' . $deviceQuery->getSQL() . ')')
+            ->setParameter('groupId', $groupId)
+            ->setParameter('userId', $userId)
+            ->setParameter('deviceUserId', $userId)
+            ->setParameter('deviceGroupId', $groupId)
+            ->setParameter('parentId', $groupId);
+
+        $db->executeStatement(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        );
+        return true;
     }
 
     /**
@@ -168,18 +186,18 @@ class DeviceGroups
 
         $lastId = 0;
 
-        //SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
-        //START TRANSACTION;
-
-        $sql = 'INSERT INTO `*PREFIX*sensorlogger_device_groups` (`user_id`,`device_group_name`) VALUES(?,?)';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(1, $userId);
-        $stmt->bindParam(2, $deviceGroupName);
-        if ($stmt->execute()) {
-            $lastId = (int)$db->lastInsertId();
-        }
-
-        // COMMIT;
+        $query = $db->getQueryBuilder();
+        $query->insert('sensorlogger_device_groups')
+            ->values([
+                'user_id' => $query->createNamedParameter($userId),
+                'device_group_name' => $query->createNamedParameter($deviceGroupName),
+            ]);
+        $db->executeStatement(
+            $query->getSQL(),
+            $query->getParameters(),
+            $query->getParameterTypes()
+        );
+        $lastId = (int)$db->lastInsertId();
 
         return $lastId;
     }

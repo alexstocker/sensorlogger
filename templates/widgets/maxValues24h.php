@@ -1,3 +1,4 @@
-<?php //$widget = $_['widget'];
+<?php
+
+//$widget = $_['widget'];
 //var_dump($widget->getLog());
-?>

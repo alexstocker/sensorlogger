@@ -9,12 +9,6 @@ use OCP\AppFramework\Db\Entity;
  */
 class Group extends Entity implements \JsonSerializable
 {
-
-    /**
-     * @Id @Column(type="integer") @GeneratedValue
-     **/
-    protected $id;
-
     /**
      * @Column(type="string")
      **/
@@ -31,7 +25,7 @@ class Group extends Entity implements \JsonSerializable
         $this->addType('deviceGroupName', 'string');
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'id' => $this->id,

@@ -11,7 +11,6 @@ use OCP\IDBConnection;
  */
 class SensorLogs
 {
-
     /**
      * @param $userId
      * @param IDBConnection $db
@@ -22,7 +21,7 @@ class SensorLogs
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_logs')
-            ->where('user_id = "'.$userId.'"')
+            ->where('user_id = "' . $userId . '"')
             ->orderBy('id', 'DESC');
         $query->setMaxResults(1);
         $result = $query->execute();
@@ -40,8 +39,8 @@ class SensorLogs
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_logs')
-            ->where('user_id = "'.$userId.'"')
-            ->andWhere('device_uuid = "'.$deviceId.'"')
+            ->where('user_id = "' . $userId . '"')
+            ->andWhere('device_uuid = "' . $deviceId . '"')
             ->orderBy('id', 'DESC');
         $query->setMaxResults(1);
         $result = $query->execute();
@@ -64,7 +63,7 @@ class SensorLogs
         $query = $db->getQueryBuilder();
         $query->select('*')
             ->from('sensorlogger_logs')
-            ->where('user_id = "'.$userId.'"')
+            ->where('user_id = "' . $userId . '"')
             ->orderBy('id', 'DESC');
         $query->setMaxResults(100);
         $result = $query->execute();
@@ -93,8 +92,8 @@ class SensorLogs
         $query = $db->getQueryBuilder();
         $query->select(array('id','device_uuid','humidity','temperature','data','created_at'))
             ->from('sensorlogger_logs')
-            ->where('device_uuid = "'.$uuId.'"')
-            ->andWhere('user_id = "'.$userId.'"')
+            ->where('device_uuid = "' . $uuId . '"')
+            ->andWhere('user_id = "' . $userId . '"')
             ->orderBy('id', 'DESC');
         $query->setMaxResults($limit);
         $query->setFirstResult($offset);
@@ -122,10 +121,10 @@ class SensorLogs
         $query = $db->getQueryBuilder();
         $query->delete('sensorlogger_logs')
             //->where('id = :log_id')
-            //->setParameter([':log_id' => ''])
+            //->setParameter(['log_id' => ''])
             ->where('id = :log_id')
             ->setParameters([
-                ':log_id' => $id
+                'log_id' => $id
             ]);
         return $query->execute();
     }
@@ -141,7 +140,7 @@ class SensorLogs
         $query->delete('sensorlogger_logs')
             ->where('device_uuid = :uuid')
             ->setParameters([
-                ':uuid' => $uuid
+                'uuid' => $uuid
             ]);
         return $query->execute();
     }

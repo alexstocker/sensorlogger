@@ -1,1 +1,3 @@
-<?php /* PLACEHOLDER */
+<?php
+
+/* PLACEHOLDER */
